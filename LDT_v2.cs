@@ -15,39 +15,48 @@ namespace LevelDesignTool
     {
         private const int gridSize = 20; // Size of each square in the grid
         private List<Item> items = new List<Item>();
-        private int type = 0;
+        private int selectedItemType = 0;
 
         public LDT_v2()
         {
             InitializeComponent();
             Map_Tool.Paint += Map_Tool_DrawGrid;
             Map_Tool.AllowDrop = true;
+            Map_Tool.MouseClick += Map_Tool_MouseClick;
 
             ReadItemFromFile();
             DisplayItems();
-
             foreach (Item item in items)
             {
                 item.ItemClicked += Item_ItemClicked;
             }
         }
 
+        private void Map_Tool_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (selectedItemType != 0)
+            {
+                Item item = items.FirstOrDefault(i => i.type == selectedItemType);
+                if (item != null)
+                {
+                    CreatePictureBoxAtLocation(item, e.Location);
+                }
+                selectedItemType = 0;
+            }
+        }
+
+        private void CreatePictureBoxAtLocation(Item item, Point location)
+        {
+            PictureBox pictureBox = new PictureBox();
+            pictureBox.Image = item.itemImage[0];
+            pictureBox.Location = location;
+            pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+            Map_Tool.Controls.Add(pictureBox);
+        }
+
         private void Item_ItemClicked(object sender, int type)
         {
-            if (type != 0)
-            {
-                Item item = (Item)sender;
-
-                MessageBox.Show("type: " + type);
-
-                // Create a new PictureBox based on the type
-                PictureBox pictureBox = new PictureBox();
-                pictureBox.Image = item.itemImage[0]; // Set the image of the PictureBox
-                pictureBox.Location = new Point(10, 10); // Set the initial location
-                pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-                // Add the PictureBox to the Map_Tool panel
-                Map_Tool.Controls.Add(pictureBox);
-            }
+            selectedItemType = type;
         }
 
         private void Map_Tool_Paint(object sender, PaintEventArgs e)
