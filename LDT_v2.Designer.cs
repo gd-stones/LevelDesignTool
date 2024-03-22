@@ -43,7 +43,6 @@
             // 
             // Map_Tool
             // 
-            Map_Tool.AutoScroll = true;
             Map_Tool.BorderStyle = BorderStyle.FixedSingle;
             Map_Tool.Location = new Point(0, 0);
             Map_Tool.Name = "Map_Tool";
