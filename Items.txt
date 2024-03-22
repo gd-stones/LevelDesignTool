@@ -1,0 +1,15 @@
+name: item1
+properties:
+{
+type: 1
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\item_1.png
+size: 100, 150
+}
+
+name: item2
+properties:
+{
+type: 2
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\item_2.jpg
+size: 200, 100
+}
