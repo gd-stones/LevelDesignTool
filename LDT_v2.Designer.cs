@@ -32,6 +32,7 @@
             imageList1 = new ImageList(components);
             Map_Tool = new Panel();
             Item_List_View = new Panel();
+            ButtonExport = new Button();
             SuspendLayout();
             // 
             // imageList1
@@ -60,11 +61,24 @@
             Item_List_View.TabIndex = 1;
             Item_List_View.Paint += Item_List_View_Paint;
             // 
+            // ButtonExport
+            // 
+            ButtonExport.BackColor = Color.FromArgb(255, 224, 192);
+            ButtonExport.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            ButtonExport.Location = new Point(5, 634);
+            ButtonExport.Name = "ButtonExport";
+            ButtonExport.Size = new Size(110, 32);
+            ButtonExport.TabIndex = 2;
+            ButtonExport.Text = "Export";
+            ButtonExport.UseVisualStyleBackColor = false;
+            ButtonExport.Click += ButtonExport_Click;
+            // 
             // LDT_v2
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1924, 1061);
+            Controls.Add(ButtonExport);
             Controls.Add(Item_List_View);
             Controls.Add(Map_Tool);
             Name = "LDT_v2";
@@ -77,5 +91,6 @@
         private ImageList imageList1;
         private Panel Map_Tool;
         private Panel Item_List_View;
+        private Button ButtonExport;
     }
 }

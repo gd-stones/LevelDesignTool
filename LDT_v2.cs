@@ -51,7 +51,41 @@ namespace LevelDesignTool
             pictureBox.Image = item.itemImage[0];
             pictureBox.Location = location;
             pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+
+            pictureBox.MouseDown += PictureBox_MouseDown;
+            pictureBox.MouseMove += PictureBox_MouseMove;
+            pictureBox.MouseUp += PictureBox_MouseUp;
+
             Map_Tool.Controls.Add(pictureBox);
+        }
+
+        private Point _dragOffset;
+        private bool _isDragging;
+
+        private void PictureBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                var pb = (PictureBox)sender;
+                _isDragging = true;
+                _dragOffset = e.Location;
+                pb.BringToFront(); // Ensure the PictureBox stays on top while dragging
+            }
+        }
+
+        private void PictureBox_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (_isDragging)
+            {
+                var pb = (PictureBox)sender;
+                // Calculate new location of PictureBox relative to the parent panel
+                pb.Location = new Point(pb.Location.X + e.X - _dragOffset.X, pb.Location.Y + e.Y - _dragOffset.Y);
+            }
+        }
+
+        private void PictureBox_MouseUp(object sender, MouseEventArgs e)
+        {
+            _isDragging = false;
         }
 
         private void Item_ItemClicked(object sender, int type)
@@ -125,10 +159,15 @@ namespace LevelDesignTool
                         Image image = Image.FromFile(imagePath);
                         Item item = new Item(image, new Size(100, 100), new Vector2(0, 0), type); // Adjust size and position as needed
                         items.Add(item);
-                        type ++;
+                        type++;
                     }
                 }
             }
+        }
+
+        private void ButtonExport_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
