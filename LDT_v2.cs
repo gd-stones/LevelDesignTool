@@ -104,14 +104,10 @@ namespace LevelDesignTool
         {
             if (!_isDragging || _currentDragPanel == null) return;
 
-            // Cursor.Position gives the current position of the mouse cursor in screen coordinates
             Point screenPoint = Cursor.Position;
             Point newLocation = Map_Tool.PointToClient(screenPoint); // Convert to coordinates relative to Map_Tool
 
-            // Adjust by the offset
             newLocation.Offset(-_dragOffset.X, -_dragOffset.Y);
-
-            // Optional: Add bounds checking (if appropriate to your application)
             newLocation.X = Math.Max(0, newLocation.X);
             newLocation.Y = Math.Max(0, newLocation.Y);
             newLocation.X = Math.Min(Map_Tool.ClientSize.Width - _currentDragPanel.Width, newLocation.X);
@@ -309,18 +305,18 @@ namespace LevelDesignTool
 
         private void ButtonExport_Click(object sender, EventArgs e)
         {
-            List<PictureBox> pictureBoxes = new List<PictureBox>();
+            List<Panel> itemPanels = new List<Panel>();
             Point scrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
 
             foreach (Control control in Map_Tool.Controls)
             {
-                if (control is PictureBox)
+                if (control is Panel panel && panel.Tag is Item)
                 {
-                    pictureBoxes.Add((PictureBox)control);
+                    itemPanels.Add(panel);
                 }
             }
 
-            pictureBoxes.Sort((x, y) =>
+            itemPanels.Sort((x, y) =>
             {
                 int result = x.Top.CompareTo(y.Top);
                 return (result == 0) ? x.Left.CompareTo(y.Left) : result;
@@ -328,22 +324,35 @@ namespace LevelDesignTool
 
             StringBuilder exportData = new StringBuilder();
 
-            foreach (PictureBox pb in pictureBoxes)
+            foreach (Panel panel in itemPanels)
             {
-                var adjustedLocation = new Point(pb.Location.X + scrollPosition.X, pb.Location.Y + scrollPosition.Y);
-                exportData.AppendLine($"PictureBox: {adjustedLocation.X}, {adjustedLocation.Y}");
+                if (panel.Tag is Item item)
+                {
+                    var adjustedLocation = new Point(panel.Location.X + scrollPosition.X, panel.Location.Y + scrollPosition.Y);
+                    var size = new Size(item.size.Width, item.size.Height);
+                    int type = item.type;
+                    int length = item.length;
+
+                    string itemPanelInfo = $"{{Type: {type}, Position: ({adjustedLocation.X}, {adjustedLocation.Y}), Size: ({size.Width}, {size.Height}), Length: {length}}}";
+                    exportData.AppendLine(itemPanelInfo);
+                }
+                else
+                {
+                    MessageBox.Show("Panel's Tag property is not of type Item!", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
             }
 
-            string exportFilePath = @"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\ExportedPositions.txt";
+            string exportFilePath = @"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Level.txt";
 
             try
             {
                 File.WriteAllText(exportFilePath, exportData.ToString());
-                MessageBox.Show($"Exported PictureBox positions to {exportFilePath}", "Export Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Exported item data to {exportFilePath}", "Export Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error exporting positions: {ex.Message}", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error exporting item data: {ex.Message}", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

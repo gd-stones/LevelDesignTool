@@ -1,0 +1,3 @@
+{Type: 2, Position: (70, 1148), Size: (200, 100), Length: 1}
+{Type: 9, Position: (560, 1148), Size: (160, 100), Length: 1}
+{Type: 10, Position: (485, 1198), Size: (50, 50), Length: 10}
