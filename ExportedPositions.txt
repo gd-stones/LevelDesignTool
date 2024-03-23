@@ -1,2 +1,3 @@
-PictureBox: 221, 418
-PictureBox: 433, 455
+PictureBox: 3, 11
+PictureBox: 879, 1061
+PictureBox: 420, 1181
