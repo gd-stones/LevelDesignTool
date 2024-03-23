@@ -15,18 +15,21 @@ namespace LevelDesignTool
         private Size size;
         private Vector2 position;
         public int type;
+        private int length;
 
-        public Item(Image image, Size size, Vector2 position, int type)
+        public Item(Image image, Size size, Vector2 position, int type, int length)
         {
             this.itemImage.Add(image);
             this.size = size;
             this.position = position;
             this.type = type;
+            this.length = length;
         }
 
         public PictureBox GenerateImage(Point point)
         {
             PictureBox pictureBox = new PictureBox();
+            //pictureBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             pictureBox.Image = itemImage[0];
             pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox.Location = point;

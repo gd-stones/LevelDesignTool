@@ -20,7 +20,7 @@ namespace LevelDesignTool
         public LDT_v2()
         {
             InitializeComponent();
-            //Map_Tool.Paint += Map_Tool_DrawGrid;
+            Map_Tool.Paint += Map_Tool_DrawGrid;
             Map_Tool.AllowDrop = true;
             Map_Tool.MouseClick += Map_Tool_MouseClick;
             Map_Tool.AutoScrollMinSize = new Size(3200, 1248);
@@ -37,8 +37,8 @@ namespace LevelDesignTool
 
         private void InitializeMapToolPanel()
         {
-            Map_Tool.Width = 3200;
-            Map_Tool.Height = 1248;
+            //Map_Tool.Width = 3200;
+            //Map_Tool.Height = 1248;
             Map_Tool.AutoScroll = true; // Allow scrolling if the panel is larger than the container
 
             // Reduce flickering by enabling double buffering
@@ -111,41 +111,41 @@ namespace LevelDesignTool
 
         private void Map_Tool_Paint(object sender, PaintEventArgs e)
         {
-            // The size of the grid
-            int gridWidth = 3200;
-            int gridHeight = 1248;
-            int cellSize = 32;
+            //// The size of the grid
+            //int gridWidth = 3200;
+            //int gridHeight = 1248;
+            //int cellSize = 16;
 
-            Graphics g = e.Graphics;
-            Pen gridPen = new Pen(Color.Black);
+            //Graphics g = e.Graphics;
+            //Pen gridPen = new Pen(Color.Black);
 
-            // Create a red pen for the first lines
-            Pen firstLinePen = new Pen(Color.Red);
+            //// Create a red pen for the first lines
+            //Pen firstLinePen = new Pen(Color.Red);
 
-            // Adjust for the current scroll position
-            Point scrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
+            //// Adjust for the current scroll position
+            //Point scrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
 
-            // Draw the first horizontal line in red
-            g.DrawLine(firstLinePen, scrollPosition.X, scrollPosition.Y + gridHeight, scrollPosition.X + gridWidth, scrollPosition.Y + gridHeight);
+            //// Draw the first horizontal line in red
+            //g.DrawLine(firstLinePen, scrollPosition.X, scrollPosition.Y + gridHeight, scrollPosition.X + gridWidth, scrollPosition.Y + gridHeight);
 
-            // Draw the first vertical line in red
-            g.DrawLine(firstLinePen, scrollPosition.X, scrollPosition.Y, scrollPosition.X, scrollPosition.Y + gridHeight);
+            //// Draw the first vertical line in red
+            //g.DrawLine(firstLinePen, scrollPosition.X, scrollPosition.Y, scrollPosition.X, scrollPosition.Y + gridHeight);
 
-            // Draw the rest of the horizontal grid lines
-            for (int y = gridHeight - cellSize; y >= 0; y -= cellSize)
-            {
-                g.DrawLine(gridPen, scrollPosition.X, scrollPosition.Y + y, scrollPosition.X + gridWidth, scrollPosition.Y + y);
-            }
+            //// Draw the rest of the horizontal grid lines
+            //for (int y = gridHeight - cellSize; y >= 0; y -= cellSize)
+            //{
+            //    g.DrawLine(gridPen, scrollPosition.X, scrollPosition.Y + y, scrollPosition.X + gridWidth, scrollPosition.Y + y);
+            //}
 
-            // Draw the rest of the vertical grid lines
-            for (int x = cellSize; x <= gridWidth; x += cellSize)
-            {
-                g.DrawLine(gridPen, scrollPosition.X + x, scrollPosition.Y, scrollPosition.X + x, scrollPosition.Y + gridHeight);
-            }
+            //// Draw the rest of the vertical grid lines
+            //for (int x = cellSize; x <= gridWidth; x += cellSize)
+            //{
+            //    g.DrawLine(gridPen, scrollPosition.X + x, scrollPosition.Y, scrollPosition.X + x, scrollPosition.Y + gridHeight);
+            //}
 
-            // Dispose of the pens after using
-            gridPen.Dispose();
-            firstLinePen.Dispose();
+            //// Dispose of the pens after using
+            //gridPen.Dispose();
+            //firstLinePen.Dispose();
         }
 
         private void Map_Tool_DrawGrid(object sender, PaintEventArgs e)

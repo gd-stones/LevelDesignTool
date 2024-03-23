@@ -44,12 +44,13 @@
             // 
             // Map_Tool
             // 
+            Map_Tool.AllowDrop = true;
             Map_Tool.AutoScroll = true;
             Map_Tool.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             Map_Tool.BorderStyle = BorderStyle.FixedSingle;
             Map_Tool.Location = new Point(0, 0);
             Map_Tool.Name = "Map_Tool";
-            Map_Tool.Size = new Size(1440, 1248);
+            Map_Tool.Size = new Size(1440, 1020);
             Map_Tool.TabIndex = 0;
             Map_Tool.Paint += Map_Tool_Paint;
             // 
@@ -59,7 +60,7 @@
             Item_List_View.BorderStyle = BorderStyle.FixedSingle;
             Item_List_View.Location = new Point(1456, 420);
             Item_List_View.Name = "Item_List_View";
-            Item_List_View.Size = new Size(450, 550);
+            Item_List_View.Size = new Size(450, 530);
             Item_List_View.TabIndex = 1;
             Item_List_View.Paint += Item_List_View_Paint;
             // 
@@ -67,7 +68,7 @@
             // 
             ButtonExport.BackColor = Color.FromArgb(255, 224, 192);
             ButtonExport.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            ButtonExport.Location = new Point(1456, 993);
+            ButtonExport.Location = new Point(1456, 966);
             ButtonExport.Name = "ButtonExport";
             ButtonExport.Size = new Size(110, 32);
             ButtonExport.TabIndex = 2;
