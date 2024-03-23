@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -20,32 +22,23 @@ namespace LevelDesignTool
         public LDT_v2()
         {
             InitializeComponent();
-            Map_Tool.Paint += Map_Tool_DrawGrid;
-            Map_Tool.AllowDrop = true;
-            Map_Tool.MouseClick += Map_Tool_MouseClick;
-            Map_Tool.AutoScrollMinSize = new Size(3200, 1248);
-            InitializeMapToolPanel();
-            //Map_Tool.MaximumSize = new Size(3200, 1248);
-
             ReadItemFromFile();
             DisplayItems();
             foreach (Item item in items)
             {
                 item.ItemClicked += Item_ItemClicked;
             }
+            InitializeMapToolPanel();
         }
 
         private void InitializeMapToolPanel()
         {
-            //Map_Tool.Width = 3200;
-            //Map_Tool.Height = 1248;
-            Map_Tool.AutoScroll = true; // Allow scrolling if the panel is larger than the container
-
-            // Reduce flickering by enabling double buffering
-            Map_Tool.GetType().GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(Map_Tool, true);
-
-            // Subscribe to the Paint event of Map_Tool
-            Map_Tool.Paint += new PaintEventHandler(Map_Tool_Paint);
+            Map_Tool.Paint += Map_Tool_DrawGrid;
+            Map_Tool.AllowDrop = true;
+            Map_Tool.MouseClick += Map_Tool_MouseClick;
+            Map_Tool.AutoScrollMinSize = new Size(3200, 1248);
+            Map_Tool.AutoScroll = true;
+            //Map_Tool.GetType().GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(Map_Tool, true);
         }
 
         private void Map_Tool_MouseClick(object sender, MouseEventArgs e)
@@ -65,15 +58,18 @@ namespace LevelDesignTool
         {
             PictureBox pictureBox = new PictureBox();
             pictureBox.Image = item.itemImage[0];
+            Debug.WriteLine($"Debug: Item size before creating PictureBox: {item.size}");
             pictureBox.Location = location;
-            pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
-
+            pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox.Size = item.size;
             pictureBox.MouseDown += PictureBox_MouseDown;
             pictureBox.MouseMove += PictureBox_MouseMove;
             pictureBox.MouseUp += PictureBox_MouseUp;
 
+            Debug.WriteLine($"Debug: PictureBox size after adding to Map_Tool: {pictureBox.Size}");
             Map_Tool.Controls.Add(pictureBox);
         }
+
 
         private Point _dragOffset;
         private bool _isDragging;
@@ -111,46 +107,12 @@ namespace LevelDesignTool
 
         private void Map_Tool_Paint(object sender, PaintEventArgs e)
         {
-            //// The size of the grid
-            //int gridWidth = 3200;
-            //int gridHeight = 1248;
-            //int cellSize = 16;
 
-            //Graphics g = e.Graphics;
-            //Pen gridPen = new Pen(Color.Black);
-
-            //// Create a red pen for the first lines
-            //Pen firstLinePen = new Pen(Color.Red);
-
-            //// Adjust for the current scroll position
-            //Point scrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
-
-            //// Draw the first horizontal line in red
-            //g.DrawLine(firstLinePen, scrollPosition.X, scrollPosition.Y + gridHeight, scrollPosition.X + gridWidth, scrollPosition.Y + gridHeight);
-
-            //// Draw the first vertical line in red
-            //g.DrawLine(firstLinePen, scrollPosition.X, scrollPosition.Y, scrollPosition.X, scrollPosition.Y + gridHeight);
-
-            //// Draw the rest of the horizontal grid lines
-            //for (int y = gridHeight - cellSize; y >= 0; y -= cellSize)
-            //{
-            //    g.DrawLine(gridPen, scrollPosition.X, scrollPosition.Y + y, scrollPosition.X + gridWidth, scrollPosition.Y + y);
-            //}
-
-            //// Draw the rest of the vertical grid lines
-            //for (int x = cellSize; x <= gridWidth; x += cellSize)
-            //{
-            //    g.DrawLine(gridPen, scrollPosition.X + x, scrollPosition.Y, scrollPosition.X + x, scrollPosition.Y + gridHeight);
-            //}
-
-            //// Dispose of the pens after using
-            //gridPen.Dispose();
-            //firstLinePen.Dispose();
         }
 
         private void Map_Tool_DrawGrid(object sender, PaintEventArgs e)
         {
-            // sludion 1
+            // solution 1
             //Panel panel = (Panel)sender;
             //Graphics g = e.Graphics;
             //Pen pen = new Pen(Color.Black);
@@ -169,7 +131,7 @@ namespace LevelDesignTool
             //}
             //pen.Dispose();
 
-            // slodion 2
+            // solution 2
             Panel panel = (Panel)sender;
             Graphics g = e.Graphics;
             Pen pen = new Pen(Color.Black);
@@ -194,7 +156,7 @@ namespace LevelDesignTool
             pen.Dispose();
 
 
-            // slodion 3
+            // solution 3
             //Panel panel = (Panel)sender;
             //Graphics g = e.Graphics;
 
@@ -244,11 +206,11 @@ namespace LevelDesignTool
                 pictureBox = item.GenerateImage(new Point(x, y));
                 Item_List_View.Controls.Add(pictureBox);
 
-                x += pictureBox.Width + 10; // Add some spacing between items
+                x += pictureBox.Width + 10;
                 if (x + pictureBox.Width > Item_List_View.Width)
                 {
-                    x = 10; // Reset x position
-                    y += pictureBox.Height + 10; // Move to the next row
+                    x = 10;
+                    y += pictureBox.Height + 10;
                 }
             }
         }
@@ -258,74 +220,63 @@ namespace LevelDesignTool
             string filePath = @"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items.txt";
             string[] lines = File.ReadAllLines(filePath);
 
-            int type = 1;
+            string imagePath = "";
+            Size size = new Size();
+            int type = 0;
+            int length = 0;
+            bool isInBlock = false;
+
             foreach (string line in lines)
             {
-                if (line.StartsWith("path:"))
+                if (line.StartsWith("{"))
                 {
-                    string imagePath = line.Substring(6).Trim();
-                    if (File.Exists(imagePath))
+                    imagePath = "";
+                    size = Size.Empty;
+                    type = 0;
+                    length = 0;
+                    isInBlock = true;
+                    continue;
+                }
+
+                if (line.StartsWith("}"))
+                {
+                    isInBlock = false; 
+                    if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
                     {
                         Image image = Image.FromFile(imagePath);
-                        Item item = new Item(image, new Size(100, 100), new Vector2(0, 0), type); // Adjust size and position as needed
+                        Item item = new Item(image, size, new Vector2(0, 0), type, length);
                         items.Add(item);
-                        type++;
                     }
+                    continue; 
+                }
+
+                if (!isInBlock) continue;
+
+                if (line.StartsWith("type:"))
+                {
+                    type = int.Parse(line.Substring(6).Trim());
+                }
+                else if (line.StartsWith("path:"))
+                {
+                    imagePath = line.Substring(6).Trim();
+                }
+                else if (line.StartsWith("size:"))
+                {
+                    var sizeParts = line.Substring(6).Trim().Split(',');
+                    size = new Size(int.Parse(sizeParts[0]), int.Parse(sizeParts[1]));
+                }
+                else if (line.StartsWith("length:"))
+                {
+                    length = int.Parse(line.Substring(8).Trim());
                 }
             }
         }
 
-        //private void ButtonExport_Click(object sender, EventArgs e)
-        //{
-        //    // Create a new list to store the sorted PictureBox controls
-        //    List<PictureBox> pictureBoxes = new List<PictureBox>();
-
-        //    // Gather all PictureBox controls from the Map_Tool panel
-        //    foreach (Control control in Map_Tool.Controls)
-        //    {
-        //        if (control is PictureBox)
-        //        {
-        //            pictureBoxes.Add((PictureBox)control);
-        //        }
-        //    }
-
-        //    // Sort the PictureBoxes by Top first and then Left positions
-        //    pictureBoxes.Sort((x, y) =>
-        //    {
-        //        int result = x.Top.CompareTo(y.Top);
-        //        return (result == 0) ? x.Left.CompareTo(y.Left) : result;
-        //    });
-
-        //    // Now pictureBoxes are sorted, you can export their locations
-        //    StringBuilder exportData = new StringBuilder();
-
-        //    foreach (PictureBox pb in pictureBoxes)
-        //    {
-        //        exportData.AppendLine($"PictureBox: {pb.Location.X}, {pb.Location.Y}");
-        //    }
-
-        //    string exportFilePath = @"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\ExportedPositions.txt";
-
-        //    try
-        //    {
-        //        File.WriteAllText(exportFilePath, exportData.ToString());
-        //        MessageBox.Show($"Exported PictureBox positions to {exportFilePath}", "Export Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show($"Error exporting positions: {ex.Message}", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //    }
-        //}
-
         private void ButtonExport_Click(object sender, EventArgs e)
         {
-            // Create a new list to store the sorted PictureBox controls
             List<PictureBox> pictureBoxes = new List<PictureBox>();
-
-            // The AutoScrollPosition refers to the current scroll location of the Map_Tool Panel
             Point scrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
 
-            // Gather all PictureBox controls from the Map_Tool panel
             foreach (Control control in Map_Tool.Controls)
             {
                 if (control is PictureBox)
@@ -334,19 +285,16 @@ namespace LevelDesignTool
                 }
             }
 
-            // Sort the PictureBoxes by Top first and then Left positions
             pictureBoxes.Sort((x, y) =>
             {
                 int result = x.Top.CompareTo(y.Top);
                 return (result == 0) ? x.Left.CompareTo(y.Left) : result;
             });
 
-            // Now pictureBoxes are sorted, you can export their locations
             StringBuilder exportData = new StringBuilder();
 
             foreach (PictureBox pb in pictureBoxes)
             {
-                // Adjust the location based on the scroll position
                 var adjustedLocation = new Point(pb.Location.X + scrollPosition.X, pb.Location.Y + scrollPosition.Y);
                 exportData.AppendLine($"PictureBox: {adjustedLocation.X}, {adjustedLocation.Y}");
             }
@@ -363,6 +311,5 @@ namespace LevelDesignTool
                 MessageBox.Show($"Error exporting positions: {ex.Message}", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
     }
 }

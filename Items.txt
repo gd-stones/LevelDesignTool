@@ -23,7 +23,7 @@ length: 1
 type: 4
 path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\c_4.jpg
 size: 180, 100
-length:1
+length: 1
 }
 
 {

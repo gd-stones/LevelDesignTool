@@ -1,3 +1,3 @@
-PictureBox: 5, 7
-PictureBox: -125, 870
-PictureBox: 2, 894
+PictureBox: 942, 477
+PictureBox: 1162, 545
+PictureBox: 879, 1065

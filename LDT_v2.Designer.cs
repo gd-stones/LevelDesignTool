@@ -28,19 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            imageList1 = new ImageList(components);
             Map_Tool = new Panel();
             Item_List_View = new Panel();
             ButtonExport = new Button();
             Item_Content = new Panel();
             SuspendLayout();
-            // 
-            // imageList1
-            // 
-            imageList1.ColorDepth = ColorDepth.Depth32Bit;
-            imageList1.ImageSize = new Size(16, 16);
-            imageList1.TransparentColor = Color.Transparent;
             // 
             // Map_Tool
             // 
@@ -56,6 +48,7 @@
             // 
             // Item_List_View
             // 
+            Item_List_View.AllowDrop = true;
             Item_List_View.AutoScroll = true;
             Item_List_View.BorderStyle = BorderStyle.FixedSingle;
             Item_List_View.Location = new Point(1456, 420);
@@ -101,8 +94,6 @@
         }
 
         #endregion
-
-        private ImageList imageList1;
         private Panel Map_Tool;
         private Panel Item_List_View;
         private Button ButtonExport;

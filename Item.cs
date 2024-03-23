@@ -12,10 +12,10 @@ namespace LevelDesignTool
     {
         public event EventHandler<int> ItemClicked; // Custom event to notify the type
         public List<Image> itemImage = new List<Image>();
-        private Size size;
-        private Vector2 position;
+        public Size size;
+        public Vector2 position;
         public int type;
-        private int length;
+        public int length;
 
         public Item(Image image, Size size, Vector2 position, int type, int length)
         {
@@ -29,7 +29,6 @@ namespace LevelDesignTool
         public PictureBox GenerateImage(Point point)
         {
             PictureBox pictureBox = new PictureBox();
-            //pictureBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             pictureBox.Image = itemImage[0];
             pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox.Location = point;
@@ -43,6 +42,7 @@ namespace LevelDesignTool
 
         public void DragDropItem()
         {
+
         }
 
         private void PictureBox_MouseDown(object sender, MouseEventArgs e)
