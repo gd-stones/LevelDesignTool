@@ -32,9 +32,9 @@
             Item_List_View = new Panel();
             ButtonExport = new Button();
             Item_Content = new Panel();
-            Edit_Item = new Button();
-            Delete_Item = new Button();
             Save_Item = new Button();
+            Delete_Item = new Button();
+            Edit_Item = new Button();
             Item_Content.SuspendLayout();
             SuspendLayout();
             // 
@@ -67,9 +67,9 @@
             ButtonExport.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             ButtonExport.Location = new Point(1456, 966);
             ButtonExport.Name = "ButtonExport";
-            ButtonExport.Size = new Size(110, 32);
+            ButtonExport.Size = new Size(130, 40);
             ButtonExport.TabIndex = 2;
-            ButtonExport.Text = "Export";
+            ButtonExport.Text = "Save/Export";
             ButtonExport.UseVisualStyleBackColor = false;
             ButtonExport.Click += ButtonExport_Click;
             // 
@@ -84,17 +84,18 @@
             Item_Content.Name = "Item_Content";
             Item_Content.Size = new Size(450, 403);
             Item_Content.TabIndex = 3;
+            Item_Content.Paint += Item_Content_Paint;
             // 
-            // Edit_Item
+            // Save_Item
             // 
-            Edit_Item.BackColor = Color.FromArgb(255, 255, 192);
-            Edit_Item.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
-            Edit_Item.Location = new Point(25, 368);
-            Edit_Item.Name = "Edit_Item";
-            Edit_Item.Size = new Size(90, 30);
-            Edit_Item.TabIndex = 0;
-            Edit_Item.Text = "Edit";
-            Edit_Item.UseVisualStyleBackColor = false;
+            Save_Item.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            Save_Item.Location = new Point(135, 368);
+            Save_Item.Name = "Save_Item";
+            Save_Item.Size = new Size(90, 30);
+            Save_Item.TabIndex = 2;
+            Save_Item.Text = "Save";
+            Save_Item.UseVisualStyleBackColor = true;
+            Save_Item.Click += Save_Item_Click;
             // 
             // Delete_Item
             // 
@@ -106,16 +107,19 @@
             Delete_Item.TabIndex = 1;
             Delete_Item.Text = "Delete";
             Delete_Item.UseVisualStyleBackColor = false;
+            Delete_Item.Click += Delete_Item_Click;
             // 
-            // Save_Item
+            // Edit_Item
             // 
-            Save_Item.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
-            Save_Item.Location = new Point(135, 368);
-            Save_Item.Name = "Save_Item";
-            Save_Item.Size = new Size(90, 30);
-            Save_Item.TabIndex = 2;
-            Save_Item.Text = "Save";
-            Save_Item.UseVisualStyleBackColor = true;
+            Edit_Item.BackColor = Color.FromArgb(255, 255, 192);
+            Edit_Item.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
+            Edit_Item.Location = new Point(25, 368);
+            Edit_Item.Name = "Edit_Item";
+            Edit_Item.Size = new Size(90, 30);
+            Edit_Item.TabIndex = 0;
+            Edit_Item.Text = "Edit";
+            Edit_Item.UseVisualStyleBackColor = false;
+            Edit_Item.Click += Edit_Item_Click;
             // 
             // LDT_v2
             // 

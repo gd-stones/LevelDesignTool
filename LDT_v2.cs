@@ -44,7 +44,8 @@ namespace LevelDesignTool
                 Item item = items.FirstOrDefault(i => i.type == selectedItemType);
                 if (item != null)
                 {
-                    CreateItemAtLocation(item, e.Location);
+                    Item newItem = new Item(item.image, item.size, new Vector2(e.X, e.Y), item.type, item.length);
+                    CreateItemAtLocation(newItem, e.Location);
                 }
                 selectedItemType = 0;
             }
@@ -54,8 +55,23 @@ namespace LevelDesignTool
         private Point _dragOffset;
         private bool _isDragging;
 
+        private int GenerateHashKey(Point location)
+        {
+            int seed = location.X * 1000000 + location.Y;
+            Random rnd = new Random();
+            int rndNum = rnd.Next(0, 1000000);
+            int hashKey = rndNum;
+
+            return hashKey;
+        }
+       
         private void CreateItemAtLocation(Item item, Point location)
         {
+            MessageBox.Show(location.ToString());
+            int hashKey = location.Y + location.X;
+            MessageBox.Show(hashKey.ToString());
+            item.hashKey = hashKey;
+
             Panel itemPanel = new Panel
             {
                 Size = new Size(item.size.Width * item.length, item.size.Height),
@@ -76,6 +92,7 @@ namespace LevelDesignTool
                 pictureBox.MouseDown += Item_MouseDown;
                 pictureBox.MouseMove += Item_MouseMove;
                 pictureBox.MouseUp += Item_MouseUp;
+                pictureBox.MouseDoubleClick += PictureBox_MouseDoubleClick;
 
                 itemPanel.Controls.Add(pictureBox); // Add the PictureBox to the Panel
                 offsetX += item.size.Width; // Update offsetX for the next PictureBox
@@ -83,6 +100,24 @@ namespace LevelDesignTool
 
             Map_Tool.Controls.Add(itemPanel); // Add the Panel to the Map_Tool
         }
+
+        private void PictureBox_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            MessageBox.Show("MouseDoubleClick");
+
+
+            if (sender is PictureBox pictureBox)
+            {
+                // Cast the Tag of the parent Panel back to an Item (assuming the parent is the panel with the item Tag)
+                Item item = pictureBox.Parent.Tag as Item;
+                if (item != null)
+                {
+                    // Use your existing function to display the item's content based on the item's information
+                    //DisplayItemInformation(item);
+                }
+            }
+        }
+
 
         private void Item_MouseDown(object sender, MouseEventArgs e)
         {
@@ -223,8 +258,8 @@ namespace LevelDesignTool
 
         private void DisplayItems()
         {
-            int x = 10; 
-            int y = 10; 
+            int x = 10;
+            int y = 10;
 
             foreach (Item item in items)
             {
@@ -266,14 +301,14 @@ namespace LevelDesignTool
 
                 if (line.StartsWith("}"))
                 {
-                    isInBlock = false; 
+                    isInBlock = false;
                     if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
                     {
                         Image image = Image.FromFile(imagePath);
                         Item item = new Item(image, size, new Vector2(0, 0), type, length);
                         items.Add(item);
                     }
-                    continue; 
+                    continue;
                 }
 
                 if (!isInBlock) continue;
@@ -328,12 +363,13 @@ namespace LevelDesignTool
             {
                 if (panel.Tag is Item item)
                 {
-                    string hashKey = Guid.NewGuid().ToString();
+                    //string hashKey = Guid.NewGuid().ToString();
 
                     var adjustedLocation = new Point(panel.Location.X + scrollPosition.X, panel.Location.Y + scrollPosition.Y);
                     var size = new Size(item.size.Width, item.size.Height);
                     int type = item.type;
                     int length = item.length;
+                    int hashKey = item.hashKey;
 
                     string itemPanelInfo = $"{{HashKey: {hashKey}, Type: {type}, Position: ({adjustedLocation.X}, {adjustedLocation.Y}), Size: ({size.Width}, {size.Height}), Length: {length}}}";
                     exportData.AppendLine(itemPanelInfo);
@@ -356,6 +392,26 @@ namespace LevelDesignTool
             {
                 MessageBox.Show($"Error exporting item data: {ex.Message}", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void Edit_Item_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Save_Item_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Delete_Item_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Item_Content_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
