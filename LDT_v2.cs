@@ -88,20 +88,22 @@ namespace LevelDesignTool
             if (_isDragging)
             {
                 var pb = (PictureBox)sender;
-                int newX = pb.Location.X + e.X - _dragOffset.X;
-                int newY = pb.Location.Y + e.Y - _dragOffset.Y;
-
-                int minX = 0;
-                int minY = 0;
-                int maxX = Map_Tool.AutoScrollMinSize.Width - pb.Width;
-                int maxY = Map_Tool.AutoScrollMinSize.Height - pb.Height;
-
-                if (newX < minX) newX = minX;
-                if (newY < minY) newY = minY;
-                if (newX > maxX) newX = maxX;
-                if (newY > maxY) newY = maxY;
-
-                pb.Location = new Point(newX, newY);
+                Point scrollPos = Map_Tool.AutoScrollPosition;
+                int diffX = e.X - _dragOffset.X;
+                int diffY = e.Y - _dragOffset.Y;
+                int newX = pb.Location.X + diffX;
+                int newY = pb.Location.Y + diffY;
+                newX += (scrollPos.X < 0) ? -scrollPos.X : 0;
+                newY += (scrollPos.Y < 0) ? -scrollPos.Y : 0;
+                int minX = 0; // Minimum X
+                int minY = 0; // Minimum Y
+                int maxX = Map_Tool.AutoScrollMinSize.Width - pb.Width; // Maximum X within the scrollable area
+                int maxY = Map_Tool.AutoScrollMinSize.Height - pb.Height; // Maximum Y within the scrollable area
+                newX = Math.Max(minX, Math.Min(newX, maxX));
+                newY = Math.Max(minY, Math.Min(newY, maxY));
+                pb.Location = new Point(newX + scrollPos.X, newY + scrollPos.Y);
+                
+                //Map_Tool.Invalidate();
             }
         }
 
