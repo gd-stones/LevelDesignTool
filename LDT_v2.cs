@@ -58,18 +58,16 @@ namespace LevelDesignTool
         {
             PictureBox pictureBox = new PictureBox();
             pictureBox.Image = item.itemImage[0];
-            Debug.WriteLine($"Debug: Item size before creating PictureBox: {item.size}");
             pictureBox.Location = location;
             pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox.Size = item.size;
+
             pictureBox.MouseDown += PictureBox_MouseDown;
             pictureBox.MouseMove += PictureBox_MouseMove;
             pictureBox.MouseUp += PictureBox_MouseUp;
 
-            Debug.WriteLine($"Debug: PictureBox size after adding to Map_Tool: {pictureBox.Size}");
             Map_Tool.Controls.Add(pictureBox);
         }
-
 
         private Point _dragOffset;
         private bool _isDragging;
@@ -90,8 +88,20 @@ namespace LevelDesignTool
             if (_isDragging)
             {
                 var pb = (PictureBox)sender;
-                // Calculate new location of PictureBox relative to the parent panel
-                pb.Location = new Point(pb.Location.X + e.X - _dragOffset.X, pb.Location.Y + e.Y - _dragOffset.Y);
+                int newX = pb.Location.X + e.X - _dragOffset.X;
+                int newY = pb.Location.Y + e.Y - _dragOffset.Y;
+
+                int minX = 0;
+                int minY = 0;
+                int maxX = Map_Tool.AutoScrollMinSize.Width - pb.Width;
+                int maxY = Map_Tool.AutoScrollMinSize.Height - pb.Height;
+
+                if (newX < minX) newX = minX;
+                if (newY < minY) newY = minY;
+                if (newX > maxX) newX = maxX;
+                if (newY > maxY) newY = maxY;
+
+                pb.Location = new Point(newX, newY);
             }
         }
 
@@ -197,8 +207,8 @@ namespace LevelDesignTool
 
         private void DisplayItems()
         {
-            int x = 10; // Initial x position
-            int y = 10; // Initial y position
+            int x = 10; 
+            int y = 10; 
 
             foreach (Item item in items)
             {
