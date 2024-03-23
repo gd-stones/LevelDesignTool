@@ -328,12 +328,14 @@ namespace LevelDesignTool
             {
                 if (panel.Tag is Item item)
                 {
+                    string hashKey = Guid.NewGuid().ToString();
+
                     var adjustedLocation = new Point(panel.Location.X + scrollPosition.X, panel.Location.Y + scrollPosition.Y);
                     var size = new Size(item.size.Width, item.size.Height);
                     int type = item.type;
                     int length = item.length;
 
-                    string itemPanelInfo = $"{{Type: {type}, Position: ({adjustedLocation.X}, {adjustedLocation.Y}), Size: ({size.Width}, {size.Height}), Length: {length}}}";
+                    string itemPanelInfo = $"{{HashKey: {hashKey}, Type: {type}, Position: ({adjustedLocation.X}, {adjustedLocation.Y}), Size: ({size.Width}, {size.Height}), Length: {length}}}";
                     exportData.AppendLine(itemPanelInfo);
                 }
                 else
