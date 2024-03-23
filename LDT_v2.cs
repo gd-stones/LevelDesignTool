@@ -24,10 +24,6 @@ namespace LevelDesignTool
             InitializeComponent();
             ReadItemFromFile();
             DisplayItems();
-            foreach (Item item in items)
-            {
-                item.ItemClicked += Item_ItemClicked;
-            }
             InitializeMapToolPanel();
         }
 
@@ -48,68 +44,90 @@ namespace LevelDesignTool
                 Item item = items.FirstOrDefault(i => i.type == selectedItemType);
                 if (item != null)
                 {
-                    CreatePictureBoxAtLocation(item, e.Location);
+                    CreateItemAtLocation(item, e.Location);
                 }
                 selectedItemType = 0;
             }
         }
 
-        private void CreatePictureBoxAtLocation(Item item, Point location)
-        {
-            PictureBox pictureBox = new PictureBox();
-            pictureBox.Image = item.itemImage[0];
-            pictureBox.Location = location;
-            pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox.Size = item.size;
-
-            pictureBox.MouseDown += PictureBox_MouseDown;
-            pictureBox.MouseMove += PictureBox_MouseMove;
-            pictureBox.MouseUp += PictureBox_MouseUp;
-
-            Map_Tool.Controls.Add(pictureBox);
-        }
-
+        private Panel _currentDragPanel;
         private Point _dragOffset;
         private bool _isDragging;
 
-        private void PictureBox_MouseDown(object sender, MouseEventArgs e)
+        private void CreateItemAtLocation(Item item, Point location)
+        {
+            Panel itemPanel = new Panel
+            {
+                Size = new Size(item.size.Width * item.length, item.size.Height),
+                Location = location,
+                Tag = item  // Store the item as a Tag in the Panel
+            };
+
+            int offsetX = 0;
+            for (int i = 0; i < item.length; i++)
+            {
+                PictureBox pictureBox = new PictureBox
+                {
+                    Image = item.image,
+                    SizeMode = PictureBoxSizeMode.Zoom,
+                    Size = item.size,
+                    Location = new Point(offsetX, 0)
+                };
+                pictureBox.MouseDown += Item_MouseDown;
+                pictureBox.MouseMove += Item_MouseMove;
+                pictureBox.MouseUp += Item_MouseUp;
+
+                itemPanel.Controls.Add(pictureBox); // Add the PictureBox to the Panel
+                offsetX += item.size.Width; // Update offsetX for the next PictureBox
+            }
+
+            Map_Tool.Controls.Add(itemPanel); // Add the Panel to the Map_Tool
+        }
+
+        private void Item_MouseDown(object sender, MouseEventArgs e)
+        {
+            Control control = sender as Control;
+            _currentDragPanel = control as Panel ?? control.Parent as Panel;
+
+            if (_currentDragPanel == null) return;
+
+            if (e.Button == MouseButtons.Left)
+            {
+                _isDragging = true;
+                Point clientPoint = _currentDragPanel.PointToClient(Cursor.Position); // Get cursor position relative to panel
+                _dragOffset = clientPoint;
+                _currentDragPanel.BringToFront();
+            }
+        }
+
+        private void Item_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!_isDragging || _currentDragPanel == null) return;
+
+            // Cursor.Position gives the current position of the mouse cursor in screen coordinates
+            Point screenPoint = Cursor.Position;
+            Point newLocation = Map_Tool.PointToClient(screenPoint); // Convert to coordinates relative to Map_Tool
+
+            // Adjust by the offset
+            newLocation.Offset(-_dragOffset.X, -_dragOffset.Y);
+
+            // Optional: Add bounds checking (if appropriate to your application)
+            newLocation.X = Math.Max(0, newLocation.X);
+            newLocation.Y = Math.Max(0, newLocation.Y);
+            newLocation.X = Math.Min(Map_Tool.ClientSize.Width - _currentDragPanel.Width, newLocation.X);
+            newLocation.Y = Math.Min(Map_Tool.ClientSize.Height - _currentDragPanel.Height, newLocation.Y);
+
+            _currentDragPanel.Location = newLocation; // Set the new location
+        }
+
+        private void Item_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
-                var pb = (PictureBox)sender;
-                _isDragging = true;
-                _dragOffset = e.Location;
-                pb.BringToFront(); // Ensure the PictureBox stays on top while dragging
+                _isDragging = false;
+                _currentDragPanel = null;
+                Map_Tool.Invalidate(); // Optional: Redraw the Map_Tool control if needed
             }
-        }
-
-        private void PictureBox_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (_isDragging)
-            {
-                var pb = (PictureBox)sender;
-                Point scrollPos = Map_Tool.AutoScrollPosition;
-                int diffX = e.X - _dragOffset.X;
-                int diffY = e.Y - _dragOffset.Y;
-                int newX = pb.Location.X + diffX;
-                int newY = pb.Location.Y + diffY;
-                newX += (scrollPos.X < 0) ? -scrollPos.X : 0;
-                newY += (scrollPos.Y < 0) ? -scrollPos.Y : 0;
-                int minX = 0; // Minimum X
-                int minY = 0; // Minimum Y
-                int maxX = Map_Tool.AutoScrollMinSize.Width - pb.Width; // Maximum X within the scrollable area
-                int maxY = Map_Tool.AutoScrollMinSize.Height - pb.Height; // Maximum Y within the scrollable area
-                newX = Math.Max(minX, Math.Min(newX, maxX));
-                newY = Math.Max(minY, Math.Min(newY, maxY));
-                pb.Location = new Point(newX + scrollPos.X, newY + scrollPos.Y);
-                
-                //Map_Tool.Invalidate();
-            }
-        }
-
-        private void PictureBox_MouseUp(object sender, MouseEventArgs e)
-        {
-            _isDragging = false;
         }
 
         private void Item_ItemClicked(object sender, int type)
@@ -281,6 +299,11 @@ namespace LevelDesignTool
                 {
                     length = int.Parse(line.Substring(8).Trim());
                 }
+            }
+
+            foreach (Item item in items)
+            {
+                item.ItemClicked += Item_ItemClicked;
             }
         }
 
