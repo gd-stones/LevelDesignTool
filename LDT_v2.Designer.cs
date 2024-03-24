@@ -31,12 +31,12 @@
             Map_Tool = new Panel();
             Item_List_View = new Panel();
             ButtonExport = new Button();
-            Item_Content = new Panel();
-            textBox1 = new TextBox();
+            Item_Editor = new Panel();
+            Item_Content = new TextBox();
             Save_Item = new Button();
             Delete_Item = new Button();
             Edit_Item = new Button();
-            Item_Content.SuspendLayout();
+            Item_Editor.SuspendLayout();
             SuspendLayout();
             // 
             // Map_Tool
@@ -74,27 +74,28 @@
             ButtonExport.UseVisualStyleBackColor = false;
             ButtonExport.Click += ButtonExport_Click;
             // 
+            // Item_Editor
+            // 
+            Item_Editor.AutoSize = true;
+            Item_Editor.BorderStyle = BorderStyle.FixedSingle;
+            Item_Editor.Controls.Add(Item_Content);
+            Item_Editor.Controls.Add(Save_Item);
+            Item_Editor.Controls.Add(Delete_Item);
+            Item_Editor.Controls.Add(Edit_Item);
+            Item_Editor.Location = new Point(1456, 0);
+            Item_Editor.Name = "Item_Editor";
+            Item_Editor.Size = new Size(450, 403);
+            Item_Editor.TabIndex = 3;
+            Item_Editor.Paint += Item_Editor_Paint;
+            // 
             // Item_Content
             // 
-            Item_Content.AutoSize = true;
-            Item_Content.BorderStyle = BorderStyle.FixedSingle;
-            Item_Content.Controls.Add(textBox1);
-            Item_Content.Controls.Add(Save_Item);
-            Item_Content.Controls.Add(Delete_Item);
-            Item_Content.Controls.Add(Edit_Item);
-            Item_Content.Location = new Point(1456, 0);
+            Item_Content.Location = new Point(25, 20);
+            Item_Content.Multiline = true;
             Item_Content.Name = "Item_Content";
-            Item_Content.Size = new Size(450, 403);
+            Item_Content.Size = new Size(395, 325);
             Item_Content.TabIndex = 3;
-            Item_Content.Paint += Item_Content_Paint;
-            // 
-            // textBox1
-            // 
-            textBox1.Location = new Point(25, 20);
-            textBox1.Multiline = true;
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(395, 325);
-            textBox1.TabIndex = 3;
+            Item_Content.TextChanged += Item_Content_TextChanged;
             // 
             // Save_Item
             // 
@@ -136,14 +137,14 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1924, 1061);
-            Controls.Add(Item_Content);
+            Controls.Add(Item_Editor);
             Controls.Add(ButtonExport);
             Controls.Add(Item_List_View);
             Controls.Add(Map_Tool);
             Name = "LDT_v2";
             Text = "LDT_v2";
-            Item_Content.ResumeLayout(false);
-            Item_Content.PerformLayout();
+            Item_Editor.ResumeLayout(false);
+            Item_Editor.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -152,10 +153,10 @@
         private Panel Map_Tool;
         private Panel Item_List_View;
         private Button ButtonExport;
-        private Panel Item_Content;
+        private Panel Item_Editor;
         private Button Save_Item;
         private Button Delete_Item;
         private Button Edit_Item;
-        private TextBox textBox1;
+        private TextBox Item_Content;
     }
 }

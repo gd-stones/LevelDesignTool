@@ -26,6 +26,9 @@ namespace LevelDesignTool
             ReadItemsFile();
             DisplayItems();
             InitializeMapToolPanel();
+
+            this.Edit_Item.Click += new System.EventHandler(this.Edit_Item_Click);
+            this.Item_Content.ReadOnly = true;
         }
 
         private void InitializeMapToolPanel()
@@ -138,7 +141,7 @@ namespace LevelDesignTool
             if (itemDetails.TryGetValue("Length", out string length))
                 displayText.AppendLine("Length: " + length);
 
-            foreach (Control control in Item_Content.Controls)
+            foreach (Control control in Item_Editor.Controls)
             {
                 if (control is TextBox textBox)
                 {
@@ -413,8 +416,6 @@ namespace LevelDesignTool
             {
                 if (panel.Tag is Item item)
                 {
-                    //string hashKey = Guid.NewGuid().ToString();
-
                     var adjustedLocation = new Point(panel.Location.X + scrollPosition.X, panel.Location.Y + scrollPosition.Y);
                     var size = new Size(item.size.Width, item.size.Height);
                     int type = item.type;
@@ -446,7 +447,19 @@ namespace LevelDesignTool
 
         private void Edit_Item_Click(object sender, EventArgs e)
         {
-
+            if (this.Item_Content.ReadOnly)
+            {
+                MessageBox.Show("eee");
+                this.Item_Content.ReadOnly = false;
+                this.Item_Content.Focus(); 
+                //((Button)sender).Text = "Save Changes";
+            }
+            else
+            {
+                this.Item_Content.ReadOnly = true;
+                //SaveEditedContent(this.Item_Content.Text);
+                //((Button)sender).Text = "Edit Item";
+            }
         }
 
         private void Save_Item_Click(object sender, EventArgs e)
@@ -459,7 +472,12 @@ namespace LevelDesignTool
 
         }
 
-        private void Item_Content_Paint(object sender, PaintEventArgs e)
+        private void Item_Editor_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void Item_Content_TextChanged(object sender, EventArgs e)
         {
 
         }

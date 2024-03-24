@@ -1,2 +1,3 @@
-{HashKey: 9bf23dcb-87d1-4dc5-bf7f-c7d1682a100f, Type: 2, Position: (631, 327), Size: (200, 100), Length: 1}
-{HashKey: ebbcd6e6-bb7e-498a-949a-f0995826164b, Type: 1, Position: (946, 598), Size: (100, 150), Length: 1}
+{HashKey: f50cba9e-43e6-4bc2-b20e-9337984c50da, Type: 2, Position: (779, 406), Size: (200, 100), Length: 1}
+{HashKey: e4b843c1-dd2f-4f04-9cf1-1c6eb5e84f38, Type: 1, Position: (1011, 443), Size: (100, 150), Length: 1}
+{HashKey: e5dcae94-07b4-492e-a5aa-c0b59bf4991e, Type: 5, Position: (755, 642), Size: (200, 150), Length: 1}
