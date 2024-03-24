@@ -16,7 +16,7 @@ namespace LevelDesignTool
         public Vector2 position;
         public int type;
         public int length;
-        public int hashKey;
+        public string hashKey;
 
         public Item(Image image, Size size, Vector2 position, int type, int length)
         {

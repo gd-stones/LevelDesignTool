@@ -32,6 +32,7 @@
             Item_List_View = new Panel();
             ButtonExport = new Button();
             Item_Content = new Panel();
+            textBox1 = new TextBox();
             Save_Item = new Button();
             Delete_Item = new Button();
             Edit_Item = new Button();
@@ -77,6 +78,7 @@
             // 
             Item_Content.AutoSize = true;
             Item_Content.BorderStyle = BorderStyle.FixedSingle;
+            Item_Content.Controls.Add(textBox1);
             Item_Content.Controls.Add(Save_Item);
             Item_Content.Controls.Add(Delete_Item);
             Item_Content.Controls.Add(Edit_Item);
@@ -86,10 +88,18 @@
             Item_Content.TabIndex = 3;
             Item_Content.Paint += Item_Content_Paint;
             // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(25, 20);
+            textBox1.Multiline = true;
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(395, 325);
+            textBox1.TabIndex = 3;
+            // 
             // Save_Item
             // 
             Save_Item.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
-            Save_Item.Location = new Point(135, 368);
+            Save_Item.Location = new Point(135, 360);
             Save_Item.Name = "Save_Item";
             Save_Item.Size = new Size(90, 30);
             Save_Item.TabIndex = 2;
@@ -101,7 +111,7 @@
             // 
             Delete_Item.BackColor = Color.FromArgb(255, 128, 128);
             Delete_Item.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
-            Delete_Item.Location = new Point(330, 368);
+            Delete_Item.Location = new Point(330, 360);
             Delete_Item.Name = "Delete_Item";
             Delete_Item.Size = new Size(90, 30);
             Delete_Item.TabIndex = 1;
@@ -113,7 +123,7 @@
             // 
             Edit_Item.BackColor = Color.FromArgb(255, 255, 192);
             Edit_Item.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
-            Edit_Item.Location = new Point(25, 368);
+            Edit_Item.Location = new Point(25, 360);
             Edit_Item.Name = "Edit_Item";
             Edit_Item.Size = new Size(90, 30);
             Edit_Item.TabIndex = 0;
@@ -133,6 +143,7 @@
             Name = "LDT_v2";
             Text = "LDT_v2";
             Item_Content.ResumeLayout(false);
+            Item_Content.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -145,5 +156,6 @@
         private Button Save_Item;
         private Button Delete_Item;
         private Button Edit_Item;
+        private TextBox textBox1;
     }
 }

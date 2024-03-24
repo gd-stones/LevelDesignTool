@@ -1,2 +1,2 @@
-{HashKey: 1076, Type: 1, Position: (659, 417), Size: (100, 150), Length: 1}
-{HashKey: 1445, Type: 1, Position: (1016, 429), Size: (100, 150), Length: 1}
+{HashKey: 9bf23dcb-87d1-4dc5-bf7f-c7d1682a100f, Type: 2, Position: (631, 327), Size: (200, 100), Length: 1}
+{HashKey: ebbcd6e6-bb7e-498a-949a-f0995826164b, Type: 1, Position: (946, 598), Size: (100, 150), Length: 1}

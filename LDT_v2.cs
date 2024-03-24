@@ -8,6 +8,7 @@ using System.Linq;
 using System.Numerics;
 using System.Security.Policy;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -22,7 +23,7 @@ namespace LevelDesignTool
         public LDT_v2()
         {
             InitializeComponent();
-            ReadItemFromFile();
+            ReadItemsFile();
             DisplayItems();
             InitializeMapToolPanel();
         }
@@ -44,7 +45,7 @@ namespace LevelDesignTool
                 Item item = items.FirstOrDefault(i => i.type == selectedItemType);
                 if (item != null)
                 {
-                    Item newItem = new Item(item.image, item.size, new Vector2(e.X, e.Y), item.type, item.length);
+                    Item newItem = new Item(item.image, item.size, new Vector2(0, 0), item.type, item.length);
                     CreateItemAtLocation(newItem, e.Location);
                 }
                 selectedItemType = 0;
@@ -55,21 +56,9 @@ namespace LevelDesignTool
         private Point _dragOffset;
         private bool _isDragging;
 
-        private int GenerateHashKey(Point location)
-        {
-            int seed = location.X * 1000000 + location.Y;
-            Random rnd = new Random();
-            int rndNum = rnd.Next(0, 1000000);
-            int hashKey = rndNum;
-
-            return hashKey;
-        }
-       
         private void CreateItemAtLocation(Item item, Point location)
         {
-            MessageBox.Show(location.ToString());
-            int hashKey = location.Y + location.X;
-            MessageBox.Show(hashKey.ToString());
+            string hashKey = Guid.NewGuid().ToString();
             item.hashKey = hashKey;
 
             Panel itemPanel = new Panel
@@ -94,30 +83,91 @@ namespace LevelDesignTool
                 pictureBox.MouseUp += Item_MouseUp;
                 pictureBox.MouseDoubleClick += PictureBox_MouseDoubleClick;
 
-                itemPanel.Controls.Add(pictureBox); // Add the PictureBox to the Panel
-                offsetX += item.size.Width; // Update offsetX for the next PictureBox
+                itemPanel.Controls.Add(pictureBox);
+                offsetX += item.size.Width;
             }
 
-            Map_Tool.Controls.Add(itemPanel); // Add the Panel to the Map_Tool
+            Map_Tool.Controls.Add(itemPanel);
         }
 
         private void PictureBox_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            MessageBox.Show("MouseDoubleClick");
-
-
             if (sender is PictureBox pictureBox)
             {
-                // Cast the Tag of the parent Panel back to an Item (assuming the parent is the panel with the item Tag)
                 Item item = pictureBox.Parent.Tag as Item;
                 if (item != null)
                 {
-                    // Use your existing function to display the item's content based on the item's information
-                    //DisplayItemInformation(item);
+                    DisplayItemInformation(item);
                 }
             }
         }
 
+        private Dictionary<string, string> ParseItemInfo(string info)
+        {
+            var itemInfo = new Dictionary<string, string>();
+            var matches = Regex.Matches(info, @"(\w+):\s*((?:\([^)]+\))|[^,}]+)");
+
+            foreach (Match match in matches)
+            {
+                if (match.Groups.Count == 3)
+                {
+                    var key = match.Groups[1].Value.Trim();
+                    var value = match.Groups[2].Value.Trim();
+                    value = value.TrimEnd('}');
+
+                    itemInfo[key] = value;
+                }
+            }
+
+            return itemInfo;
+        }
+
+
+        private void DisplayItemInformation(Item item)
+        {
+            string info = GetItemInformationFromLevelFile(item.hashKey);
+            var itemDetails = ParseItemInfo(info);
+            StringBuilder displayText = new StringBuilder();
+
+            if (itemDetails.TryGetValue("Type", out string type))
+                displayText.AppendLine("Type: " + type);
+            if (itemDetails.TryGetValue("Position", out string position))
+                displayText.AppendLine("Position: " + position);
+            if (itemDetails.TryGetValue("Size", out string size))
+                displayText.AppendLine("Size: " + size);
+            if (itemDetails.TryGetValue("Length", out string length))
+                displayText.AppendLine("Length: " + length);
+
+            foreach (Control control in Item_Content.Controls)
+            {
+                if (control is TextBox textBox)
+                {
+                    textBox.Text = displayText.ToString();
+                    break;
+                }
+                else if (control is Label label)
+                {
+                    label.Text = displayText.ToString();
+                    break;
+                }
+            }
+        }
+
+        private string GetItemInformationFromLevelFile(string hashKey)
+        {
+            string levelFilePath = @"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Level.txt";
+            string[] lines = File.ReadAllLines(levelFilePath);
+            string keyIdentifier = $"HashKey: {hashKey}";
+
+            foreach (string line in lines)
+            {
+                if (line.Contains(keyIdentifier))
+                {
+                    return line;
+                }
+            }
+            return "Information not found";
+        }
 
         private void Item_MouseDown(object sender, MouseEventArgs e)
         {
@@ -276,7 +326,7 @@ namespace LevelDesignTool
             }
         }
 
-        private void ReadItemFromFile()
+        private void ReadItemsFile()
         {
             string filePath = @"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items.txt";
             string[] lines = File.ReadAllLines(filePath);
@@ -369,7 +419,7 @@ namespace LevelDesignTool
                     var size = new Size(item.size.Width, item.size.Height);
                     int type = item.type;
                     int length = item.length;
-                    int hashKey = item.hashKey;
+                    string hashKey = item.hashKey;
 
                     string itemPanelInfo = $"{{HashKey: {hashKey}, Type: {type}, Position: ({adjustedLocation.X}, {adjustedLocation.Y}), Size: ({size.Width}, {size.Height}), Length: {length}}}";
                     exportData.AppendLine(itemPanelInfo);
