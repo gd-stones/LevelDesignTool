@@ -19,6 +19,7 @@ namespace LevelDesignTool
         private const int gridSize = 16;
         private List<Item> items = new List<Item>();
         private int selectedItemType = 0;
+        private string hash = "";
 
         public LDT_v2()
         {
@@ -101,30 +102,12 @@ namespace LevelDesignTool
                 if (item != null)
                 {
                     DisplayItemInformation(item);
+                    
+                    // Used for saving changes
+                    hash = item.hashKey;
                 }
             }
         }
-
-        private Dictionary<string, string> ParseItemInfo(string info)
-        {
-            var itemInfo = new Dictionary<string, string>();
-            var matches = Regex.Matches(info, @"(\w+):\s*((?:\([^)]+\))|[^,}]+)");
-
-            foreach (Match match in matches)
-            {
-                if (match.Groups.Count == 3)
-                {
-                    var key = match.Groups[1].Value.Trim();
-                    var value = match.Groups[2].Value.Trim();
-                    value = value.TrimEnd('}');
-
-                    itemInfo[key] = value;
-                }
-            }
-
-            return itemInfo;
-        }
-
 
         private void DisplayItemInformation(Item item)
         {
@@ -154,6 +137,26 @@ namespace LevelDesignTool
                     break;
                 }
             }
+        }
+
+        private Dictionary<string, string> ParseItemInfo(string info)
+        {
+            var itemInfo = new Dictionary<string, string>();
+            var matches = Regex.Matches(info, @"(\w+):\s*((?:\([^)]+\))|[^,}]+)");
+
+            foreach (Match match in matches)
+            {
+                if (match.Groups.Count == 3)
+                {
+                    var key = match.Groups[1].Value.Trim();
+                    var value = match.Groups[2].Value.Trim();
+                    value = value.TrimEnd('}');
+
+                    itemInfo[key] = value;
+                }
+            }
+
+            return itemInfo;
         }
 
         private string GetItemInformationFromLevelFile(string hashKey)
@@ -201,7 +204,7 @@ namespace LevelDesignTool
             newLocation.X = Math.Min(Map_Tool.ClientSize.Width - _currentDragPanel.Width, newLocation.X);
             newLocation.Y = Math.Min(Map_Tool.ClientSize.Height - _currentDragPanel.Height, newLocation.Y);
 
-            _currentDragPanel.Location = newLocation; // Set the new location
+            _currentDragPanel.Location = newLocation;
         }
 
         private void Item_MouseUp(object sender, MouseEventArgs e)
@@ -447,25 +450,60 @@ namespace LevelDesignTool
 
         private void Edit_Item_Click(object sender, EventArgs e)
         {
-            if (this.Item_Content.ReadOnly)
+            //if (this.Item_Content.ReadOnly)
+            //{
+            //    MessageBox.Show("eee");
+            //    this.Item_Content.ReadOnly = false;
+            //    this.Item_Content.Focus(); 
+            //}
+            //else
+            //{
+            //    this.Item_Content.ReadOnly = true;
+            //}
+
+            Item_Content.ReadOnly = !Item_Content.ReadOnly; // Toggle the ReadOnly property
+            if (!Item_Content.ReadOnly) // If it's now editable
             {
-                MessageBox.Show("eee");
-                this.Item_Content.ReadOnly = false;
-                this.Item_Content.Focus(); 
-                //((Button)sender).Text = "Save Changes";
-            }
-            else
-            {
-                this.Item_Content.ReadOnly = true;
-                //SaveEditedContent(this.Item_Content.Text);
-                //((Button)sender).Text = "Edit Item";
+                Item_Content.Focus(); // Set the focus to the TextBox to start editing
             }
         }
 
         private void Save_Item_Click(object sender, EventArgs e)
         {
+            string itemHashKey = hash;
+            string newText = Item_Content.Text;
 
+            List<string> lines = new List<string>();
+            try
+            {
+                lines = File.ReadAllLines(@"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Level.txt").ToList();
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show("Failed to read file: " + ex.Message);
+                return;
+            }
+
+            int indexToUpdate = lines.FindIndex(line => line.Contains(itemHashKey));
+            if (indexToUpdate == -1)
+            {
+                MessageBox.Show($"Item with hash key '{itemHashKey}' not found.");
+                return;
+            }
+
+            lines[indexToUpdate] = newText;
+
+            try
+            {
+                File.WriteAllLines(@"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Level.txt", lines);
+                MessageBox.Show("Item saved successfully.");
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show("Failed to save file: " + ex.Message);
+            }
         }
+
 
         private void Delete_Item_Click(object sender, EventArgs e)
         {

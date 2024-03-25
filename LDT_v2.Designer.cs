@@ -157,6 +157,6 @@
         private Button Save_Item;
         private Button Delete_Item;
         private Button Edit_Item;
-        private TextBox Item_Content;
+        public TextBox Item_Content;
     }
 }
