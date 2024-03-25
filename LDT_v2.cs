@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -27,9 +28,6 @@ namespace LevelDesignTool
             ReadItemsFile();
             DisplayItems();
             InitializeMapToolPanel();
-
-            this.Edit_Item.Click += new System.EventHandler(this.Edit_Item_Click);
-            this.Item_Content.ReadOnly = true;
         }
 
         private void InitializeMapToolPanel()
@@ -39,7 +37,6 @@ namespace LevelDesignTool
             Map_Tool.MouseClick += Map_Tool_MouseClick;
             Map_Tool.AutoScrollMinSize = new Size(3200, 1248);
             Map_Tool.AutoScroll = true;
-            //Map_Tool.GetType().GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).SetValue(Map_Tool, true);
         }
 
         private void Map_Tool_MouseClick(object sender, MouseEventArgs e)
@@ -64,15 +61,17 @@ namespace LevelDesignTool
         {
             string hashKey = Guid.NewGuid().ToString();
             item.hashKey = hashKey;
+            item.startCollider = new Point (0,0);
+            item.endCollider = new Point (item.size.Width * item.length + 1, item.size.Height + 1);
 
             Panel itemPanel = new Panel
             {
-                Size = new Size(item.size.Width * item.length, item.size.Height),
+                Size = new Size(item.size.Width * item.length + 2, item.size.Height + 2),
                 Location = location,
                 Tag = item  // Store the item as a Tag in the Panel
             };
 
-            int offsetX = 0;
+            int offsetX = 1;
             for (int i = 0; i < item.length; i++)
             {
                 PictureBox pictureBox = new PictureBox
@@ -80,7 +79,7 @@ namespace LevelDesignTool
                     Image = item.image,
                     SizeMode = PictureBoxSizeMode.Zoom,
                     Size = item.size,
-                    Location = new Point(offsetX, 0)
+                    Location = new Point(offsetX, 1)
                 };
                 pictureBox.MouseDown += Item_MouseDown;
                 pictureBox.MouseMove += Item_MouseMove;
@@ -90,6 +89,12 @@ namespace LevelDesignTool
                 itemPanel.Controls.Add(pictureBox);
                 offsetX += item.size.Width;
             }
+
+            itemPanel.Paint += (sender, e) =>
+            {
+                Pen pen = new Pen(Color.Red, 1);
+                e.Graphics.DrawRectangle(pen, item.startCollider.X, item.startCollider.Y, item.endCollider.X, item.endCollider.Y);
+            };
 
             Map_Tool.Controls.Add(itemPanel);
         }
@@ -102,7 +107,6 @@ namespace LevelDesignTool
                 if (item != null)
                 {
                     DisplayItemInformation(item);
-                    
                     // Used for saving changes
                     hash = item.hashKey;
                 }
@@ -123,20 +127,12 @@ namespace LevelDesignTool
                 displayText.AppendLine("Size: " + size);
             if (itemDetails.TryGetValue("Length", out string length))
                 displayText.AppendLine("Length: " + length);
+            if (itemDetails.TryGetValue("StartCollider", out string startCollider))
+                displayText.AppendLine("StartCollider: " + startCollider);
+            if (itemDetails.TryGetValue("EndCollider", out string endCollider))
+                displayText.AppendLine("EndCollider: " + endCollider);
 
-            foreach (Control control in Item_Editor.Controls)
-            {
-                if (control is TextBox textBox)
-                {
-                    textBox.Text = displayText.ToString();
-                    break;
-                }
-                else if (control is Label label)
-                {
-                    label.Text = displayText.ToString();
-                    break;
-                }
-            }
+            Item_Content.Text = displayText.ToString();
         }
 
         private Dictionary<string, string> ParseItemInfo(string info)
@@ -229,42 +225,17 @@ namespace LevelDesignTool
 
         private void Map_Tool_DrawGrid(object sender, PaintEventArgs e)
         {
-            // solution 1
-            //Panel panel = (Panel)sender;
-            //Graphics g = e.Graphics;
-            //Pen pen = new Pen(Color.Black);
-
-            //int numRows = 1248 / gridSize;
-            //int numCols = 3200 / gridSize;
-
-            //for (int i = 0; i < numRows; i++)
-            //{
-            //    for (int j = 0; j < numCols; j++)
-            //    {
-            //        int x = j * gridSize;
-            //        int y = i * gridSize;
-            //        g.DrawRectangle(pen, x, y, gridSize, gridSize);
-            //    }
-            //}
-            //pen.Dispose();
-
-            // solution 2
             Panel panel = (Panel)sender;
             Graphics g = e.Graphics;
             Pen pen = new Pen(Color.Black);
-
-            // Assuming gridSize is already set somewhere in the class
             int numRows = 1248 / gridSize;
             int numCols = 3200 / gridSize;
 
-            // Draw the horizontal grid lines
             for (int i = 0; i <= numRows; i++)
             {
                 int y = i * gridSize;
                 g.DrawLine(pen, 0, y, numCols * gridSize, y); // Draw line from left to right
             }
-
-            // Draw the vertical grid lines
             for (int j = 0; j <= numCols; j++)
             {
                 int x = j * gridSize;
@@ -414,6 +385,7 @@ namespace LevelDesignTool
             });
 
             StringBuilder exportData = new StringBuilder();
+            StringBuilder exportDataL = new StringBuilder();
 
             foreach (Panel panel in itemPanels)
             {
@@ -424,9 +396,16 @@ namespace LevelDesignTool
                     int type = item.type;
                     int length = item.length;
                     string hashKey = item.hashKey;
+                    Point startCollider  = item.startCollider;
+                    Point endCollider = item.endCollider;
 
-                    string itemPanelInfo = $"{{HashKey: {hashKey}, Type: {type}, Position: ({adjustedLocation.X}, {adjustedLocation.Y}), Size: ({size.Width}, {size.Height}), Length: {length}}}";
+                    string itemPanelInfo = $"{{HashKey: {hashKey}, Type: {type}, Position: ({adjustedLocation.X}, {adjustedLocation.Y}), Size: ({size.Width}, {size.Height}), Length: {length}, " +
+                        $"StartCollider: ({startCollider.X}, {startCollider.Y}), EndCollider: ({endCollider.X}, {endCollider.Y})}}";
                     exportData.AppendLine(itemPanelInfo);
+
+                    string _itemPanelInfo = $"{{Type: {type}, Position: ({adjustedLocation.X}, {1246 - adjustedLocation.Y - size.Height}), Size: ({size.Width}, {size.Height}), Length: {length}, " +
+                        $"StartCollider: ({startCollider.X}, {startCollider.Y}), EndCollider: ({endCollider.X}, {endCollider.Y})}}";
+                    exportDataL.AppendLine(_itemPanelInfo);
                 }
                 else
                 {
@@ -436,11 +415,13 @@ namespace LevelDesignTool
             }
 
             string exportFilePath = @"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Level.txt";
+            string exportFilePathForL = @"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Level_Export.txt";
 
             try
             {
                 File.WriteAllText(exportFilePath, exportData.ToString());
-                MessageBox.Show($"Exported item data to {exportFilePath}", "Export Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                File.WriteAllText(exportFilePathForL, exportDataL.ToString());
+                //MessageBox.Show($"Exported item data to {exportFilePath}", "Export Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -450,28 +431,22 @@ namespace LevelDesignTool
 
         private void Edit_Item_Click(object sender, EventArgs e)
         {
-            //if (this.Item_Content.ReadOnly)
-            //{
-            //    MessageBox.Show("eee");
-            //    this.Item_Content.ReadOnly = false;
-            //    this.Item_Content.Focus(); 
-            //}
-            //else
-            //{
-            //    this.Item_Content.ReadOnly = true;
-            //}
 
-            Item_Content.ReadOnly = !Item_Content.ReadOnly; // Toggle the ReadOnly property
-            if (!Item_Content.ReadOnly) // If it's now editable
-            {
-                Item_Content.Focus(); // Set the focus to the TextBox to start editing
-            }
         }
 
         private void Save_Item_Click(object sender, EventArgs e)
         {
             string itemHashKey = hash;
-            string newText = Item_Content.Text;
+            string newText = Item_Content.Text.Replace(Environment.NewLine, "");
+
+            newText = newText.Replace("Type: ", ", Type: ");
+            newText = newText.Replace("Position: ", ", Position: ");
+            newText = newText.Replace("Size: ", ", Size: ");
+            newText = newText.Replace("Length: ", ", Length: ");
+            newText = newText.Replace("StartCollider: ", ", StartCollider: ");
+            newText = newText.Replace("EndCollider: ", ", EndCollider: ");
+
+            string newItemInfo = $"{{HashKey: {itemHashKey}{newText}}}";
 
             List<string> lines = new List<string>();
             try
@@ -491,12 +466,13 @@ namespace LevelDesignTool
                 return;
             }
 
-            lines[indexToUpdate] = newText;
+            lines[indexToUpdate] = newItemInfo;
 
             try
             {
                 File.WriteAllLines(@"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Level.txt", lines);
-                MessageBox.Show("Item saved successfully.");
+                UpdateItem(itemHashKey, newText);
+                hash = "";
             }
             catch (IOException ex)
             {
@@ -504,10 +480,120 @@ namespace LevelDesignTool
             }
         }
 
+        private void UpdateItem(string hashKey, string newText)
+        {
+            foreach (Panel panel in Map_Tool.Controls.OfType<Panel>())
+            {
+                Item item = panel.Tag as Item;
+                if (item != null && item.hashKey == hashKey)
+                {
+                    panel.Controls.Clear();
+
+                    string[] values = newText.Split(',');
+                    string[] tmp;
+                    if (values.Length >= 6)
+                    {
+                        tmp = values[2].Split('(');
+                        int.TryParse(tmp[1].Trim(), out int posX);
+                        tmp = values[3].Split(')');
+                        int.TryParse(tmp[0].Trim(), out int posY);
+                        tmp = values[4].Split("(");
+                        int.TryParse(tmp[1].Trim(), out int width);
+                        tmp = values[5].Split(")");
+                        int.TryParse(tmp[0].Trim(), out int height);
+                        tmp = values[6].Split(" ");
+                        int.TryParse(tmp[2].Trim(), out int length);
+
+                        //tmp = values[7].Split("(");
+                        //int.TryParse(tmp[1].Trim(), out int sX);
+                        //tmp = values[8].Split(")");
+                        //int.TryParse(tmp[0].Trim(), out int sY);
+                        //tmp = values[9].Split("(");
+                        //int.TryParse(tmp[1].Trim(), out int eX);
+                        //tmp = values[10].Split(")");
+                        //int.TryParse(tmp[0].Trim(), out int eY);
+
+                        int offsetX = 1;
+                        for (int i = 0; i < length; i++)
+                        {
+                            PictureBox pictureBox = new PictureBox
+                            {
+                                Image = item.image,
+                                SizeMode = PictureBoxSizeMode.Zoom,
+                                Size = new Size(width, height),
+                                Location = new Point(offsetX, 1)
+                            };
+
+                            pictureBox.MouseDown += Item_MouseDown;
+                            pictureBox.MouseMove += Item_MouseMove;
+                            pictureBox.MouseUp += Item_MouseUp;
+                            pictureBox.MouseDoubleClick += PictureBox_MouseDoubleClick;
+
+                            panel.Controls.Add(pictureBox);
+                            offsetX += width;
+                        }
+                        // Update Tag
+                        item.length = length;
+                        item.size = new Size(width, height);
+                        //item.startCollider = new Point(0, 0);
+                        item.endCollider = new Point(width * length + 1, height + 1);
+
+                        panel.Width = width * length + 2;
+                        panel.Height = height + 2;
+                        panel.Location = new Point(posX, posY);
+                        panel.Refresh();
+                        break;
+                    }
+                }
+            }
+        }
 
         private void Delete_Item_Click(object sender, EventArgs e)
         {
+            string itemHashKey = hash;
 
+            List<string> lines = new List<string>();
+            try
+            {
+                lines = File.ReadAllLines(@"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Level.txt").ToList();
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show("Failed to read file: " + ex.Message);
+                return;
+            }
+
+            int indexToDelete = lines.FindIndex(line => line.Contains(itemHashKey));
+            if (indexToDelete == -1)
+            {
+                MessageBox.Show($"Item with hash key '{itemHashKey}' not found.");
+                return;
+            }
+            lines.RemoveAt(indexToDelete);
+
+            try
+            {
+                File.WriteAllLines(@"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Level.txt", lines);
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show("Failed to write to file: " + ex.Message);
+                return;
+            }
+
+            foreach (Panel panel in Map_Tool.Controls.OfType<Panel>())
+            {
+                Item item = panel.Tag as Item;
+                if (item != null && item.hashKey == itemHashKey)
+                {
+                    Map_Tool.Controls.Remove(panel);
+                    break;
+                }
+            }
+            Item_Content.Clear();
+
+            // Clear the hash key
+            hash = "";
         }
 
         private void Item_Editor_Paint(object sender, PaintEventArgs e)

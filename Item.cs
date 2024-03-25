@@ -17,6 +17,8 @@ namespace LevelDesignTool
         public int type;
         public int length;
         public string hashKey;
+        public Point startCollider;
+        public Point endCollider;
 
         public Item(Image image, Size size, Vector2 position, int type, int length)
         {
@@ -37,7 +39,6 @@ namespace LevelDesignTool
             pictureBox.BackColor = Color.Black;
 
             pictureBox.MouseDown += PictureBox_MouseDown;
-
             return pictureBox;
         }
 

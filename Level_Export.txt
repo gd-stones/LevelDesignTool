@@ -1,0 +1,4 @@
+{Type: 10, Position: (583, 922), Size: (50, 50), Length: 10, StartCollider: (0, 0), EndCollider: (501, 51)}
+{Type: 10, Position: (278, 841), Size: (50, 50), Length: 20, StartCollider: (0, 0), EndCollider: (1001, 51)}
+{Type: 1, Position: (692, 660), Size: (100, 150), Length: 1, StartCollider: (0, 0), EndCollider: (101, 151)}
+{Type: 13, Position: (519, 544), Size: (50, 50), Length: 10, StartCollider: (0, 0), EndCollider: (501, 51)}
