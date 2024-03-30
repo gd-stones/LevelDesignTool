@@ -63,10 +63,10 @@
             // ButtonExport
             // 
             ButtonExport.BackColor = Color.Cyan;
-            ButtonExport.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            ButtonExport.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             ButtonExport.Location = new Point(1456, 966);
             ButtonExport.Name = "ButtonExport";
-            ButtonExport.Size = new Size(160, 40);
+            ButtonExport.Size = new Size(75, 30);
             ButtonExport.TabIndex = 2;
             ButtonExport.Text = "Save file";
             ButtonExport.UseVisualStyleBackColor = false;
@@ -108,10 +108,10 @@
             // ButtonLoad
             // 
             ButtonLoad.BackColor = Color.Cyan;
-            ButtonLoad.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            ButtonLoad.Location = new Point(1746, 966);
+            ButtonLoad.Font = new Font("Times New Roman", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            ButtonLoad.Location = new Point(1554, 966);
             ButtonLoad.Name = "ButtonLoad";
-            ButtonLoad.Size = new Size(160, 40);
+            ButtonLoad.Size = new Size(75, 30);
             ButtonLoad.TabIndex = 4;
             ButtonLoad.Text = "Load file";
             ButtonLoad.UseVisualStyleBackColor = false;
