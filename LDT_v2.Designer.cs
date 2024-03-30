@@ -34,6 +34,7 @@
             Item_Content = new TextBox();
             Save_Item = new Button();
             Delete_Item = new Button();
+            ButtonLoad = new Button();
             SuspendLayout();
             // 
             // Map_Tool
@@ -67,7 +68,7 @@
             ButtonExport.Name = "ButtonExport";
             ButtonExport.Size = new Size(160, 40);
             ButtonExport.TabIndex = 2;
-            ButtonExport.Text = "Update/Export";
+            ButtonExport.Text = "Save file";
             ButtonExport.UseVisualStyleBackColor = false;
             ButtonExport.Click += ButtonExport_Click;
             // 
@@ -86,9 +87,9 @@
             Save_Item.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
             Save_Item.Location = new Point(1456, 360);
             Save_Item.Name = "Save_Item";
-            Save_Item.Size = new Size(130, 30);
+            Save_Item.Size = new Size(90, 30);
             Save_Item.TabIndex = 2;
-            Save_Item.Text = "Save Changes";
+            Save_Item.Text = "Apply";
             Save_Item.UseVisualStyleBackColor = false;
             Save_Item.Click += Save_Item_Click;
             // 
@@ -104,11 +105,24 @@
             Delete_Item.UseVisualStyleBackColor = false;
             Delete_Item.Click += Delete_Item_Click;
             // 
+            // ButtonLoad
+            // 
+            ButtonLoad.BackColor = Color.Cyan;
+            ButtonLoad.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            ButtonLoad.Location = new Point(1746, 966);
+            ButtonLoad.Name = "ButtonLoad";
+            ButtonLoad.Size = new Size(160, 40);
+            ButtonLoad.TabIndex = 4;
+            ButtonLoad.Text = "Load file";
+            ButtonLoad.UseVisualStyleBackColor = false;
+            ButtonLoad.Click += ButtonLoad_Click;
+            // 
             // LDT_v2
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1924, 1061);
+            Controls.Add(ButtonLoad);
             Controls.Add(Item_Content);
             Controls.Add(Save_Item);
             Controls.Add(Delete_Item);
@@ -128,5 +142,6 @@
         private Button Save_Item;
         private Button Delete_Item;
         public TextBox Item_Content;
+        private Button ButtonLoad;
     }
 }

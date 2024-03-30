@@ -11,47 +11,49 @@ namespace LevelDesignTool
     internal class Item
     {
         public event EventHandler<int> ItemClicked; // Custom event to notify the type
-        public Image image ;
-        public Size size;
-        public Vector2 position;
-        public int type;
-        public int length;
-        public string hashKey;
-        public Point startCollider;
-        public Point endCollider;
+        public Image Image_;
+        public Size Size_;
+        public Point Position;
+        public int Type;
+        public int Length;
+        public Point StartCollider;
+        public Point EndCollider;
 
-        public Item(Image image, Size size, Vector2 position, int type, int length)
+        public Item()
         {
-            this.image = image;
-            this.size = size;
-            this.position = position;
-            this.type = type;
-            this.length = length;
+
         }
 
-        public PictureBox GenerateImage(Point point)
+        public Item(Image Image_, Size Size_, int Type, int Length)
         {
-            PictureBox pictureBox = new PictureBox();
-            pictureBox.Image = image;
-            pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox.Location = point;
-            pictureBox.BorderStyle = BorderStyle.FixedSingle;
-            pictureBox.BackColor = Color.Black;
-
-            pictureBox.MouseDown += PictureBox_MouseDown;
-            return pictureBox;
+            this.Image_ = Image_;
+            this.Size_ = Size_;
+            this.Type = Type;
+            this.Length = Length;
         }
 
-        public void DragDropItem()
+        public PictureBox GenerateImage(Point Point_)
         {
+            PictureBox PictureBox_ = new PictureBox();
+            PictureBox_.Image = Image_;
+            PictureBox_.SizeMode = PictureBoxSizeMode.Zoom;
+            PictureBox_.Location = Point_;
+            PictureBox_.BorderStyle = BorderStyle.FixedSingle;
+            PictureBox_.BackColor = Color.Black;
 
+            PictureBox_.Paint += (sender, e) =>
+            {
+                ControlPaint.DrawBorder(e.Graphics, PictureBox_.ClientRectangle, Color.Red, ButtonBorderStyle.Solid);
+            };
+            PictureBox_.MouseDown += PictureBox_MouseDown;
+            return PictureBox_;
         }
 
         private void PictureBox_MouseDown(object sender, MouseEventArgs e)
         {   
             if (e.Button == MouseButtons.Left)
             {
-                ItemClicked?.Invoke(this, type);
+                ItemClicked?.Invoke(this, Type);
             }
         }
     }

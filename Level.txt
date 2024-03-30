@@ -1,4 +1,0 @@
-{HashKey: f4f7f017-bfde-498d-9a92-5b7c124f7f9f, Type: 10, Position: (583, 274), Size: (50, 50), Length: 10, StartCollider: (0, 0), EndCollider: (501, 51)}
-{HashKey: b59b5d32-be6c-4ee1-9c95-41a99c519cd1, Type: 10, Position: (278, 355), Size: (50, 50), Length: 20, StartCollider: (0, 0), EndCollider: (1001, 51)}
-{HashKey: eced7667-3a5a-47a2-9a32-362fedc26bfb, Type: 1, Position: (692, 436), Size: (100, 150), Length: 1, StartCollider: (0, 0), EndCollider: (101, 151)}
-{HashKey: 357d5331-9606-4596-9d0d-459716c1b33c, Type: 13, Position: (519, 652), Size: (50, 50), Length: 12, StartCollider: (0, 0), EndCollider: (501, 51)}

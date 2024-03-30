@@ -1,104 +1,230 @@
 {
 type: 1
-path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\c_1.png
-size: 100, 150
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\bee.png
+size: 94, 131
 length: 1
 }
 
 {
 type: 2
-path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\c_2.png
-size: 200, 100
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\bird.png
+size: 186, 99
 length: 1
 }
 
 {
 type: 3
-path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\c_3.png
-size: 200, 120
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\boom.png
+size: 38, 38
 length: 1
 }
 
 {
 type: 4
-path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\c_4.jpg
-size: 180, 100
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\box.png
+size: 106, 103
 length: 1
 }
 
 {
 type: 5
-path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\c_5.jpeg
-size: 200, 150
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\brick_gold.png
+size: 102, 98
 length: 1
 }
 
 {
 type: 6
-path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\w_1.png
-size: 200, 200
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\brick_turquoise.png
+size: 105, 98
 length: 1
 }
 
 {
 type: 7
-path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\w_2.png
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\brick_normal.png
 size: 100, 100
 length: 1
 }
 
 {
 type: 8
-path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\w_3.png
-size: 150, 120
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\bridge.png
+size: 122, 90
 length: 1
 }
 
 {
 type: 9
-path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\w_4.png
-size: 160, 100
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\carnivorous_flower.png
+size: 90, 131
 length: 1
 }
 
 {
 type: 10
-path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\g_1.png
-size: 50, 50
-length: 10
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\castle.png
+size: 501, 539
+length: 1
 }
 
 {
 type: 11
-path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\g_2.png
-size: 50, 50
-length: 10
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\coin.png
+size: 63, 75
+length: 1
 }
 
 {
 type: 12
-path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\g_3.png
-size: 50, 50
-length: 10
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\crab.png
+size: 128, 99
+length: 1
 }
 
 {
 type: 13
-path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\g_4.png
-size: 50, 50
-length: 10
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\diamond.png
+size: 71, 58
+length: 1
 }
 
 {
 type: 14
-path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\g_5.png
-size: 50, 50
-length: 10
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\fish.png
+size: 141, 71
+length: 1
 }
 
 {
 type: 15
-path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\g_6.png
-size: 50, 50
-length: 10
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\flag.png
+size: 105, 630
+length: 1
+}
+
+{
+type: 16
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\flat.png
+size: 237, 31
+length: 1
+}
+
+{
+type: 17
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\frog.png
+size: 85, 85
+length: 1
+}
+
+{
+type: 18
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\ground.png
+size: 308, 196
+length: 1
+}
+
+{
+type: 19
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\island.png
+size: 307, 86
+length: 1
+}
+
+{
+type: 20
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\islet.png
+size: 105, 76
+length: 1
+}
+
+{
+type: 21
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\islet_tall.png
+size: 109, 394
+length: 1
+}
+
+{
+type: 22
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\mario.png
+size: 95, 106
+length: 1
+}
+
+{
+type: 23
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\mario_big.png
+size: 123, 167
+length: 1
+}
+
+{
+type: 24
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\mushroom.png
+size: 95, 85
+length: 1
+}
+
+{
+type: 25
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\octopus.png
+size: 129, 83
+length: 1
+}
+
+{
+type: 26
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\root.png
+size: 186, 198
+length: 1
+}
+
+{
+type: 27
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\shield.png
+size: 73, 68
+length: 1
+}
+
+{
+type: 28
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\snail.png
+size: 142, 96
+length: 1
+}
+
+{
+type: 29
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\snail_shell.png
+size: 86, 83
+length: 1
+}
+
+{
+type: 30
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\spike.png
+size: 97, 87
+length: 1
+}
+
+{
+type: 31
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\spring.png
+size: 98, 96
+length: 1
+}
+
+{
+type: 32
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\vial.png
+size: 78, 85
+length: 1
+}
+
+{
+type: 33
+path: C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items\water.png
+size: 318, 124
+length: 1
 }

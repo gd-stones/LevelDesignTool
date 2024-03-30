@@ -12,400 +12,855 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+
 
 namespace LevelDesignTool
 {
     public partial class LDT_v2 : Form
     {
-        private const int gridSize = 16;
-        private List<Item> items = new List<Item>();
-        private int selectedItemType = 0;
-        private string hash = "";
+        private const int GridSize = 16;
+        private List<Item> OriginalItems = new List<Item>();
+        private Panel ActivateItemPanel = null;
+        private int SelectedItemType = 0;
+        private Panel _CurrentDragPanel;
+        private Point _DragOffset;
+        private bool _IsDragging;
 
         public LDT_v2()
         {
             InitializeComponent();
+            ReadItemsTypeFile();
+            DisplayItemsType();
+            InitializeMapToolPanel();
+
+            this.KeyPreview = true;
+            this.KeyDown += MainForm_KeyDown;
+
             ReadItemsFile();
             DisplayItems();
-            InitializeMapToolPanel();
+
+            this.Load += Form_Load;
         }
 
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Delete:
+                    Delete_ItemF();
+                    break;
+            }
+        }
+
+        #region Displays the path to the Level_Export file
+        private void Form_Load(object sender, EventArgs e)
+        {
+            UpdateFormTitle();
+        }
+
+        private void UpdateFormTitle(int check = 0)
+        {
+            string FilePath = FileOpen;
+
+            string[] Values = FilePath.Split('\\');
+            if (check != 0)
+            {
+                this.Text = $"* {Values[Values.Length - 1]}";
+                return; 
+            }
+            this.Text = $"{Values[Values.Length - 1]}";
+        }
+
+        #endregion
+
+        #region Initialize panel Map_Tool
         private void InitializeMapToolPanel()
         {
             Map_Tool.Paint += Map_Tool_DrawGrid;
-            Map_Tool.AllowDrop = true;
             Map_Tool.MouseClick += Map_Tool_MouseClick;
             Map_Tool.AutoScrollMinSize = new Size(3200, 1248);
             Map_Tool.AutoScroll = true;
+            Map_Tool.AllowDrop = true;
         }
 
+        private void Item_ItemClicked(object sender, int Type)
+        {
+            SelectedItemType = Type;
+        }
+
+        private void Map_Tool_DrawGrid(object sender, PaintEventArgs e)
+        {
+            Panel Panel_ = (Panel)sender;
+            Graphics g = e.Graphics;
+            Pen Pen_ = new Pen(Color.Black);
+            int NumRows = 1248 / GridSize;
+            int NumCols = 3200 / GridSize;
+
+            for (int i = 0; i <= NumRows; i++)
+            {
+                int y = i * GridSize;
+                g.DrawLine(Pen_, 0, y, NumCols * GridSize, y);
+            }
+            for (int j = 0; j <= NumCols; j++)
+            {
+                int x = j * GridSize;
+                g.DrawLine(Pen_, x, 0, x, NumRows * GridSize);
+            }
+            Pen_.Dispose();
+        }
+        #endregion
+
+        #region Generate item in Map_Top
         private void Map_Tool_MouseClick(object sender, MouseEventArgs e)
         {
-            if (selectedItemType != 0)
+            if (SelectedItemType != 0)
             {
-                Item item = items.FirstOrDefault(i => i.type == selectedItemType);
-                if (item != null)
+                Item Item_ = OriginalItems.FirstOrDefault(i => i.Type == SelectedItemType);
+                if (Item_ != null)
                 {
-                    Item newItem = new Item(item.image, item.size, new Vector2(0, 0), item.type, item.length);
-                    CreateItemAtLocation(newItem, e.Location);
+                    Item NewItem = new Item(Item_.Image_, Item_.Size_, Item_.Type, Item_.Length);
+                    CreateItemAtLocation(NewItem, e.Location);
                 }
-                selectedItemType = 0;
+            }
+            else if (SelectedItemType == 0)
+            {
+                Item_Content.Clear();
+                SetActiveItemPanel(null);
+                foreach (Control control in Map_Tool.Controls)
+                {
+                    if (control is Panel Panel_)
+                    {
+                        Panel_.Invalidate();
+                    }
+                }
             }
         }
 
-        private Panel _currentDragPanel;
-        private Point _dragOffset;
-        private bool _isDragging;
-
-        private void CreateItemAtLocation(Item item, Point location)
+        private Panel _ActiveItemPanel = null;
+        private void CreateItemAtLocation(Item ItemType, Point Location_)
         {
-            string hashKey = Guid.NewGuid().ToString();
-            item.hashKey = hashKey;
-            item.startCollider = new Point (0,0);
-            item.endCollider = new Point (item.size.Width * item.length + 1, item.size.Height + 1);
+            Point ScrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
+            var AdjustedLocation = new Point(Location_.X + ScrollPosition.X, Location_.Y + ScrollPosition.Y);
 
-            Panel itemPanel = new Panel
+            ItemType.StartCollider = new Point(0, 0);
+            ItemType.EndCollider = new Point(ItemType.Size_.Width * ItemType.Length + 1, ItemType.Size_.Height + 1);
+            ItemType.Position = new Point(AdjustedLocation.X, 1246 - AdjustedLocation.Y - ItemType.Size_.Height);
+
+            Panel ItemPanel = new Panel
             {
-                Size = new Size(item.size.Width * item.length + 2, item.size.Height + 2),
-                Location = location,
-                Tag = item  // Store the item as a Tag in the Panel
+                Size = new Size(ItemType.Size_.Width * ItemType.Length + 2, ItemType.Size_.Height + 2),
+                Location = Location_,
+                Tag = ItemType  // Store the item as a Tag in the Panel
             };
 
-            int offsetX = 1;
-            for (int i = 0; i < item.length; i++)
+            int OffsetX = 1;
+            for (int i = 0; i < ItemType.Length; i++)
             {
-                PictureBox pictureBox = new PictureBox
+                PictureBox PictureBox_ = new PictureBox
                 {
-                    Image = item.image,
+                    Image = ItemType.Image_,
                     SizeMode = PictureBoxSizeMode.Zoom,
-                    Size = item.size,
-                    Location = new Point(offsetX, 1)
+                    Size = ItemType.Size_,
+                    Location = new Point(OffsetX, 1)
                 };
-                pictureBox.MouseDown += Item_MouseDown;
-                pictureBox.MouseMove += Item_MouseMove;
-                pictureBox.MouseUp += Item_MouseUp;
-                pictureBox.MouseDoubleClick += PictureBox_MouseDoubleClick;
+                PictureBox_.MouseDown += Item_MouseDown;
+                PictureBox_.MouseMove += Item_MouseMove;
+                PictureBox_.MouseUp += Item_MouseUp;
 
-                itemPanel.Controls.Add(pictureBox);
-                offsetX += item.size.Width;
+                ItemPanel.Controls.Add(PictureBox_);
+                OffsetX += ItemType.Size_.Width;
             }
 
-            itemPanel.Paint += (sender, e) =>
+            SetActiveItemPanel(ItemPanel);
+            ItemPanel.Paint += (sender, e) =>
             {
-                Pen pen = new Pen(Color.Red, 1);
-                e.Graphics.DrawRectangle(pen, item.startCollider.X, item.startCollider.Y, item.endCollider.X, item.endCollider.Y);
+                Panel Panel_ = sender as Panel;
+                Pen Pen_ = new Pen(Panel_ == _ActiveItemPanel ? Color.Green : Color.Red, 1);
+                e.Graphics.DrawRectangle(Pen_, 0, 0, Panel_.Width - 1, Panel_.Height - 1);
             };
 
-            Map_Tool.Controls.Add(itemPanel);
+            ActivateItemPanel = ItemPanel;
+            Map_Tool.Controls.Add(ItemPanel);
+            DisplayItemInformation();
         }
 
-        private void PictureBox_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void SetActiveItemPanel(Panel Panel_)
         {
-            if (sender is PictureBox pictureBox)
+            _ActiveItemPanel = Panel_;
+            if (Panel_ != null)
             {
-                Item item = pictureBox.Parent.Tag as Item;
-                if (item != null)
+                Panel_.Invalidate();
+            }
+            foreach (Control control in Map_Tool.Controls)
+            {
+                if (control is Panel OtherPanel && OtherPanel != Panel_)
                 {
-                    DisplayItemInformation(item);
-                    // Used for saving changes
-                    hash = item.hashKey;
+                    OtherPanel.Invalidate(); // Redraw the inactive panels
                 }
             }
         }
+        #endregion
 
-        private void DisplayItemInformation(Item item)
+        #region Display item in textbox (Item_Content)
+        private void DisplayItemInformation()
         {
-            string info = GetItemInformationFromLevelFile(item.hashKey);
-            var itemDetails = ParseItemInfo(info);
-            StringBuilder displayText = new StringBuilder();
+            StringBuilder DisplayText = new StringBuilder();
+            Item ActivateItem = ActivateItemPanel.Tag as Item;
 
-            if (itemDetails.TryGetValue("Type", out string type))
-                displayText.AppendLine("Type: " + type);
-            if (itemDetails.TryGetValue("Position", out string position))
-                displayText.AppendLine("Position: " + position);
-            if (itemDetails.TryGetValue("Size", out string size))
-                displayText.AppendLine("Size: " + size);
-            if (itemDetails.TryGetValue("Length", out string length))
-                displayText.AppendLine("Length: " + length);
-            if (itemDetails.TryGetValue("StartCollider", out string startCollider))
-                displayText.AppendLine("StartCollider: " + startCollider);
-            if (itemDetails.TryGetValue("EndCollider", out string endCollider))
-                displayText.AppendLine("EndCollider: " + endCollider);
-
-            Item_Content.Text = displayText.ToString();
-        }
-
-        private Dictionary<string, string> ParseItemInfo(string info)
-        {
-            var itemInfo = new Dictionary<string, string>();
-            var matches = Regex.Matches(info, @"(\w+):\s*((?:\([^)]+\))|[^,}]+)");
-
-            foreach (Match match in matches)
+            if (ActivateItem != null)
             {
-                if (match.Groups.Count == 3)
+                int Type = ActivateItem.Type;
+                if (Type >= 1 && Type <= 33)
                 {
-                    var key = match.Groups[1].Value.Trim();
-                    var value = match.Groups[2].Value.Trim();
-                    value = value.TrimEnd('}');
-
-                    itemInfo[key] = value;
+                    switch (Type)
+                    {
+                        case 1:
+                            DisplayText.AppendLine("[item_bee]");
+                            break;
+                        case 2:
+                            DisplayText.AppendLine("[item_bird]");
+                            break;
+                        case 3:
+                            DisplayText.AppendLine("[item_boom]");
+                            break;
+                        case 4:
+                            DisplayText.AppendLine("[item_box]");
+                            break;
+                        case 5:
+                            DisplayText.AppendLine("[item_brick_gold]");
+                            break;
+                        case 6:
+                            DisplayText.AppendLine("[item_brick_turquoise]");
+                            break;
+                        case 7:
+                            DisplayText.AppendLine("[item_brick_normal]");
+                            break;
+                        case 8:
+                            DisplayText.AppendLine("[item_bridge]");
+                            break;
+                        case 9:
+                            DisplayText.AppendLine("[item_carnivorous_flower]");
+                            break;
+                        case 10:
+                            DisplayText.AppendLine("[item_castle]");
+                            break;
+                        case 11:
+                            DisplayText.AppendLine("[item_coin]");
+                            break;
+                        case 12:
+                            DisplayText.AppendLine("[item_crab]");
+                            break;
+                        case 13:
+                            DisplayText.AppendLine("[item_diamond]");
+                            break;
+                        case 14:
+                            DisplayText.AppendLine("[item_fish]");
+                            break;
+                        case 15:
+                            DisplayText.AppendLine("[item_flag]");
+                            break;
+                        case 16:
+                            DisplayText.AppendLine("[item_flat]");
+                            break;
+                        case 17:
+                            DisplayText.AppendLine("[item_frog]");
+                            break;
+                        case 18:
+                            DisplayText.AppendLine("[item_ground]");
+                            break;
+                        case 19:
+                            DisplayText.AppendLine("[item_island]");
+                            break;
+                        case 20:
+                            DisplayText.AppendLine("[item_islet]");
+                            break;
+                        case 21:
+                            DisplayText.AppendLine("[item_islet_tall]");
+                            break;
+                        case 22:
+                            DisplayText.AppendLine("[item_mario]");
+                            break;
+                        case 23:
+                            DisplayText.AppendLine("[item_mario_big]");
+                            break;
+                        case 24:
+                            DisplayText.AppendLine("[item_mushroom]");
+                            break;
+                        case 25:
+                            DisplayText.AppendLine("[item_octopus]");
+                            break;
+                        case 26:
+                            DisplayText.AppendLine("[item_root]");
+                            break;
+                        case 27:
+                            DisplayText.AppendLine("[item_shield]");
+                            break;
+                        case 28:
+                            DisplayText.AppendLine("[item_snail]");
+                            break;
+                        case 29:
+                            DisplayText.AppendLine("[item_snail_shell]");
+                            break;
+                        case 30:
+                            DisplayText.AppendLine("[item_spike]");
+                            break;
+                        case 31:
+                            DisplayText.AppendLine("[item_spring]");
+                            break;
+                        case 32:
+                            DisplayText.AppendLine("[item_vial]");
+                            break;
+                        case 33:
+                            DisplayText.AppendLine("[item_water]");
+                            break;
+                    }
+                }
+                DisplayText.AppendLine($"position {ActivateItem.Position.X} {ActivateItem.Position.Y}");
+                if (Type == 18 || Type == 33)
+                {
+                    DisplayText.AppendLine("width " + ActivateItem.Size_.Width * ActivateItem.Length);
                 }
             }
 
-            return itemInfo;
+            Item_Content.Text = DisplayText.ToString();
         }
+        #endregion
 
-        private string GetItemInformationFromLevelFile(string hashKey)
-        {
-            string levelFilePath = @"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Level.txt";
-            string[] lines = File.ReadAllLines(levelFilePath);
-            string keyIdentifier = $"HashKey: {hashKey}";
-
-            foreach (string line in lines)
-            {
-                if (line.Contains(keyIdentifier))
-                {
-                    return line;
-                }
-            }
-            return "Information not found";
-        }
-
+        #region Movement item in panel Map_Tool
         private void Item_MouseDown(object sender, MouseEventArgs e)
         {
             Control control = sender as Control;
-            _currentDragPanel = control as Panel ?? control.Parent as Panel;
+            _CurrentDragPanel = control as Panel ?? control.Parent as Panel;
 
-            if (_currentDragPanel == null) return;
+            if (_CurrentDragPanel == null) return;
 
             if (e.Button == MouseButtons.Left)
             {
-                _isDragging = true;
-                Point clientPoint = _currentDragPanel.PointToClient(Cursor.Position); // Get cursor position relative to panel
-                _dragOffset = clientPoint;
-                _currentDragPanel.BringToFront();
+                _IsDragging = true;
+                Point ClientPoint = _CurrentDragPanel.PointToClient(Cursor.Position);
+                _DragOffset = ClientPoint;
+                _CurrentDragPanel.BringToFront();
+
+                // Display item in textbox (Item_Content)
+                if (sender is PictureBox PictureBox_)
+                {
+                    Item Item_ = PictureBox_.Parent.Tag as Item;
+                    if (Item_ != null)
+                    {
+                        ActivateItemPanel = PictureBox_.Parent as Panel;
+                        DisplayItemInformation();
+                    }
+
+                    Panel Panel_ = PictureBox_.Parent as Panel;
+                    if (Panel_ != null)
+                    {
+                        SetActiveItemPanel(Panel_);
+                    }
+                }
             }
         }
 
         private void Item_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!_isDragging || _currentDragPanel == null) return;
+            if (!_IsDragging || _CurrentDragPanel == null) return;
 
-            Point screenPoint = Cursor.Position;
-            Point newLocation = Map_Tool.PointToClient(screenPoint); // Convert to coordinates relative to Map_Tool
+            Point ScreenPoint = Cursor.Position;
+            Point NewLocation = Map_Tool.PointToClient(ScreenPoint); // Convert to coordinates relative to Map_Tool
 
-            newLocation.Offset(-_dragOffset.X, -_dragOffset.Y);
-            newLocation.X = Math.Max(0, newLocation.X);
-            newLocation.Y = Math.Max(0, newLocation.Y);
-            newLocation.X = Math.Min(Map_Tool.ClientSize.Width - _currentDragPanel.Width, newLocation.X);
-            newLocation.Y = Math.Min(Map_Tool.ClientSize.Height - _currentDragPanel.Height, newLocation.Y);
+            NewLocation.Offset(-_DragOffset.X, -_DragOffset.Y);
+            NewLocation.X = Math.Max(0, NewLocation.X);
+            NewLocation.Y = Math.Max(0, NewLocation.Y);
+            NewLocation.Y = Math.Min(Map_Tool.ClientSize.Height - _CurrentDragPanel.Height, NewLocation.Y);
 
-            _currentDragPanel.Location = newLocation;
+            _CurrentDragPanel.Location = NewLocation;
+
+            Item Item_ = ActivateItemPanel.Tag as Item;
+            Point ScrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
+            var AdjustedLocation = new Point(NewLocation.X + ScrollPosition.X, NewLocation.Y + ScrollPosition.Y);
+            Item_.Position = new Point(AdjustedLocation.X, 1246 - AdjustedLocation.Y - Item_.Size_.Height);
+
+            UpdateFormTitle(1);
         }
 
         private void Item_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
-                _isDragging = false;
-                _currentDragPanel = null;
-                Map_Tool.Invalidate(); // Optional: Redraw the Map_Tool control if needed
+                _IsDragging = false;
+                _CurrentDragPanel = null;
+                Map_Tool.Invalidate(); // Redraw the Map_Tool
+                DisplayItemInformation();
             }
         }
+        #endregion
 
-        private void Item_ItemClicked(object sender, int type)
-        {
-            selectedItemType = type;
-        }
-
-        private void Map_Tool_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void Map_Tool_DrawGrid(object sender, PaintEventArgs e)
-        {
-            Panel panel = (Panel)sender;
-            Graphics g = e.Graphics;
-            Pen pen = new Pen(Color.Black);
-            int numRows = 1248 / gridSize;
-            int numCols = 3200 / gridSize;
-
-            for (int i = 0; i <= numRows; i++)
-            {
-                int y = i * gridSize;
-                g.DrawLine(pen, 0, y, numCols * gridSize, y); // Draw line from left to right
-            }
-            for (int j = 0; j <= numCols; j++)
-            {
-                int x = j * gridSize;
-                g.DrawLine(pen, x, 0, x, numRows * gridSize); // Draw line from top to bottom
-            }
-            pen.Dispose();
-
-
-            // solution 3
-            //Panel panel = (Panel)sender;
-            //Graphics g = e.Graphics;
-
-            //// Calculate number of rows and columns based on your panel size
-            //int numRows = 1248 / gridSize;
-            //int numCols = 3200 / gridSize;
-
-            //g.Clear(panel.BackColor); // Clear the panel if necessary
-
-            //// Set up the transform for the graphics object to flip and translate
-            //g.ScaleTransform(1, -1); // Flip the y-axis
-            //g.TranslateTransform(0, -1248); // Translate to bottom-left
-
-            //Pen pen = new Pen(Color.Black);
-
-            //// Draw the vertical grid lines
-            //for (int i = 0; i <= numCols; i++)
-            //{
-            //    int x = i * gridSize;
-            //    g.DrawLine(pen, x, 0, x, numRows * gridSize); // Draw line from bottom to top
-            //}
-
-            //// Draw the horizontal grid lines
-            //for (int j = 0; j <= numRows; j++)
-            //{
-            //    int y = j * gridSize;
-            //    g.DrawLine(pen, 0, y, numCols * gridSize, y); // Draw line from left to right
-            //}
-
-            //// Dispose of the pen to free up resources
-            //pen.Dispose();
-        }
-
-        private void Item_List_View_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void DisplayItems()
+        #region Display item type in panel Item_List_View
+        private void DisplayItemsType()
         {
             int x = 10;
             int y = 10;
 
-            foreach (Item item in items)
+            foreach (Item ItemType in OriginalItems)
             {
-                PictureBox pictureBox = new PictureBox();
-                pictureBox = item.GenerateImage(new Point(x, y));
-                Item_List_View.Controls.Add(pictureBox);
+                PictureBox PictureBox_ = new PictureBox();
+                PictureBox_ = ItemType.GenerateImage(new Point(x, y));
+                PictureBox_.MouseDown += PictureBox_MouseDown;
+                Item_List_View.Controls.Add(PictureBox_);
 
-                x += pictureBox.Width + 10;
-                if (x + pictureBox.Width > Item_List_View.Width)
+                x += PictureBox_.Width + 10;
+                if (x + PictureBox_.Width > Item_List_View.Width)
                 {
                     x = 10;
-                    y += pictureBox.Height + 10;
+                    y += PictureBox_.Height + 10;
                 }
             }
+
+            Item_List_View.MouseDown += ItemListView_MouseDown;
         }
 
-        private void ReadItemsFile()
+        private void ReadItemsTypeFile()
         {
-            string filePath = @"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items.txt";
-            string[] lines = File.ReadAllLines(filePath);
+            string FilePath = @"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Items.txt";
+            string[] Lines = File.ReadAllLines(FilePath);
 
-            string imagePath = "";
-            Size size = new Size();
-            int type = 0;
-            int length = 0;
-            bool isInBlock = false;
+            string ImagePath = "";
+            Size Size_ = new Size();
+            int Type = 0;
+            int Length = 0;
+            bool IsInBlock = false;
 
-            foreach (string line in lines)
+            foreach (string Line in Lines)
             {
-                if (line.StartsWith("{"))
+                if (Line.StartsWith("{"))
                 {
-                    imagePath = "";
-                    size = Size.Empty;
-                    type = 0;
-                    length = 0;
-                    isInBlock = true;
+                    ImagePath = "";
+                    Size_ = Size.Empty;
+                    Type = 0;
+                    Length = 0;
+                    IsInBlock = true;
                     continue;
                 }
 
-                if (line.StartsWith("}"))
+                if (Line.StartsWith("}"))
                 {
-                    isInBlock = false;
-                    if (!string.IsNullOrEmpty(imagePath) && File.Exists(imagePath))
+                    IsInBlock = false;
+
+                    if (!string.IsNullOrEmpty(ImagePath) && File.Exists(ImagePath))
                     {
-                        Image image = Image.FromFile(imagePath);
-                        Item item = new Item(image, size, new Vector2(0, 0), type, length);
-                        items.Add(item);
+                        Image Image_ = Image.FromFile(ImagePath);
+                        Item Item_ = new Item(Image_, Size_, Type, Length);
+                        OriginalItems.Add(Item_);
                     }
                     continue;
                 }
 
-                if (!isInBlock) continue;
+                if (!IsInBlock) continue;
 
-                if (line.StartsWith("type:"))
+                if (Line.StartsWith("type:"))
                 {
-                    type = int.Parse(line.Substring(6).Trim());
+                    Type = int.Parse(Line.Substring(6).Trim());
                 }
-                else if (line.StartsWith("path:"))
+                else if (Line.StartsWith("path:"))
                 {
-                    imagePath = line.Substring(6).Trim();
+                    ImagePath = Line.Substring(6).Trim();
                 }
-                else if (line.StartsWith("size:"))
+                else if (Line.StartsWith("size:"))
                 {
-                    var sizeParts = line.Substring(6).Trim().Split(',');
-                    size = new Size(int.Parse(sizeParts[0]), int.Parse(sizeParts[1]));
+                    var SizeParts = Line.Substring(6).Trim().Split(',');
+                    Size_ = new Size(int.Parse(SizeParts[0]), int.Parse(SizeParts[1]));
                 }
-                else if (line.StartsWith("length:"))
+                else if (Line.StartsWith("length:"))
                 {
-                    length = int.Parse(line.Substring(8).Trim());
+                    Length = int.Parse(Line.Substring(8).Trim());
                 }
             }
 
-            foreach (Item item in items)
+            foreach (Item Item_ in OriginalItems)
             {
-                item.ItemClicked += Item_ItemClicked;
+                Item_.ItemClicked += Item_ItemClicked;
             }
         }
 
-        private void ButtonExport_Click(object sender, EventArgs e)
+        private PictureBox SelectedPictureBox = null;
+        private void PictureBox_MouseDown(object sender, MouseEventArgs e)
         {
-            List<Panel> itemPanels = new List<Panel>();
-            Point scrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
-
-            foreach (Control control in Map_Tool.Controls)
+            if (e.Button == MouseButtons.Left)
             {
-                if (control is Panel panel && panel.Tag is Item)
+                PictureBox PictureBox_ = sender as PictureBox;
+
+                if (SelectedPictureBox != null && SelectedPictureBox != PictureBox_)
                 {
-                    itemPanels.Add(panel);
+                    ControlPaint.DrawBorder(SelectedPictureBox.CreateGraphics(), SelectedPictureBox.ClientRectangle, Color.Red, ButtonBorderStyle.Solid);
+                }
+
+                if (PictureBox_ != null)
+                {
+                    ControlPaint.DrawBorder(PictureBox_.CreateGraphics(), PictureBox_.ClientRectangle, Color.Green, ButtonBorderStyle.Solid);
+                    SelectedPictureBox = PictureBox_;
                 }
             }
 
-            itemPanels.Sort((x, y) =>
+            foreach (Control control in Controls)
             {
-                int result = x.Top.CompareTo(y.Top);
-                return (result == 0) ? x.Left.CompareTo(y.Left) : result;
+                if (control is PictureBox pb && pb != SelectedPictureBox)
+                {
+                    ControlPaint.DrawBorder(pb.CreateGraphics(), pb.ClientRectangle, Color.Red, ButtonBorderStyle.Solid);
+                }
+            }
+        }
+
+        private void ItemListView_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && SelectedPictureBox != null)
+            {
+                ControlPaint.DrawBorder(SelectedPictureBox.CreateGraphics(), SelectedPictureBox.ClientRectangle, Color.Red, ButtonBorderStyle.Solid);
+                SelectedItemType = 0;
+            }
+        }
+        #endregion
+
+        #region Display items in Map_Tool panel
+        string FileOpen = "C:\\Users\\Admin\\Desktop\\Game\\Programming Language\\C Sharp\\LevelDesignTool\\Level_Export.txt";
+        List<(string, string, string)> ItemInformation = new List<(string, string, string)>();
+        
+        private void ReadItemsFile()
+        {
+            string FilePath = string.Join("@", FileOpen);
+            string[] Lines = File.ReadAllLines(FilePath);
+
+            string CurrentName = "";
+            string CurrentPosition = "";
+            string CurrentWidth = "";
+
+            foreach (string line in Lines)
+            {
+                if (line.StartsWith("[") && line.EndsWith("]"))
+                {
+                    if (!string.IsNullOrEmpty(CurrentName) && !string.IsNullOrEmpty(CurrentPosition))
+                    {
+                        ItemInformation.Add((CurrentName, CurrentPosition, CurrentWidth));
+                    }
+                    CurrentName = line.Trim('[', ']');
+                    CurrentPosition = "";
+                    CurrentWidth = "";
+                }
+                else if (line.StartsWith("position"))
+                {
+                    CurrentPosition = line.Replace("position ", "");
+                }
+                else if (line.StartsWith("width"))
+                {
+                    CurrentWidth = line.Replace("width ", "");
+                }
+            }
+
+            if (!string.IsNullOrEmpty(CurrentName) && !string.IsNullOrEmpty(CurrentPosition))
+            {
+                ItemInformation.Add((CurrentName, CurrentPosition, CurrentWidth));
+            }
+        }
+
+        private void DisplayItems()
+        {
+            foreach (var Item_ in ItemInformation)
+            {
+                int Type = GetTypeFromName(Item_.Item1);
+                Point Position = ConvertPositionToPoint(Item_.Item2);
+                int Width_ = GetWidthFromName(Item_.Item3);
+
+                Item OriginalItem = OriginalItems.FirstOrDefault(i => i.Type == Type);
+                if (OriginalItem != null)
+                {
+                    Item NewItem = new Item(OriginalItem.Image_, OriginalItem.Size_, OriginalItem.Type, Width_ > 0 ? Width_ / OriginalItem.Size_.Width : OriginalItem.Length);
+                    CreateItemAtLocation(NewItem, Position);
+                }
+            }
+            SetActiveItemPanel(null);
+            Item_Content.Clear();
+        }
+
+        private int GetTypeFromName(string Name)
+        {
+            switch (Name)
+            {
+                case "item_bee":
+                    return 1;
+                case "item_bird":
+                    return 2;
+                case "item_boom":
+                    return 3;
+                case "item_box":
+                    return 4;
+                case "item_brick_gold":
+                    return 5;
+                case "item_brick_turquoise":
+                    return 6;
+                case "item_brick_normal":
+                    return 7;
+                case "item_bridge":
+                    return 8;
+                case "item_carnivorous_flower":
+                    return 9;
+                case "item_castle":
+                    return 10;
+                case "item_coin":
+                    return 11;
+                case "item_crab":
+                    return 12;
+                case "item_diamond":
+                    return 13;
+                case "item_fish":
+                    return 14;
+                case "item_flag":
+                    return 15;
+                case "item_flat":
+                    return 16;
+                case "item_frog":
+                    return 17;
+                case "item_ground":
+                    return 18;
+                case "item_island":
+                    return 19;
+                case "item_islet":
+                    return 20;
+                case "item_islet_tall":
+                    return 21;
+                case "item_mario":
+                    return 22;
+                case "item_mario_big":
+                    return 23;
+                case "item_mushroom":
+                    return 24;
+                case "item_octopus":
+                    return 25;
+                case "item_root":
+                    return 26;
+                case "item_shield":
+                    return 27;
+                case "item_snail":
+                    return 28;
+                case "item_snail_shell":
+                    return 29;
+                case "item_spike":
+                    return 30;
+                case "item_spring":
+                    return 31;
+                case "item_vial":
+                    return 32;
+                case "item_water":
+                    return 33;
+                default:
+                    return 0;
+            }
+        }
+
+        private Point ConvertPositionToPoint(string Position)
+        {
+            string[] Parts = Position.Split(' ');
+            int x = int.Parse(Parts[0]);
+            int y = int.Parse(Parts[1]);
+            return new Point(x, y);
+        }
+
+        private int GetWidthFromName(string Width_)
+        {
+            if (Width_ == "") return 0;
+            else
+            {
+                return int.Parse(Width_);
+            }
+        }
+
+        #endregion
+
+        #region Save file function
+        private void ButtonExport_Click(object sender, EventArgs e)
+        {
+            SaveFile();
+            UpdateFormTitle();
+        }
+
+        private void SaveFile()
+        {
+            List<Panel> ItemPanels = new List<Panel>();
+            Point ScrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
+
+            foreach (Control control in Map_Tool.Controls)
+            {
+                if (control is Panel Panel_ && Panel_.Tag is Item)
+                {
+                    ItemPanels.Add(Panel_);
+                }
+            }
+
+            ItemPanels.Sort((x, y) =>
+            {
+                int Result = x.Top.CompareTo(y.Top);
+                return (Result == 0) ? x.Left.CompareTo(y.Left) : Result;
             });
 
-            StringBuilder exportData = new StringBuilder();
-            StringBuilder exportDataL = new StringBuilder();
+            StringBuilder ExportDataL = new StringBuilder();
 
-            foreach (Panel panel in itemPanels)
+            foreach (Panel Panel_ in ItemPanels)
             {
-                if (panel.Tag is Item item)
+                if (Panel_.Tag is Item Item_)
                 {
-                    var adjustedLocation = new Point(panel.Location.X + scrollPosition.X, panel.Location.Y + scrollPosition.Y);
-                    var size = new Size(item.size.Width, item.size.Height);
-                    int type = item.type;
-                    int length = item.length;
-                    string hashKey = item.hashKey;
-                    Point startCollider  = item.startCollider;
-                    Point endCollider = item.endCollider;
+                    var AdjustedLocation = new Point(Panel_.Location.X + ScrollPosition.X, Panel_.Location.Y + ScrollPosition.Y);
+                    var Size_ = new Size(Item_.Size_.Width, Item_.Size_.Height);
+                    int Type = Item_.Type;
+                    int Length = Item_.Length;
 
-                    string itemPanelInfo = $"{{HashKey: {hashKey}, Type: {type}, Position: ({adjustedLocation.X}, {adjustedLocation.Y}), Size: ({size.Width}, {size.Height}), Length: {length}, " +
-                        $"StartCollider: ({startCollider.X}, {startCollider.Y}), EndCollider: ({endCollider.X}, {endCollider.Y})}}";
-                    exportData.AppendLine(itemPanelInfo);
+                    string _ItemPanelInfo = "";
+                    if (Type >= 1 && Type <= 33)
+                    {
+                        switch (Type)
+                        {
+                            case 1:
+                                _ItemPanelInfo = "[item_bee]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 2:
+                                _ItemPanelInfo = "[item_bird]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 3:
+                                _ItemPanelInfo = "[item_boom]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 4:
+                                _ItemPanelInfo = "[item_box]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 5:
+                                _ItemPanelInfo = "[item_brick_gold]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 6:
+                                _ItemPanelInfo = "[item_brick_turquoise]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 7:
+                                _ItemPanelInfo = "[item_brick_normal]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 8:
+                                _ItemPanelInfo = "[item_bridge]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 9:
+                                _ItemPanelInfo = "[item_carnivorous_flower]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 10:
+                                _ItemPanelInfo = "[item_castle]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 11:
+                                _ItemPanelInfo = "[item_coin]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 12:
+                                _ItemPanelInfo = "[item_crab]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 13:
+                                _ItemPanelInfo = "[item_diamond]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 14:
+                                _ItemPanelInfo = "[item_fish]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 15:
+                                _ItemPanelInfo = "[item_flag]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 16:
+                                _ItemPanelInfo = "[item_flat]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 17:
+                                _ItemPanelInfo = "[item_frog]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 18:
+                                _ItemPanelInfo = "[item_ground]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 19:
+                                _ItemPanelInfo = "[item_island]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 20:
+                                _ItemPanelInfo = "[item_islet]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 21:
+                                _ItemPanelInfo = "[item_islet_tall]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 22:
+                                _ItemPanelInfo = "[item_mario]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 23:
+                                _ItemPanelInfo = "[item_mario_big]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 24:
+                                _ItemPanelInfo = "[item_mushroom]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 25:
+                                _ItemPanelInfo = "[item_octopus]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 26:
+                                _ItemPanelInfo = "[item_root]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 27:
+                                _ItemPanelInfo = "[item_shield]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 28:
+                                _ItemPanelInfo = "[item_snail]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 29:
+                                _ItemPanelInfo = "[item_snail_shell]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 30:
+                                _ItemPanelInfo = "[item_spike]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 31:
+                                _ItemPanelInfo = "[item_spring]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 32:
+                                _ItemPanelInfo = "[item_vial]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                            case 33:
+                                _ItemPanelInfo = "[item_water]";
+                                ExportDataL.AppendLine(_ItemPanelInfo);
+                                break;
+                        }
 
-                    string _itemPanelInfo = $"{{Type: {type}, Position: ({adjustedLocation.X}, {1246 - adjustedLocation.Y - size.Height}), Size: ({size.Width}, {size.Height}), Length: {length}, " +
-                        $"StartCollider: ({startCollider.X}, {startCollider.Y}), EndCollider: ({endCollider.X}, {endCollider.Y})}}";
-                    exportDataL.AppendLine(_itemPanelInfo);
+
+                        _ItemPanelInfo = $"position {AdjustedLocation.X} {1246 - AdjustedLocation.Y - Size_.Height}";
+                        ExportDataL.AppendLine(_ItemPanelInfo);
+                        if (Type == 18 || Type == 33)
+                        {
+                            int TmpWidth = Item_.Size_.Width * Item_.Length;
+                            _ItemPanelInfo = $"width {TmpWidth}";
+                            ExportDataL.AppendLine(_ItemPanelInfo);
+                        }
+                       
+                    }
                 }
                 else
                 {
@@ -414,186 +869,105 @@ namespace LevelDesignTool
                 }
             }
 
-            string exportFilePath = @"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Level.txt";
-            string exportFilePathForL = @"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Level_Export.txt";
-
+            string ExportFilePathForL = string.Join("@", FileOpen);
             try
             {
-                File.WriteAllText(exportFilePath, exportData.ToString());
-                File.WriteAllText(exportFilePathForL, exportDataL.ToString());
-                //MessageBox.Show($"Exported item data to {exportFilePath}", "Export Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                File.WriteAllText(ExportFilePathForL, ExportDataL.ToString());
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error exporting item data: {ex.Message}", "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        #endregion
 
+        #region Save changes (apply) button
+        // need modify
+        private void Save_Item_Click(object sender, EventArgs e)
+        {
+            string NewText = Item_Content.Text.Replace(Environment.NewLine, "");
+
+            NewText = NewText.Replace("position ", ", position ");
+            NewText = NewText.Replace("width ", ", width ");
+
+            UpdateItem(NewText);
+        }
+
+        private void UpdateItem(string NewText)
+        {
+            Item Item_ = ActivateItemPanel.Tag as Item;
+            if (Item_ != null)
+            {
+                ActivateItemPanel.Controls.Clear();
+
+                string[] Values = NewText.Split(',');
+                string[] Tmp;
+                if (Values.Length >= 3)
+                {
+                    MessageBox.Show(Values.Length.ToString());
+
+                    int Length = 1;
+                    Tmp = Values[1].Split('(');
+                    int.TryParse(Tmp[1].Trim(), out int PosX);
+                    Tmp = Values[2].Split(')');
+                    int.TryParse(Tmp[0].Trim(), out int PosY);
+
+                    if (Values.Length >= 4)
+                    {
+                        Tmp = Values[3].Split(" ");
+                        int.TryParse(Tmp[2].Trim(), out int _Width);
+                        Length = _Width / Item_.Size_.Width;
+                    }
+
+                    int OffsetX = 1;
+                    for (int i = 0; i < Length; i++)
+                    {
+                        PictureBox PictureBox_ = new PictureBox
+                        {
+                            Image = Item_.Image_,
+                            SizeMode = PictureBoxSizeMode.Zoom,
+                            Size = new Size(Item_.Size_.Width, Item_.Size_.Height),
+                            Location = new Point(OffsetX, 1)
+                        };
+                        PictureBox_.MouseDown += Item_MouseDown;
+                        PictureBox_.MouseMove += Item_MouseMove;
+                        PictureBox_.MouseUp += Item_MouseUp;
+
+                        ActivateItemPanel.Controls.Add(PictureBox_);
+                        OffsetX += Item_.Size_.Width;
+                    }
+                    // Update Tag
+                    Item_.Length = Length;
+                    Item_.EndCollider = new Point(Item_.Size_.Width * Length + 1, Height + 1);
+                    Item_.Position = new Point(PosX, PosY);
+
+                    ActivateItemPanel.Width = Item_.Size_.Width * Length + 2;
+                    Point scrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
+                    ActivateItemPanel.Location = new Point(PosX - scrollPosition.X, (1246 - Item_.Size_.Height - PosY - scrollPosition.Y));
+                    ActivateItemPanel.Refresh();
+                }
+            }
+        }
+        #endregion
+
+        #region Delete button
+        private void Delete_Item_Click(object sender, EventArgs e)
+        {
+            Delete_ItemF();
+        }
+
+        private void Delete_ItemF()
+        {
+            Map_Tool.Controls.Remove(ActivateItemPanel);
+            Map_Tool.Refresh();
+            Item_Content.Clear();
+        }
+        #endregion
+
+        #region Not used
         private void Edit_Item_Click(object sender, EventArgs e)
         {
 
-        }
-
-        private void Save_Item_Click(object sender, EventArgs e)
-        {
-            string itemHashKey = hash;
-            string newText = Item_Content.Text.Replace(Environment.NewLine, "");
-
-            newText = newText.Replace("Type: ", ", Type: ");
-            newText = newText.Replace("Position: ", ", Position: ");
-            newText = newText.Replace("Size: ", ", Size: ");
-            newText = newText.Replace("Length: ", ", Length: ");
-            newText = newText.Replace("StartCollider: ", ", StartCollider: ");
-            newText = newText.Replace("EndCollider: ", ", EndCollider: ");
-
-            string newItemInfo = $"{{HashKey: {itemHashKey}{newText}}}";
-
-            List<string> lines = new List<string>();
-            try
-            {
-                lines = File.ReadAllLines(@"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Level.txt").ToList();
-            }
-            catch (IOException ex)
-            {
-                MessageBox.Show("Failed to read file: " + ex.Message);
-                return;
-            }
-
-            int indexToUpdate = lines.FindIndex(line => line.Contains(itemHashKey));
-            if (indexToUpdate == -1)
-            {
-                MessageBox.Show($"Item with hash key '{itemHashKey}' not found.");
-                return;
-            }
-
-            lines[indexToUpdate] = newItemInfo;
-
-            try
-            {
-                File.WriteAllLines(@"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Level.txt", lines);
-                UpdateItem(itemHashKey, newText);
-                hash = "";
-            }
-            catch (IOException ex)
-            {
-                MessageBox.Show("Failed to save file: " + ex.Message);
-            }
-        }
-
-        private void UpdateItem(string hashKey, string newText)
-        {
-            foreach (Panel panel in Map_Tool.Controls.OfType<Panel>())
-            {
-                Item item = panel.Tag as Item;
-                if (item != null && item.hashKey == hashKey)
-                {
-                    panel.Controls.Clear();
-
-                    string[] values = newText.Split(',');
-                    string[] tmp;
-                    if (values.Length >= 6)
-                    {
-                        tmp = values[2].Split('(');
-                        int.TryParse(tmp[1].Trim(), out int posX);
-                        tmp = values[3].Split(')');
-                        int.TryParse(tmp[0].Trim(), out int posY);
-                        tmp = values[4].Split("(");
-                        int.TryParse(tmp[1].Trim(), out int width);
-                        tmp = values[5].Split(")");
-                        int.TryParse(tmp[0].Trim(), out int height);
-                        tmp = values[6].Split(" ");
-                        int.TryParse(tmp[2].Trim(), out int length);
-
-                        //tmp = values[7].Split("(");
-                        //int.TryParse(tmp[1].Trim(), out int sX);
-                        //tmp = values[8].Split(")");
-                        //int.TryParse(tmp[0].Trim(), out int sY);
-                        //tmp = values[9].Split("(");
-                        //int.TryParse(tmp[1].Trim(), out int eX);
-                        //tmp = values[10].Split(")");
-                        //int.TryParse(tmp[0].Trim(), out int eY);
-
-                        int offsetX = 1;
-                        for (int i = 0; i < length; i++)
-                        {
-                            PictureBox pictureBox = new PictureBox
-                            {
-                                Image = item.image,
-                                SizeMode = PictureBoxSizeMode.Zoom,
-                                Size = new Size(width, height),
-                                Location = new Point(offsetX, 1)
-                            };
-
-                            pictureBox.MouseDown += Item_MouseDown;
-                            pictureBox.MouseMove += Item_MouseMove;
-                            pictureBox.MouseUp += Item_MouseUp;
-                            pictureBox.MouseDoubleClick += PictureBox_MouseDoubleClick;
-
-                            panel.Controls.Add(pictureBox);
-                            offsetX += width;
-                        }
-                        // Update Tag
-                        item.length = length;
-                        item.size = new Size(width, height);
-                        //item.startCollider = new Point(0, 0);
-                        item.endCollider = new Point(width * length + 1, height + 1);
-
-                        panel.Width = width * length + 2;
-                        panel.Height = height + 2;
-                        panel.Location = new Point(posX, posY);
-                        panel.Refresh();
-                        break;
-                    }
-                }
-            }
-        }
-
-        private void Delete_Item_Click(object sender, EventArgs e)
-        {
-            string itemHashKey = hash;
-
-            List<string> lines = new List<string>();
-            try
-            {
-                lines = File.ReadAllLines(@"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Level.txt").ToList();
-            }
-            catch (IOException ex)
-            {
-                MessageBox.Show("Failed to read file: " + ex.Message);
-                return;
-            }
-
-            int indexToDelete = lines.FindIndex(line => line.Contains(itemHashKey));
-            if (indexToDelete == -1)
-            {
-                MessageBox.Show($"Item with hash key '{itemHashKey}' not found.");
-                return;
-            }
-            lines.RemoveAt(indexToDelete);
-
-            try
-            {
-                File.WriteAllLines(@"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Level.txt", lines);
-            }
-            catch (IOException ex)
-            {
-                MessageBox.Show("Failed to write to file: " + ex.Message);
-                return;
-            }
-
-            foreach (Panel panel in Map_Tool.Controls.OfType<Panel>())
-            {
-                Item item = panel.Tag as Item;
-                if (item != null && item.hashKey == itemHashKey)
-                {
-                    Map_Tool.Controls.Remove(panel);
-                    break;
-                }
-            }
-            Item_Content.Clear();
-
-            // Clear the hash key
-            hash = "";
         }
 
         private void Item_Editor_Paint(object sender, PaintEventArgs e)
@@ -604,6 +978,38 @@ namespace LevelDesignTool
         private void Item_Content_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void Item_List_View_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void Map_Tool_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+        #endregion
+
+        private void ButtonLoad_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            openFileDialog.InitialDirectory = @"C:\Users\Admin\Desktop\Game\Programming Language\C Sharp\LevelDesignTool\Level_Export\";
+            openFileDialog.CheckFileExists = false;
+            openFileDialog.CheckPathExists = true;
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string selectedFolderPath = Path.GetDirectoryName(openFileDialog.FileName);
+                FileOpen = string.Join("\n", Directory.GetFiles(selectedFolderPath));
+
+                ItemInformation.Clear();
+                Map_Tool.Controls.Clear();
+                UpdateFormTitle();
+                ReadItemsFile();
+                DisplayItems();
+            }
         }
     }
 }
