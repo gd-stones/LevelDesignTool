@@ -1,24 +1,4 @@
-[ground_4]
-position 1132 1132
-width 160
-[ground_4]
-position 942 443
-width 160
-[ground_4]
-position 417 398
-width 160
-[ground_4]
-position 550 372
-width 160
-[ground_4]
-position 644 356
-width 160
-[ground_4]
-position 618 275
-width 160
-[ground_4]
-position 953 274
-width 160
-[ground_4]
-position 512 273
-width 160
+[item_carnivorous_flower]
+position 447 165
+[item_fish]
+position 744 0

@@ -255,7 +255,7 @@ namespace LevelDesignTool
                 if (OriginalItem != null)
                 {
                     Item NewItem = new Item(OriginalItem.Image_, OriginalItem.Size_, OriginalItem.Type, Width_ > 0 ? Width_ / OriginalItem.Size_.Width : OriginalItem.Length);
-                    CreateItemAtLocation(NewItem, Position);
+                    CreateItemAtLocation(NewItem, Position, 0);
                 }
             }
             SetActiveItemPanel(null);
@@ -296,12 +296,12 @@ namespace LevelDesignTool
             UpdateFormTitle();
         }
 
-        private void UpdateFormTitle(int check = 0)
+        private void UpdateFormTitle(int check = 1)
         {
             string FilePath = FileOpen;
 
             string[] Values = FilePath.Split('\\');
-            if (check != 0)
+            if (check != 1)
             {
                 this.Text = $"* {Values[Values.Length - 1]}";
                 return;
@@ -311,6 +311,14 @@ namespace LevelDesignTool
         #endregion
 
         #region Generate item in Map_Top
+        private Point CalculateAdjustedLocation(Point Point_)
+        {
+            Point ScrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
+            var AdjustedLocation = new Point(Point_.X + ScrollPosition.X, Point_.Y + ScrollPosition.Y);
+
+            return AdjustedLocation;
+        }
+
         private void Map_Tool_MouseClick(object sender, MouseEventArgs e)
         {
             if (SelectedItemType != 0)
@@ -337,14 +345,27 @@ namespace LevelDesignTool
         }
 
         private Panel _ActiveItemPanel = null;
-        private void CreateItemAtLocation(Item ItemType, Point Location_)
+        private void CreateItemAtLocation(Item ItemType, Point Location_, int Flag = 1)
         {
-            Point ScrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
-            var AdjustedLocation = new Point(Location_.X + ScrollPosition.X, Location_.Y + ScrollPosition.Y);
+            //Point ScrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
+            //var AdjustedLocation = new Point(Location_.X + ScrollPosition.X, Location_.Y + ScrollPosition.Y);
+            var AdjustedLocation = CalculateAdjustedLocation(Location_);
 
             ItemType.StartCollider = new Point(0, 0);
             ItemType.EndCollider = new Point(ItemType.Size_.Width * ItemType.Length + 1, ItemType.Size_.Height + 1);
-            ItemType.Position = new Point(AdjustedLocation.X, 1246 - AdjustedLocation.Y - ItemType.Size_.Height);
+            if (Flag != 1)
+            {
+                MessageBox.Show( $"{Location_.X.ToString()}, {Location_.Y.ToString()}\n");
+                ItemType.Position = new Point(Location_.X, Location_.Y);
+                //Location_ = new Point(Location_.X, 1246 - Location_.Y - ItemType.Size_.Height);
+                Location_ = new Point(Location_.X, 1246 - Location_.Y - ItemType.Size_.Height);
+                MessageBox.Show($"Height item: {ItemType.Size_.Height}");
+                MessageBox.Show($"{Location_.X.ToString()}, {Location_.Y.ToString()}\n");
+            }
+            else
+            {
+                ItemType.Position = new Point(AdjustedLocation.X, 1246 - AdjustedLocation.Y - ItemType.Size_.Height);
+            }
 
             Panel ItemPanel = new Panel
             {
@@ -448,13 +469,14 @@ namespace LevelDesignTool
                     {
                         ActivateItemPanel = PictureBox_.Parent as Panel;
                         DisplayItemInformation();
+                        SetActiveItemPanel(ActivateItemPanel);
                     }
 
-                    Panel Panel_ = PictureBox_.Parent as Panel;
-                    if (Panel_ != null)
-                    {
-                        SetActiveItemPanel(Panel_);
-                    }
+                    //Panel Panel_ = PictureBox_.Parent as Panel;
+                    //if (Panel_ != null)
+                    //{
+                    //    SetActiveItemPanel(Panel_);
+                    //}
                 }
             }
         }
@@ -474,11 +496,12 @@ namespace LevelDesignTool
             _CurrentDragPanel.Location = NewLocation;
 
             Item Item_ = ActivateItemPanel.Tag as Item;
-            Point ScrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
-            var AdjustedLocation = new Point(NewLocation.X + ScrollPosition.X, NewLocation.Y + ScrollPosition.Y);
+            //Point ScrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
+            //var AdjustedLocation = new Point(NewLocation.X + ScrollPosition.X, NewLocation.Y + ScrollPosition.Y);
+            var AdjustedLocation = CalculateAdjustedLocation(NewLocation);
             Item_.Position = new Point(AdjustedLocation.X, 1246 - AdjustedLocation.Y - Item_.Size_.Height);
 
-            UpdateFormTitle(1);
+            UpdateFormTitle(0);
         }
 
         private void Item_MouseUp(object sender, MouseEventArgs e)
@@ -655,7 +678,6 @@ namespace LevelDesignTool
         private void SaveFile()
         {
             List<Panel> ItemPanels = new List<Panel>();
-            Point ScrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
 
             foreach (Control control in Map_Tool.Controls)
             {
@@ -677,7 +699,10 @@ namespace LevelDesignTool
             {
                 if (Panel_.Tag is Item Item_)
                 {
-                    var AdjustedLocation = new Point(Panel_.Location.X + ScrollPosition.X, Panel_.Location.Y + ScrollPosition.Y);
+                    //Point ScrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
+                    //var AdjustedLocation = new Point(Panel_.Location.X + ScrollPosition.X, Panel_.Location.Y + ScrollPosition.Y);
+                    var AdjustedLocation = CalculateAdjustedLocation(Panel_.Location);
+
                     var Size_ = new Size(Item_.Size_.Width, Item_.Size_.Height);
                     int Type = Item_.Type;
                     int Length = Item_.Length;

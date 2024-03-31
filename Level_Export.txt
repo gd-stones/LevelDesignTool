@@ -1,0 +1,2 @@
+[item_brick_gold]
+position 931 0
