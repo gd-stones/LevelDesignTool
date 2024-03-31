@@ -347,20 +347,14 @@ namespace LevelDesignTool
         private Panel _ActiveItemPanel = null;
         private void CreateItemAtLocation(Item ItemType, Point Location_, int Flag = 1)
         {
-            //Point ScrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
-            //var AdjustedLocation = new Point(Location_.X + ScrollPosition.X, Location_.Y + ScrollPosition.Y);
             var AdjustedLocation = CalculateAdjustedLocation(Location_);
 
             ItemType.StartCollider = new Point(0, 0);
             ItemType.EndCollider = new Point(ItemType.Size_.Width * ItemType.Length + 1, ItemType.Size_.Height + 1);
             if (Flag != 1)
             {
-                MessageBox.Show( $"{Location_.X.ToString()}, {Location_.Y.ToString()}\n");
-                ItemType.Position = new Point(Location_.X, Location_.Y);
-                //Location_ = new Point(Location_.X, 1246 - Location_.Y - ItemType.Size_.Height);
+                ItemType.Position = Location_;
                 Location_ = new Point(Location_.X, 1246 - Location_.Y - ItemType.Size_.Height);
-                MessageBox.Show($"Height item: {ItemType.Size_.Height}");
-                MessageBox.Show($"{Location_.X.ToString()}, {Location_.Y.ToString()}\n");
             }
             else
             {
@@ -471,12 +465,6 @@ namespace LevelDesignTool
                         DisplayItemInformation();
                         SetActiveItemPanel(ActivateItemPanel);
                     }
-
-                    //Panel Panel_ = PictureBox_.Parent as Panel;
-                    //if (Panel_ != null)
-                    //{
-                    //    SetActiveItemPanel(Panel_);
-                    //}
                 }
             }
         }
@@ -496,8 +484,6 @@ namespace LevelDesignTool
             _CurrentDragPanel.Location = NewLocation;
 
             Item Item_ = ActivateItemPanel.Tag as Item;
-            //Point ScrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
-            //var AdjustedLocation = new Point(NewLocation.X + ScrollPosition.X, NewLocation.Y + ScrollPosition.Y);
             var AdjustedLocation = CalculateAdjustedLocation(NewLocation);
             Item_.Position = new Point(AdjustedLocation.X, 1246 - AdjustedLocation.Y - Item_.Size_.Height);
 
@@ -699,8 +685,6 @@ namespace LevelDesignTool
             {
                 if (Panel_.Tag is Item Item_)
                 {
-                    //Point ScrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
-                    //var AdjustedLocation = new Point(Panel_.Location.X + ScrollPosition.X, Panel_.Location.Y + ScrollPosition.Y);
                     var AdjustedLocation = CalculateAdjustedLocation(Panel_.Location);
 
                     var Size_ = new Size(Item_.Size_.Width, Item_.Size_.Height);
@@ -746,8 +730,8 @@ namespace LevelDesignTool
         {
             string NewText = Item_Content.Text.Replace(Environment.NewLine, "");
 
-            NewText = NewText.Replace("position ", ", position ");
-            NewText = NewText.Replace("width ", ", width ");
+            NewText = NewText.Replace("position ", " position ");
+            NewText = NewText.Replace("width ", " width ");
 
             UpdateItem(NewText);
         }
@@ -759,22 +743,16 @@ namespace LevelDesignTool
             {
                 ActivateItemPanel.Controls.Clear();
 
-                string[] Values = NewText.Split(',');
-                string[] Tmp;
-                if (Values.Length >= 3)
+                string[] Values = NewText.Split(' ');
+                if (Values.Length >= 4)
                 {
-                    MessageBox.Show(Values.Length.ToString());
-
                     int Length = 1;
-                    Tmp = Values[1].Split('(');
-                    int.TryParse(Tmp[1].Trim(), out int PosX);
-                    Tmp = Values[2].Split(')');
-                    int.TryParse(Tmp[0].Trim(), out int PosY);
+                    int.TryParse(Values[2].Trim(), out int PosX);
+                    int.TryParse(Values[3].Trim(), out int PosY);
 
-                    if (Values.Length >= 4)
+                    if (Values.Length >= 5)
                     {
-                        Tmp = Values[3].Split(" ");
-                        int.TryParse(Tmp[2].Trim(), out int _Width);
+                        int.TryParse(Values[5].Trim(), out int _Width);
                         Length = _Width / Item_.Size_.Width;
                     }
 
