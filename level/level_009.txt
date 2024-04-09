@@ -1,3 +1,12 @@
+[item_brick]
+unbreakable
+position 807 728
+[item_brick]
+unbreakable
+position 672 638
+[item_brick]
+unbreakable
+position 897 593
 [item_ground]
 high mound
 position 1021 362

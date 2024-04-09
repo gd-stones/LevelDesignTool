@@ -6,7 +6,7 @@ namespace LevelDesignTool
 {
     public partial class LDT_v2 : Form
     {
-        const int GridSize = 20;
+        const int GridSize = 45;
         const int MapToolWidth = 32000;
         const int MapToolHeight = 1000;
 
@@ -496,7 +496,7 @@ namespace LevelDesignTool
                     case 2: // left
                         {
                             RelativePos = new Point(RelativePos.X - 1, RelativePos.Y);
-                            AbsolutePos = new Point(AbsolutePos.X -1 , AbsolutePos.Y);
+                            AbsolutePos = new Point(AbsolutePos.X - 1, AbsolutePos.Y);
                             break;
                         }
                     case 3: // down
@@ -581,7 +581,9 @@ namespace LevelDesignTool
                     Item NewItem = new Item(It.Img, It.Sz, It.Type, It.Length, It.AnchorPoint, It.AdditionalProperties);
 
                     if (It.AnchorPoint == "center")
+                    {
                         CreateItemAtLocation(NewItem, new Point(e.Location.X - It.Sz.Width / 2, e.Location.Y - It.Sz.Height / 2));
+                    }
                     else
                         CreateItemAtLocation(NewItem, e.Location);
                 }
@@ -666,11 +668,11 @@ namespace LevelDesignTool
                 Pos = ConvertAbsolutePosToRelativePos(Pos, NewItem.Sz.Width, NewItem.Sz.Height, NewItem.AnchorPoint);
             }
             else
-                NewItem.Position = ConvertRelativePosToAbsolutePos(Pos, NewItem.Sz.Width, NewItem.Sz.Height, NewItem.AnchorPoint);
-
-            if (NewItem.Type == 4 || NewItem.Type == 5 || NewItem.Type == 6 || NewItem.Type == 7)
             {
-
+                if (NewItem.Type == 4 || NewItem.Type == 5 || NewItem.Type == 6 || NewItem.Type == 7)
+                    Pos = new Point((Pos.X / 45) * 45, (Pos.Y / 45) * 45);
+                else
+                    NewItem.Position = ConvertRelativePosToAbsolutePos(Pos, NewItem.Sz.Width, NewItem.Sz.Height, NewItem.AnchorPoint);
             }
 
             Panel ItemPanel = new Panel
@@ -775,10 +777,6 @@ namespace LevelDesignTool
                         ActivateItemPanel = (Panel)Pb.Parent;
                         DisplayItemInformation();
                         SetActiveItemPanel(ActivateItemPanel);
-
-                        if (It.Type == 4 || It.Type == 5 || It.Type == 6 || It.Type == 7)
-                        {
-                        }
                     }
                 }
             }
@@ -818,9 +816,7 @@ namespace LevelDesignTool
             }
 
             if (Type == 4 || Type == 5 || Type == 6 || Type == 7)
-            {
-
-            }
+                NewLocation = new Point((NewLocation.X / 45) * 45, (NewLocation.Y / 45) * 45);
 
             CurrentDragPanel.Location = NewLocation;
             It.Position = ConvertRelativePosToAbsolutePos(NewLocation, It.Sz.Width, It.Sz.Height, It.AnchorPoint);

@@ -25,7 +25,7 @@ anchor_point: center
 {
 type: 4
 path: item\box.png
-size: 80, 80
+size: 84, 84
 length: 1
 anchor_point: center
 additional_properties: wood
@@ -34,7 +34,7 @@ additional_properties: wood
 {
 type: 5
 path: item\brick_gold.png
-size: 80, 80
+size: 84, 84
 length: 1
 anchor_point: center
 additional_properties: gold
@@ -43,7 +43,7 @@ additional_properties: gold
 {
 type: 6
 path: item\brick_turquoise.png
-size: 80, 80
+size: 84, 84
 length: 1
 anchor_point: center
 additional_properties: unbreakable
@@ -52,7 +52,7 @@ additional_properties: unbreakable
 {
 type: 7
 path: item\brick.png
-size: 80, 80
+size: 84, 84
 length: 1
 anchor_point: center
 }
