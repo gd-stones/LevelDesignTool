@@ -1,4 +1,0 @@
-[item_carnivorous_flower]
-position 447 165
-[item_fish]
-position 744 0

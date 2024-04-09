@@ -1,0 +1,277 @@
+[item_coin]
+position 3943 750
+[item_coin]
+position 4025 750
+[item_coin]
+position 3301 749
+[item_coin]
+position 3222 748
+[item_coin]
+position 3381 748
+[item_coin]
+position 3861 747
+[item_flag]
+position 16244 463
+[item_brick]
+position 460 680
+[item_brick]
+position 545 680
+[item_brick]
+position 631 679
+[item_box]
+position 15473 653
+[item_box]
+position 15564 652
+[item_brick]
+position 3217 620
+[item_brick]
+position 3298 620
+[item_brick]
+position 3861 620
+[item_brick]
+position 3943 620
+[item_brick]
+position 4026 620
+[item_brick]
+position 3382 619
+[item_brick]
+position 6661 579
+[item_brick_gold]
+position 6746 579
+[item_brick]
+position 6831 579
+[item_box]
+position 15383 563
+[item_box]
+position 15473 563
+[item_box]
+position 15564 563
+[item_castle]
+position 16634 374
+[item_brick]
+position 9651 541
+[item_brick]
+position 9736 541
+[item_brick]
+position 9821 541
+[item_coin]
+position 5925 550
+[item_coin]
+position 6014 550
+[item_coin]
+position 6094 549
+[item_brick_gold]
+position 3601 520
+[item_vial]
+position 379 481
+[item_box]
+position 15295 473
+[item_box]
+position 15384 472
+[item_box]
+position 15473 472
+[item_box]
+position 15564 472
+[item_brick]
+position 9355 460
+[item_brick]
+position 9441 460
+[item_brick]
+position 10055 458
+[item_brick]
+position 10140 458
+[item_brick]
+position 8280 440
+[item_brick]
+position 8365 440
+[item_root]
+position 6316 397
+[item_brick]
+position 375 401
+[item_brick_gold]
+position 460 401
+coin
+[item_brick]
+position 546 401
+[item_brick_gold]
+position 632 401
+bomb
+[item_brick]
+position 718 401
+[item_brick]
+position 4821 400
+coin
+[item_brick_gold]
+position 9732 398
+diamond
+[item_box]
+position 15205 383
+[item_box]
+position 15294 382
+[item_box]
+position 15474 382
+[item_box]
+position 15384 381
+[item_box]
+position 15564 381
+[item_brick]
+position 9057 381
+[item_brick]
+position 9141 381
+[item_brick]
+position 10379 378
+[item_brick]
+position 10465 378
+[item_mushroom]
+position 12551 376
+[item_coin]
+position 2232 369
+[item_coin]
+position 2327 369
+[item_coin]
+position 2607 368
+[item_coin]
+position 2701 367
+[item_mushroom]
+position 6706 354
+[item_coin]
+position 11526 311
+[item_coin]
+position 11617 310
+[item_coin]
+position 11710 310
+[item_bridge]
+position 12452 301
+width 300
+[item_box]
+position 15116 293
+[item_box]
+position 15207 292
+[item_box]
+position 15296 292
+[item_box]
+position 15563 292
+[item_box]
+position 15473 291
+[item_box]
+position 15385 290
+[item_root]
+position 8635 240
+[item_root]
+position 3606 239
+[item_coin]
+position 9636 286
+[item_coin]
+position 9830 286
+[item_coin]
+position 9732 285
+[item_islet_tall]
+position 12289 158
+width 170
+[item_islet_tall]
+position 12724 158
+width 170
+[item_ground]
+position 5716 312
+width 1470
+[item_mario]
+position 206 203
+[item_box]
+position 15024 203
+[item_box]
+position 15116 203
+[item_box]
+position 15207 203
+[item_box]
+position 15384 202
+[item_box]
+position 15296 201
+[item_box]
+position 15565 201
+[item_box]
+position 15474 200
+[item_snail]
+position 14482 201
+[item_snail]
+position 8838 200
+[item_mushroom]
+position 3942 196
+[item_mushroom]
+position 3121 194
+[item_mushroom]
+position 863 193
+[item_island]
+position 2645 185
+[item_island]
+position 2279 184
+[item_island]
+position 4831 149
+[item_bridge]
+position 9529 148
+width 500
+[item_ground]
+position 0 155
+width 1960
+[item_ground]
+position 2980 155
+width 1470
+[item_ground]
+position 5215 155
+width 245
+[item_ground]
+position 5716 155
+width 1470
+[item_ground]
+position 8002 155
+width 1470
+[item_ground]
+position 9987 155
+width 980
+[item_ground]
+position 11230 155
+width 245
+[item_ground]
+position 11739 155
+width 245
+[item_ground]
+position 13117 155
+width 245
+[item_ground]
+position 13625 155
+width 245
+[item_ground]
+position 14133 155
+width 2940
+[item_water]
+position 1958 100
+width 1020
+[item_water]
+position 4449 100
+width 765
+[item_water]
+position 5459 100
+width 255
+[item_water]
+position 9472 100
+width 510
+[item_water]
+position 10971 100
+width 255
+[item_water]
+position 11480 100
+width 255
+[item_water]
+position 11987 100
+width 255
+[item_water]
+position 12422 100
+width 255
+[item_water]
+position 12857 100
+width 255
+[item_water]
+position 13366 100
+width 255
+[item_water]
+position 13874 100
+width 255

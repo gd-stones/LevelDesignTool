@@ -1,0 +1,10 @@
+[item_ground]
+high mound
+position 1021 362
+width 93
+[item_ground]
+position 284 180
+width 277
+[item_water]
+position 650 115
+width 294

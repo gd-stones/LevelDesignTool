@@ -1,0 +1,150 @@
+[item_flag]
+position 14979 460
+[item_coin]
+position 2805 631
+[item_coin]
+position 2886 630
+[item_coin]
+position 2972 630
+[item_coin]
+position 3063 629
+[item_coin]
+position 3159 629
+[item_coin]
+position 12943 590
+[item_coin]
+position 13031 590
+[item_coin]
+position 13115 589
+[item_castle]
+position 15578 375
+[item_mushroom]
+position 3027 480
+[item_brick]
+position 4711 440
+[item_brick]
+position 4795 440
+[item_brick]
+position 5401 440
+[item_brick]
+position 5487 440
+[item_brick]
+position 5573 440
+shield
+[item_brick]
+position 4625 439
+[item_brick]
+position 5658 439
+coin
+[item_brick]
+position 2699 401
+[item_brick]
+position 2869 401
+[item_brick]
+position 12861 400
+[item_brick]
+position 12946 400
+[item_brick]
+position 13030 400
+[item_brick]
+position 13116 400
+[item_brick]
+position 13200 400
+coin
+[item_brick]
+position 141 398
+[item_brick]
+position 3040 398
+[item_brick]
+position 3209 398
+[item_brick]
+position 481 395
+[item_coin]
+position 10153 390
+[item_coin]
+position 10310 390
+[item_coin]
+position 10387 390
+[item_coin]
+position 10233 389
+[item_coin]
+position 10473 388
+[item_brick]
+position 327 373
+[item_coin]
+position 1566 369
+[item_coin]
+position 1664 369
+[item_coin]
+position 1764 369
+[item_coin]
+position 1855 368
+[item_root]
+position 5096 240
+[item_root]
+position 8477 240
+[item_root]
+position 3456 239
+[item_root]
+position 2417 238
+[item_mario]
+position 102 204
+[item_snail]
+position 5277 200
+[item_snail]
+position 10251 197
+[item_mushroom]
+position 6144 196
+[item_mushroom]
+position 8740 196
+[item_mushroom]
+position 2953 195
+[item_mushroom]
+position 12907 195
+[item_mushroom]
+position 10822 194
+[item_ground]
+position 0 155
+width 1960
+[item_ground]
+position 2224 155
+width 1470
+[item_ground]
+position 3958 155
+width 2940
+[item_ground]
+position 7164 155
+width 245
+[item_ground]
+position 7672 155
+width 245
+[item_ground]
+position 8181 155
+width 1470
+[item_ground]
+position 9916 155
+width 1960
+[item_ground]
+position 12140 155
+width 3920
+[item_water]
+position 1965 100
+width 255
+[item_water]
+position 3698 100
+width 255
+[item_water]
+position 6903 100
+width 255
+[item_water]
+position 7413 100
+width 255
+[item_water]
+position 7922 100
+width 255
+[item_water]
+position 9656 100
+width 255
+[item_water]
+position 11880 100
+width 255

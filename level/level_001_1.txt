@@ -1,0 +1,33 @@
+[item_coin]
+position 418 629
+[item_coin]
+position 580 629
+[item_coin]
+position 668 629
+[item_coin]
+position 752 629
+[item_coin]
+position 934 629
+[item_coin]
+position 498 628
+[item_coin]
+position 840 628
+[item_coin]
+position 417 521
+[item_coin]
+position 753 521
+[item_coin]
+position 497 520
+[item_coin]
+position 579 520
+[item_coin]
+position 668 520
+[item_coin]
+position 841 520
+[item_coin]
+position 933 520
+[item_brick]
+unbreakable
+position 1115 450
+[item_root]
+position 1369 166

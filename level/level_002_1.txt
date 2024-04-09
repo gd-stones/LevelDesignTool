@@ -1,0 +1,145 @@
+[item_brick_turquoise]
+position 40 891
+[item_brick_turquoise]
+position 1659 888
+[item_brick_turquoise]
+position 40 806
+[item_brick_turquoise]
+position 1660 804
+[item_coin]
+position 759 805
+[item_coin]
+position 667 804
+[item_coin]
+position 843 804
+[item_brick_turquoise]
+position 39 720
+[item_brick_turquoise]
+position 1660 720
+[item_brick_turquoise]
+position 1659 636
+[item_brick_turquoise]
+position 40 634
+[item_brick_turquoise]
+position 582 601
+[item_brick_turquoise]
+position 666 601
+[item_brick_turquoise]
+position 751 601
+[item_brick_turquoise]
+position 837 600
+[item_brick_turquoise]
+position 922 599
+[item_brick_turquoise]
+position 1659 551
+[item_brick_turquoise]
+position 39 549
+[item_coin]
+position 667 507
+[item_coin]
+position 920 507
+[item_coin]
+position 582 506
+[item_coin]
+position 753 505
+[item_coin]
+position 837 505
+[item_brick_turquoise]
+position 1659 466
+[item_brick_turquoise]
+position 39 464
+[item_brick_turquoise]
+position 1658 381
+[item_brick_turquoise]
+position 39 379
+[item_brick_turquoise]
+position 406 320
+[item_brick_turquoise]
+position 492 320
+[item_brick_turquoise]
+position 578 320
+[item_brick_turquoise]
+position 663 320
+[item_brick_turquoise]
+position 749 320
+coin
+[item_brick_turquoise]
+position 835 320
+[item_brick_turquoise]
+position 922 320
+[item_brick_turquoise]
+position 1009 320
+[item_brick_turquoise]
+position 1095 320
+[item_brick_turquoise]
+position 1657 296
+[item_brick_turquoise]
+position 39 295
+[item_coin]
+position 489 230
+[item_coin]
+position 576 230
+[item_coin]
+position 660 230
+[item_coin]
+position 917 230
+[item_coin]
+position 1004 230
+[item_coin]
+position 1091 230
+[item_coin]
+position 400 229
+[item_coin]
+position 746 229
+[item_coin]
+position 832 229
+[item_brick_turquoise]
+position 39 211
+[item_brick_turquoise]
+position 1656 210
+[item_root]
+position 1480 165
+[item_brick_turquoise]
+position 40 125
+[item_brick_turquoise]
+position 1655 125
+[item_brick_turquoise]
+position 40 40
+[item_brick_turquoise]
+position 125 40
+[item_brick_turquoise]
+position 210 40
+[item_brick_turquoise]
+position 295 40
+[item_brick_turquoise]
+position 379 40
+[item_brick_turquoise]
+position 462 40
+[item_brick_turquoise]
+position 546 40
+[item_brick_turquoise]
+position 630 40
+[item_brick_turquoise]
+position 715 40
+[item_brick_turquoise]
+position 801 40
+[item_brick_turquoise]
+position 886 40
+[item_brick_turquoise]
+position 972 40
+[item_brick_turquoise]
+position 1058 40
+[item_brick_turquoise]
+position 1143 40
+[item_brick_turquoise]
+position 1229 40
+[item_brick_turquoise]
+position 1314 40
+[item_brick_turquoise]
+position 1400 40
+[item_brick_turquoise]
+position 1485 40
+[item_brick_turquoise]
+position 1570 40
+[item_brick_turquoise]
+position 1654 40

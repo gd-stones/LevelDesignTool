@@ -1,0 +1,271 @@
+{
+type: 1
+path: item\bee.png
+size: 75, 105
+length: 1
+anchor_point: center
+}
+
+{
+type: 2
+path: item\bird.png
+size: 150, 80
+length: 1
+anchor_point: center
+}
+
+{
+type: 3
+path: item\bomb.png
+size: 30, 30
+length: 1
+anchor_point: center
+}
+
+{
+type: 4
+path: item\box.png
+size: 80, 80
+length: 1
+anchor_point: center
+additional_properties: wood
+}
+
+{
+type: 5
+path: item\brick_gold.png
+size: 80, 80
+length: 1
+anchor_point: center
+additional_properties: gold
+}
+
+{
+type: 6
+path: item\brick_turquoise.png
+size: 80, 80
+length: 1
+anchor_point: center
+additional_properties: unbreakable
+}
+
+{
+type: 7
+path: item\brick.png
+size: 80, 80
+length: 1
+anchor_point: center
+}
+
+{
+type: 8
+path: item\bridge.png
+size: 100, 70
+length: 1
+anchor_point: center
+}
+
+{
+type: 9
+path: item\carnivorous_flower.png
+size: 70, 105
+length: 1
+anchor_point: center
+}
+
+{
+type: 10
+path: item\castle.png
+size: 400, 430
+length: 1
+anchor_point: center
+}
+
+{
+type: 11
+path: item\coin.png
+size: 50, 60
+length: 1
+anchor_point: center
+}
+
+{
+type: 12
+path: item\crab.png
+size: 100, 80
+length: 1
+anchor_point: center
+}
+
+{
+type: 13
+path: item\diamond.png
+size: 55, 45
+length: 1
+anchor_point: center
+}
+
+{
+type: 14
+path: item\fish.png
+size: 115, 55
+length: 1
+anchor_point: center
+}
+
+{
+type: 15
+path: item\flag.png
+size: 85, 605
+length: 1
+anchor_point: center
+}
+
+{
+type: 16
+path: item\flat.png
+size: 190, 25
+length: 1
+anchor_point: center
+}
+
+{
+type: 17
+path: item\frog.png
+size: 68, 68
+length: 1
+anchor_point: center
+}
+
+{
+type: 18
+path: item\ground.png
+size: 277, 180
+length: 1
+anchor_point: top_left
+}
+
+{
+type: 19
+path: item\island.png
+size: 245, 70
+length: 1
+anchor_point: top_left
+additional_properties: island
+}
+
+{
+type: 20
+path: item\islet.png
+size: 85, 60
+length: 1
+anchor_point: top_left
+additional_properties: islet
+}
+
+{
+type: 21
+path: item\islet_tall.png
+size: 93, 362
+length: 1
+anchor_point: top_left
+additional_properties: high mound
+}
+
+{
+type: 22
+path: item\mario.png
+size: 75, 85
+length: 1
+anchor_point: center
+}
+
+{
+type: 23
+path: item\mario_big.png
+size: 100, 135
+length: 1
+anchor_point: center
+additional_properties: big
+}
+
+{
+type: 24
+path: item\mushroom.png
+size: 75, 70
+length: 1
+anchor_point: center
+}
+
+{
+type: 25
+path: item\octopus.png
+size: 105, 65
+length: 1
+anchor_point: center
+}
+
+{
+type: 26
+path: item\root.png
+size: 150, 160
+length: 1
+anchor_point: center
+}
+
+{
+type: 27
+path: item\shield.png
+size: 60, 55
+length: 1
+anchor_point: center
+}
+
+{
+type: 28
+path: item\snail.png
+size: 115, 80
+length: 1
+anchor_point: center
+}
+
+{
+type: 29
+path: item\snail_shell.png
+size: 70, 65
+length: 1
+anchor_point: center
+additional_properties: shell
+}
+
+{
+type: 30
+path: item\spike.png
+size: 80, 70
+length: 1
+anchor_point: center
+}
+
+{
+type: 31
+path: item\spring.png
+size: 80, 75
+length: 1
+anchor_point: center
+}
+
+{
+type: 32
+path: item\vial.png
+size: 60, 70
+length: 1
+anchor_point: center
+}
+
+{
+type: 33
+path: item\water.png
+size: 294, 115
+length: 1
+anchor_point: top_left
+}
