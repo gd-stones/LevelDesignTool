@@ -13,9 +13,10 @@ namespace LevelDesignTool
         public string ItemAttached = "";
         public string AnchorPoint = "";
         public string AdditionalProperties = "";
+        public string OtherNotes = "";
 
 #pragma warning disable CS8618
-        public Item(Image Img, Size Sz, int Type, int Length, string AnchorPoint, string AddProp)
+        public Item(Image Img, Size Sz, int Type, int Length, string AnchorPoint)
 #pragma warning restore CS8618
         {
             this.Img = Img;
@@ -23,7 +24,6 @@ namespace LevelDesignTool
             this.Type = Type;
             this.Length = Length;
             this.AnchorPoint = AnchorPoint;
-            AdditionalProperties = AddProp;
         }
 
         public PictureBox GenerateImage(Point Pos)

@@ -1,5 +1,9 @@
-﻿using System.Text;
+﻿using System.Numerics;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 
 namespace LevelDesignTool
@@ -7,58 +11,86 @@ namespace LevelDesignTool
     public partial class LDT_v2 : Form
     {
         const int GridSize = 45;
-        const int MapToolWidth = 32000;
-        const int MapToolHeight = 1000;
+        const int MapToolWidth = 31500;
+        const int MapToolHeight = 990;
 
+        int SwitchModeCommittingAndEditing = 2; // 2 = Editing && 1 = Committing; Can only be set to 1 or 2
         List<Item> OriginalItems = new List<Item>();
+        List<(string, string, string, string, string, string)> ItemInformation = new List<(string, string, string, string, string, string)>();
         Panel? ActivateItemPanel = null;
+        Panel? CurrentDragPanel;
+        PictureBox? SelectedPictureBox = null;
+        Point DragOffset;
+
+        string ProjectDirectory;
+        string FileOpen;
+        bool IsDragging;
+        bool IsF1KeyPress = false;
+        bool MoveItemUsingKeysFlag = true;
         int SelectedItemType = 0;
         int OlderSelectedItemType = 0;
-        Panel? CurrentDragPanel;
-        Point DragOffset;
-        bool IsDragging;
-        string ProjectDirectory = "";
-        int SwitchModeCommittingAndEditing = 2; // 2 = Editing && 1 = Committing; Can only be set to 1 or 2
 
-        int MaxPosYGround_BottomLeft = 362;
-        int MinPosYGround_BottomLeft = 180;
-        int MaxPosYWater_BottomLeft = 115;
-        int MaxPosYGround_TopLeft;
-        int MinPosYGround_TopLeft;
-        int MaxPosYWater_TopLeft;
+        int Tier1PosYGround_BottomLeft = 90;
+        int Tier2PosYGround_BottomLeft = 180;
+        int Tier3PosYGround_BottomLeft = 270;
+        int Tier4PosYGround_BottomLeft = 362;
+        int Tier5PosYGround_BottomLeft = 452;
+        int Tier6PosYGround_BottomLeft = 543;
+
+        int Tier1PosYGround_TopLeft;
+        int Tier2PosYGround_TopLeft;
+        int Tier3PosYGround_TopLeft;
+        int Tier4PosYGround_TopLeft;
+        int Tier5PosYGround_TopLeft;
+        int Tier6PosYGround_TopLeft;
+
+        int Tier1PosYWater_BottomLeft = 64;
+        int Tier2PosYWater_BottomLeft = 115;
+        int Tier1PosYWater_TopLeft;
+        int Tier2PosYWater_TopLeft;
+
         int Border = 3;
+        int AdjHeight = 985; // MapToolHeight - 2 * Border + 1
 
-        bool IsF1KeyPress = false;
-
-        int BrickSize = 80;
-        List<Point> BrickPoints = new List<Point>();
-
-        bool EditItemFlag = false;
-
+#pragma warning disable CS8618
         public LDT_v2()
+#pragma warning restore CS8618
         {
             InitializeComponent();
+            InitializeForm();
+            GetProjectDirectory();
 
+            ReadItemsTypeFile();
+            DisplayItemsType();
+
+            InitializePanelMapTool();
+            ReadItemsFile();
+            DisplayItems();
+
+            TextboxItemContent.MouseClick += TextboxItemContent_MouseClick;
+        }
+
+        #region Initialize Form
+        void InitializeForm()
+        {
+            WindowState = FormWindowState.Maximized;
+            KeyPreview = true;
+            KeyDown += MainForm_KeyDown;
+            KeyUp += MainForm_KeyUp;
+            Load += Form_Load;
+        }
+
+        void GetProjectDirectory()
+        {
             if (SwitchModeCommittingAndEditing == 2)
 #pragma warning disable CS8602
                 ProjectDirectory = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.Parent.FullName;
             else if (SwitchModeCommittingAndEditing == 1)
                 ProjectDirectory = Directory.GetParent(Directory.GetCurrentDirectory()).FullName;
-
-            ReadItemsTypeFile();
-            DisplayItemsType();
-            InitializeMapToolPanel();
-            ReadItemsFile();
-            DisplayItems();
-
-            this.KeyPreview = true;
-            this.KeyDown += MainForm_KeyDown;
-            this.KeyUp += MainForm_KeyUp;
-            this.Load += Form_Load;
         }
+        #endregion
 
-
-        #region Display item type in panel Item_List_View
+        #region Display item type in panel PanelItemListView
         void DisplayItemsType()
         {
             int x = 10;
@@ -69,17 +101,17 @@ namespace LevelDesignTool
                 PictureBox Pb = new PictureBox();
                 Pb = ItemType.GenerateImage(new Point(x, y));
                 Pb.MouseDown += PictureBox_MouseDown;
-                Item_List_View.Controls.Add(Pb);
+                PanelItemListView.Controls.Add(Pb);
 
                 x += Pb.Width + 10;
-                if (x + Pb.Width > Item_List_View.Width)
+                if (x + Pb.Width > PanelItemListView.Width)
                 {
                     x = 10;
                     y += Pb.Height + 10;
                 }
             }
 
-            Item_List_View.MouseDown += ItemListView_MouseDown;
+            PanelItemListView.MouseDown += ItemListView_MouseDown;
         }
 
         void ReadItemsTypeFile()
@@ -121,7 +153,9 @@ namespace LevelDesignTool
                     if (!string.IsNullOrEmpty(ImagePath) && File.Exists(ImagePath))
                     {
                         Image Img = Image.FromFile(ImagePath);
-                        Item It = new Item(Img, Sz, Type, Length, AnchorPoint, AdditionalProperties);
+                        Item It = new Item(Img, Sz, Type, Length, AnchorPoint);
+                        if (AdditionalProperties != "")
+                            It.AdditionalProperties = AdditionalProperties;
                         OriginalItems.Add(It);
                     }
                     continue;
@@ -171,8 +205,6 @@ namespace LevelDesignTool
                 Tinge == "red" ? Color.Red : Color.Green, BorderThickness, ButtonBorderStyle.Solid);
         }
 
-        PictureBox? SelectedPictureBox = null;
-
         void PictureBox_MouseDown(object? sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -206,21 +238,33 @@ namespace LevelDesignTool
         }
         #endregion
 
-        #region Initialize panel Map_Tool
-        void InitializeMapToolPanel()
+        #region Initialize PanelMapTool
+        void InitializePanelMapTool()
         {
-            if (SwitchModeCommittingAndEditing == 2)
-                Map_Tool.Paint += Map_Tool_DrawGrid;
+            PanelMapTool.Paint += PanelMapTool_DrawGrid;
 
-            MaxPosYGround_TopLeft = 1000 - MaxPosYGround_BottomLeft - 2 * Border + 1;
-            MinPosYGround_TopLeft = 1000 - MinPosYGround_BottomLeft - 2 * Border + 1;
-            MaxPosYWater_TopLeft = 1000 - MaxPosYWater_BottomLeft - 2 * Border + 1;
-            Map_Tool.Paint += DrawLandAndWaterBoundaries;
+            Tier1PosYGround_TopLeft = MapToolHeight - Tier1PosYGround_BottomLeft - 2 * Border + 1;
+            Tier2PosYGround_TopLeft = MapToolHeight - Tier2PosYGround_BottomLeft - 2 * Border + 1;
+            Tier3PosYGround_TopLeft = MapToolHeight - Tier3PosYGround_BottomLeft - 2 * Border + 1;
+            Tier4PosYGround_TopLeft = MapToolHeight - Tier4PosYGround_BottomLeft - 2 * Border + 1;
+            Tier5PosYGround_TopLeft = MapToolHeight - Tier5PosYGround_BottomLeft - 2 * Border + 1;
+            Tier6PosYGround_TopLeft = MapToolHeight - Tier6PosYGround_BottomLeft - 2 * Border + 1;
 
-            Map_Tool.MouseClick += Map_Tool_MouseClick;
-            Map_Tool.AutoScrollMinSize = new Size(MapToolWidth, MapToolHeight);
-            Map_Tool.AutoScroll = true;
-            Map_Tool.AllowDrop = true;
+            Tier1PosYWater_TopLeft = MapToolHeight - Tier1PosYWater_BottomLeft - 2 * Border + 1;
+            Tier2PosYWater_TopLeft = MapToolHeight - Tier2PosYWater_BottomLeft - 2 * Border + 1;
+
+            PanelMapTool.Paint += DrawLandAndWaterBoundaries;
+
+            PanelMapTool.MouseDown += PanelMapTool_MouseDown;
+            PanelMapTool.MouseUp += PanelMapTool_MouseUp;
+            PanelMapTool.MouseMove += PanelMapTool_MouseMove;
+
+            PanelMapTool.AutoScrollMinSize = new Size(MapToolWidth, MapToolHeight);
+            PanelMapTool.AutoScroll = true;
+            PanelMapTool.AllowDrop = true;
+
+            PanelMapTool.MouseWheel += PanelMapTool_MouseWheel;
+            PanelMapTool.Scroll += PanelMapTool_Scroll;
         }
 
         void Item_ItemClicked(object? sender, int Type)
@@ -235,15 +279,16 @@ namespace LevelDesignTool
             Pen p1 = new Pen(Color.Brown);
             Pen p2 = new Pen(Color.LightSkyBlue);
 
-            g.DrawLine(p1, 0, MaxPosYGround_TopLeft, MapToolWidth, MaxPosYGround_TopLeft);
-            g.DrawLine(p1, 0, MinPosYGround_TopLeft, MapToolWidth, MinPosYGround_TopLeft);
-            g.DrawLine(p2, 0, MaxPosYWater_TopLeft, MapToolWidth, MaxPosYWater_TopLeft);
+            g.DrawLine(p1, 0, Tier2PosYGround_TopLeft, MapToolWidth, Tier2PosYGround_TopLeft);
+            g.DrawLine(p1, 0, Tier4PosYGround_TopLeft, MapToolWidth, Tier4PosYGround_TopLeft);
+
+            g.DrawLine(p2, 0, Tier2PosYWater_TopLeft, MapToolWidth, Tier2PosYWater_TopLeft);
 
             p1.Dispose();
             p2.Dispose();
         }
 
-        void Map_Tool_DrawGrid(object? sender, PaintEventArgs e)
+        void PanelMapTool_DrawGrid(object? sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
             Pen p = new Pen(Color.Black);
@@ -262,12 +307,28 @@ namespace LevelDesignTool
             }
             p.Dispose();
         }
+
+        int HorizontalScrollPosition = 0;
+        void PanelMapTool_MouseWheel(object? sender, MouseEventArgs e)
+        {
+            int ScrollDirection = e.Delta > 0 ? -1 : 1;
+            int NewScrollPosition = HorizontalScrollPosition + (GridSize * ScrollDirection);
+
+            HorizontalScrollPosition = Math.Max(0, Math.Min(NewScrollPosition, MapToolWidth - PanelMapTool.Width));
+            PanelMapTool.AutoScrollPosition = new Point(HorizontalScrollPosition, 0);
+        }
+
+        void PanelMapTool_Scroll(object? sender, ScrollEventArgs e)
+        {
+            int scrollChange = e.NewValue - e.OldValue;
+            int scrollAmount = Math.Sign(scrollChange) * GridSize;
+
+            HorizontalScrollPosition = Math.Max(0, Math.Min(HorizontalScrollPosition + scrollAmount, MapToolWidth - PanelMapTool.Width));
+            PanelMapTool.AutoScrollPosition = new Point(HorizontalScrollPosition, 0);
+        }
         #endregion
 
-        #region Display items in Map_Tool panel
-        string FileOpen = "";
-        List<(string, string, string, string, string)> ItemInformation = new List<(string, string, string, string, string)>();
-
+        #region Display items in PanelMapTool
         void ExtractItemInformation(string[] Lines)
         {
             ItemInformation.Clear();
@@ -277,19 +338,21 @@ namespace LevelDesignTool
             string CurrentWidth = "";
             string CurrentItemAttached = "";
             string CurrentAddProp = "";
+            string CurrentOtherNotes = "";
 
             foreach (string line in Lines)
             {
                 if (line.StartsWith("[") && line.EndsWith("]"))
                 {
                     if (!string.IsNullOrEmpty(CurrentName) && !string.IsNullOrEmpty(CurrentPosition))
-                        ItemInformation.Add((CurrentName, CurrentPosition, CurrentWidth, CurrentItemAttached, CurrentAddProp));
+                        ItemInformation.Add((CurrentName, CurrentPosition, CurrentWidth, CurrentItemAttached, CurrentAddProp, CurrentOtherNotes));
 
                     CurrentName = line.Trim('[', ']');
                     CurrentPosition = "";
                     CurrentWidth = "";
                     CurrentItemAttached = "";
                     CurrentAddProp = "";
+                    CurrentOtherNotes = "";
                 }
                 else if (line.StartsWith("position"))
                     CurrentPosition = line.Replace("position ", "");
@@ -298,12 +361,14 @@ namespace LevelDesignTool
                 else if (line.StartsWith("bomb") || line.StartsWith("coin") || line.StartsWith("diamond") || line.StartsWith("vial") || line.StartsWith("shield"))
                     CurrentItemAttached = line;
                 else if (line.StartsWith("wood") || line.StartsWith("gold") || line.StartsWith("unbreakable") || line.StartsWith("island") || line.StartsWith("islet")
-                    || line.StartsWith("high") || line.StartsWith("big") || line.StartsWith("shell"))
+                    || line.StartsWith("high") || line.StartsWith("low") || line.StartsWith("big") || line.StartsWith("shell"))
                     CurrentAddProp = line;
+                else if (line != "" && line != "/n")
+                    CurrentOtherNotes = CurrentOtherNotes + line + " - ";
             }
 
             if (!string.IsNullOrEmpty(CurrentName) && !string.IsNullOrEmpty(CurrentPosition))
-                ItemInformation.Add((CurrentName, CurrentPosition, CurrentWidth, CurrentItemAttached, CurrentAddProp));
+                ItemInformation.Add((CurrentName, CurrentPosition, CurrentWidth, CurrentItemAttached, CurrentAddProp, CurrentOtherNotes));
         }
 
         void ReadItemsFile(int Flag = 0)
@@ -311,9 +376,9 @@ namespace LevelDesignTool
             if (Flag == 0)
             {
                 if (SwitchModeCommittingAndEditing == 2)
-                    FileOpen = Path.Combine(ProjectDirectory, "level\\level_009.txt");
+                    FileOpen = Path.Combine(ProjectDirectory, "level\\level_009_1.txt");
                 else if (SwitchModeCommittingAndEditing == 1)
-                    FileOpen = Path.Combine(ProjectDirectory, "Map Editor\\level\\level_009.txt");
+                    FileOpen = Path.Combine(ProjectDirectory, "Map Editor\\level\\level_009_1.txt");
             }
 
             string[] Lines = File.ReadAllLines(FileOpen);
@@ -328,20 +393,31 @@ namespace LevelDesignTool
                 Point Position = ConvertPositionToPoint(It.Item2);
                 int Width = GetWidthFromName(It.Item3);
                 string Attached = It.Item4;
-                string Prop = It.Item5;
+                string AddProp = It.Item5;
+                string OtherNotes = It.Item6;
 
                 Item? OriginalItem = OriginalItems.FirstOrDefault(i => i.Type == Type);
                 if (OriginalItem != null)
                 {
                     Item NewItem = new Item(OriginalItem.Img, OriginalItem.Sz, OriginalItem.Type,
-                        Width > 0 ? Width / OriginalItem.Sz.Width : OriginalItem.Length, OriginalItem.AnchorPoint, Prop);
-                    NewItem.ItemAttached = Attached;
+                        Width > 0 ? Width / OriginalItem.Sz.Width : OriginalItem.Length, OriginalItem.AnchorPoint);
+
+                    if (AddProp != "")
+                        NewItem.AdditionalProperties = AddProp;
+
+                    if (Attached != "")
+                        NewItem.ItemAttached = Attached;
+
+                    if (OtherNotes != "")
+                        NewItem.OtherNotes = OtherNotes;
+
                     CreateItemAtLocation(NewItem, Position, 0);
                 }
             }
 
             SetActiveItemPanel(null);
-            Item_Content.Clear();
+            TextboxItemContent.Clear();
+            PanelMapTool.Focus();
         }
 
         Point ConvertPositionToPoint(string Position)
@@ -362,195 +438,16 @@ namespace LevelDesignTool
         }
         #endregion
 
-        #region Handles events from the keyboard
-        void MainForm_KeyDown(object? sender, KeyEventArgs e)
-        {
-            switch (e.KeyCode)
-            {
-                case Keys.Delete:
-                    DeleteItem();
-                    break;
-                case Keys.Q:
-                    {
-                        MessageBox.Show("qqqqqq");
-
-                        SelectedItemType = OlderSelectedItemType;
-
-                        if (SelectedPictureBox != null)
-                            DrawBorderForItemType(SelectedPictureBox, "green");
-                        break;
-                    }
-                case Keys.F1:
-                    {
-                        IsF1KeyPress = true;
-                        break;
-                    }
-                case Keys.W:
-                    {
-                        if (!EditItemFlag)
-                        {
-                            MoveItemUseArrowKeys(1);
-                        }
-                        break;
-                    }
-                case Keys.A:
-                    {
-                        if (!EditItemFlag)
-                        {
-                            MoveItemUseArrowKeys(2);
-                        }
-                        break;
-                    }
-                case Keys.S:
-                    {
-                        if (!EditItemFlag)
-                        {
-                            MoveItemUseArrowKeys(3);
-                        }
-                        break;
-                    }
-                case Keys.D:
-                    {
-                        if (!EditItemFlag)
-                        {
-                            MoveItemUseArrowKeys(4);
-                        }
-                        break;
-                    }
-            }
-            //if (e.Alt)
-            //{
-            //    IsF1KeyPress = true;
-            //    MessageBox.Show("KeyDown Alt");
-            //}
-        }
-
-        void MainForm_KeyUp(object? sender, KeyEventArgs e)
-        {
-            //if (e.Alt)
-            //{
-            //    IsF1KeyPress = false;
-            //    MessageBox.Show($"{IsF1KeyPress}");
-            //}
-            switch (e.KeyCode)
-            {
-                case Keys.F1:
-                    {
-                        IsF1KeyPress = false;
-                        //MessageBox.Show($"{IsF1KeyPress}");
-                        break;
-                    }
-                    //case Keys.Alt:
-                    //    {
-                    //        IsF1KeyPress = false;
-                    //        MessageBox.Show($"{IsF1KeyPress}");
-                    //        break;
-                    //    }
-            }
-        }
-
-        void LDT_v2_KeyUp(object sender, KeyEventArgs e)
-        {
-            //if (e.KeyCode == Keys.Enter)
-            //{
-            //    IsF1KeyPress = true;
-            //    MessageBox.Show("KeyUp Enter");
-            //}
-            //if (e.KeyCode == Keys.Alt)
-            //{
-            //    IsF1KeyPress = false;
-            //    MessageBox.Show("KeyUp Alt");
-            //}
-            //if (ModifierKeys == (Keys.Control | Keys.Alt))
-            //{
-            //    IsF1KeyPress = false;
-            //    MessageBox.Show("KeyUp Alt");
-            //}
-            //if (Control.ModifierKeys.ToString() == "Alt" || Control.ModifierKeys == (Keys.Control | Keys.Alt))
-            //{
-            //    MessageBox.Show("The Alt key is being pressed");
-            //}
-        }
-
-        void LDT_v2_KeyPress(object sender, KeyPressEventArgs e)
-        {
-
-        }
-        #endregion
-
-        #region Use arrow keys to move items
-        void MoveItemUseArrowKeys(int Flag)
-        {
-            if (ActivateItemPanel != null)
-            {
-                Point RelativePos = ActivateItemPanel.Location; // Origin is top left
-                Point AbsolutePos = (ActivateItemPanel.Tag as Item).Position; // Origin is bottom left
-                switch (Flag)
-                {
-                    case 1: // up
-                        {
-                            RelativePos = new Point(RelativePos.X, RelativePos.Y - 1);
-                            AbsolutePos = new Point(AbsolutePos.X, AbsolutePos.Y + 1);
-                            break;
-                        }
-                    case 2: // left
-                        {
-                            RelativePos = new Point(RelativePos.X - 1, RelativePos.Y);
-                            AbsolutePos = new Point(AbsolutePos.X - 1, AbsolutePos.Y);
-                            break;
-                        }
-                    case 3: // down
-                        {
-                            RelativePos = new Point(RelativePos.X, RelativePos.Y + 1);
-                            AbsolutePos = new Point(AbsolutePos.X, AbsolutePos.Y - 1);
-                            break;
-                        }
-                    case 4: // right
-                        {
-                            RelativePos = new Point(RelativePos.X + 1, RelativePos.Y);
-                            AbsolutePos = new Point(AbsolutePos.X + 1, AbsolutePos.Y);
-                            break;
-                        }
-                }
-
-                ActivateItemPanel.Location = RelativePos;
-                (ActivateItemPanel.Tag as Item).Position = AbsolutePos;
-                DisplayItemInformation();
-            }
-        }
-
-        #endregion
-
-        #region Displays file name in title
-        void Form_Load(object? sender, EventArgs e)
-        {
-            UpdateFormTitle();
-        }
-
-        void UpdateFormTitle(int check = 1)
-        {
-            string FilePath = FileOpen;
-            string[] Values = FilePath.Split('\\');
-
-            if (check != 1)
-            {
-                this.Text = $"* {Values[Values.Length - 1]}";
-                return;
-            }
-            this.Text = $"{Values[Values.Length - 1]}";
-        }
-        #endregion
-
-        #region Generate item in Map_Top
-        int AdjHeight = 995;
-
+        #region Generate item in PanelMapTool
         Point ConvertRelativePosToAbsolutePos(Point RelativePos, int SzWidth, int SzHeight, string AnchorPoint = "center")
         {
-            Point ScrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
+            Point ScrollPosition = new Point(-PanelMapTool.AutoScrollPosition.X, -PanelMapTool.AutoScrollPosition.Y);
             Point AbsoluteLocation;
 
             if (AnchorPoint == "top_left")
                 AbsoluteLocation = new Point(RelativePos.X + ScrollPosition.X, AdjHeight - (RelativePos.Y + ScrollPosition.Y));
+            else if (AnchorPoint == "middle_bottom")
+                AbsoluteLocation = new Point(RelativePos.X + ScrollPosition.X + SzWidth / 2, AdjHeight - (RelativePos.Y + ScrollPosition.Y + SzHeight));
             else
                 AbsoluteLocation = new Point(RelativePos.X + ScrollPosition.X + SzWidth / 2, AdjHeight - (RelativePos.Y + ScrollPosition.Y + SzHeight / 2));
 
@@ -559,18 +456,22 @@ namespace LevelDesignTool
 
         Point ConvertAbsolutePosToRelativePos(Point AbsolutePos, int SzWidth, int SzHeight, string AnchorPoint = "center")
         {
-            Point ScrollPosition = new Point(-Map_Tool.AutoScrollPosition.X, -Map_Tool.AutoScrollPosition.Y);
+            Point ScrollPosition = new Point(-PanelMapTool.AutoScrollPosition.X, -PanelMapTool.AutoScrollPosition.Y);
             Point RelativeLocation;
 
             if (AnchorPoint == "top_left")
                 RelativeLocation = new Point(AbsolutePos.X - ScrollPosition.X, AdjHeight - (AbsolutePos.Y - ScrollPosition.Y));
+            else if (AnchorPoint == "middle_bottom")
+                RelativeLocation = new Point(AbsolutePos.X - ScrollPosition.X - SzWidth / 2, AdjHeight - (AbsolutePos.Y - ScrollPosition.Y + SzHeight));
             else
                 RelativeLocation = new Point(AbsolutePos.X - ScrollPosition.X - SzWidth / 2, AdjHeight - (AbsolutePos.Y - ScrollPosition.Y + SzHeight / 2));
 
             return RelativeLocation;
         }
 
-        void Map_Tool_MouseClick(object? sender, MouseEventArgs e)
+        bool FlagMoveItemAsSoonAsItIsCreated = false;
+
+        void PanelMapTool_MouseDown(object? sender, MouseEventArgs e)
         {
             if (SelectedItemType != 0)
             {
@@ -578,31 +479,49 @@ namespace LevelDesignTool
 
                 if (It != null)
                 {
-                    Item NewItem = new Item(It.Img, It.Sz, It.Type, It.Length, It.AnchorPoint, It.AdditionalProperties);
+                    Item NewItem = new Item(It.Img, It.Sz, It.Type, It.Length, It.AnchorPoint);
+
+                    if (It.AdditionalProperties != "")
+                        NewItem.AdditionalProperties = It.AdditionalProperties;
+
+                    FlagMoveItemAsSoonAsItIsCreated = true;
 
                     if (It.AnchorPoint == "center")
-                    {
                         CreateItemAtLocation(NewItem, new Point(e.Location.X - It.Sz.Width / 2, e.Location.Y - It.Sz.Height / 2));
-                    }
+                    else if (It.AnchorPoint == "middle_bottom")
+                        CreateItemAtLocation(NewItem, new Point(e.Location.X - It.Sz.Width / 2, e.Location.Y - It.Sz.Height));
                     else
                         CreateItemAtLocation(NewItem, e.Location);
                 }
 
                 SelectedItemType = 0;
+
                 if (SelectedPictureBox != null)
                     DrawBorderForItemType(SelectedPictureBox, "red");
             }
             else if (SelectedItemType == 0)
             {
-                Item_Content.Clear();
+                TextboxItemContent.Clear();
+                PanelMapTool.Focus();
                 SetActiveItemPanel(null);
 
-                foreach (Control control in Map_Tool.Controls)
+                foreach (Control control in PanelMapTool.Controls)
                 {
                     if (control is Panel Pn)
                         Pn.Invalidate();
                 }
             }
+        }
+
+        void PanelMapTool_MouseUp(object? sender, MouseEventArgs e)
+        {
+            FlagMoveItemAsSoonAsItIsCreated = false;
+            MouseUpp();
+        }
+
+        void PanelMapTool_MouseMove(object? sender, MouseEventArgs e)
+        {
+            MouseDrag();
         }
 
         PictureBox CreatePictureBoxItem(Item ItemType, int PosX)
@@ -663,16 +582,18 @@ namespace LevelDesignTool
         {
             if (Flag != 1)
             {
-                Map_Tool.AutoScrollPosition = new Point(0, 0);
+                PanelMapTool.AutoScrollPosition = new Point(0, 0);
                 NewItem.Position = Pos;
                 Pos = ConvertAbsolutePosToRelativePos(Pos, NewItem.Sz.Width, NewItem.Sz.Height, NewItem.AnchorPoint);
             }
             else
             {
                 if (NewItem.Type == 4 || NewItem.Type == 5 || NewItem.Type == 6 || NewItem.Type == 7)
-                    Pos = new Point((Pos.X / 45) * 45, (Pos.Y / 45) * 45);
-                else
-                    NewItem.Position = ConvertRelativePosToAbsolutePos(Pos, NewItem.Sz.Width, NewItem.Sz.Height, NewItem.AnchorPoint);
+                    Pos = new Point(((-PanelMapTool.AutoScrollPosition.X + Pos.X) / 45) * 45 + PanelMapTool.AutoScrollPosition.X, (Pos.Y / 45) * 45);
+                else if (NewItem.Type == 11)
+                    Pos = new Point((-PanelMapTool.AutoScrollPosition.X + Pos.X / 45) * 45 + PanelMapTool.AutoScrollPosition.X + 17, (Pos.Y / 45) * 45 + 12);
+
+                NewItem.Position = ConvertRelativePosToAbsolutePos(Pos, NewItem.Sz.Width, NewItem.Sz.Height, NewItem.AnchorPoint);
             }
 
             Panel ItemPanel = new Panel
@@ -705,8 +626,14 @@ namespace LevelDesignTool
                 OffsetX += NewItem.Sz.Width;
             }
 
-            Map_Tool.Controls.Add(ItemPanel);
+            PanelMapTool.Controls.Add(ItemPanel);
             DisplayItemInformation();
+
+            if (FlagMoveItemAsSoonAsItIsCreated)
+            {
+                CurrentDragPanel = ItemPanel;
+                IsDragging = true;
+            }
         }
 
         void SetActiveItemPanel(Panel? Pn)
@@ -715,7 +642,7 @@ namespace LevelDesignTool
             if (Pn != null)
                 Pn.Invalidate();
 
-            foreach (Control control in Map_Tool.Controls)
+            foreach (Control control in PanelMapTool.Controls)
             {
                 if (control is Panel OtherPanel && OtherPanel != Pn)
                     OtherPanel.Invalidate(); // Redraw the inactive panels
@@ -723,44 +650,230 @@ namespace LevelDesignTool
         }
         #endregion
 
-        #region Display item in textbox (Item_Content)
-        void DisplayItemInformation()
+        #region Movement item in PanelMapTool
+        int FindWallOrGroundLocationClosestPlayerOrMonster(Item ItemCheck, Point NewLocation)
         {
-            StringBuilder DisplayText = new StringBuilder();
-            Item? ActivateItem = ActivateItemPanel.Tag as Item;
+            int[] ListGroundType = { 35, 18, 36, 21, 37, 38, 19, 20 };
+            int[] ListBrickType = { 4, 5, 6, 7 };
+            int VerticalThreshold = 20;
+            int HorizontalThresholdWall = 20;
 
-            if (ActivateItem != null)
+            foreach (Control control in PanelMapTool.Controls)
             {
-                int Type = ActivateItem.Type;
+                if (control is Panel && control.Tag is Item existingItem)
+                {
+                    if (existingItem == ItemCheck)
+                        continue;
 
-                if (Type >= 1 && Type <= 33)
-                    DisplayText.AppendLine(GetNameFromType(Type));
+                    foreach (int t in ListBrickType)
+                    {
+                        if (existingItem.Type == t)
+                        {
+                            Point existingItem_TopLeft = ConvertAbsolutePosToRelativePos(existingItem.Position, existingItem.Sz.Width, existingItem.Sz.Height);
+                            int verticalDistance = Math.Abs(NewLocation.Y - (existingItem_TopLeft.Y - existingItem.Sz.Height / 2));
+                            int horizontalDistance = Math.Abs(NewLocation.X - existingItem_TopLeft.X);
 
-                if (ActivateItem.AdditionalProperties != "")
-                    DisplayText.AppendLine(ActivateItem.AdditionalProperties);
+                            if (verticalDistance < VerticalThreshold && horizontalDistance < HorizontalThresholdWall)
+                            {
+                                return existingItem_TopLeft.Y - ItemCheck.Sz.Height - 2 * Border;
+                            }
+                        }
+                    }
 
-                DisplayText.AppendLine($"position {ActivateItem.Position.X} {ActivateItem.Position.Y}");
+                    foreach (int t in ListGroundType)
+                    {
+                        if (existingItem.Type == t)
+                        {
+                            Point existingItem_TopLeft = ConvertAbsolutePosToRelativePos(existingItem.Position, existingItem.Sz.Width, existingItem.Sz.Height, "top_left");
+                            int verticalDistance = Math.Abs(NewLocation.Y - (existingItem_TopLeft.Y - existingItem.Sz.Height / 2));
+                            bool Check = false;
+                            if (NewLocation.X > existingItem_TopLeft.X && NewLocation.X < existingItem_TopLeft.X + existingItem.Sz.Width * existingItem.Length)
+                                Check = true;
 
-                if (Type == 18 || Type == 33 || Type == 8 || Type == 21)
-                    DisplayText.AppendLine("width " + ActivateItem.Sz.Width * ActivateItem.Length);
-
-                if (ActivateItem.ItemAttached != "")
-                    DisplayText.AppendLine(ActivateItem.ItemAttached);
+                            if (verticalDistance < VerticalThreshold && Check)
+                            {
+                                return existingItem_TopLeft.Y - ItemCheck.Sz.Height - 2 * Border;
+                            }
+                        }
+                    }
+                }
             }
 
-            Item_Content.Text = DisplayText.ToString();
-            Item_Content.Enabled = false;
+            return 0;
         }
-        #endregion
 
-        #region Movement item in panel Map_Tool
+        int FindWaterOrGroundLocationClosestGroundOrWater(Item ItemCheck, Point NewLocation)
+        {
+            int[] ListGroundAndWaterType = { 35, 18, 36, 21, 37, 38, 19, 20, 33, 34 };
+            int HorizontalThreshold = 30;
+            int VerticalThreshold = 20;
+
+            foreach (Control control in PanelMapTool.Controls)
+            {
+                if (control is Panel && control.Tag is Item existingItem)
+                {
+                    if (existingItem == ItemCheck)
+                        continue;
+
+                    foreach (int t in ListGroundAndWaterType)
+                    {
+                        if (existingItem.Type == t)
+                        {
+                            Point existingItem_TopLeft = ConvertAbsolutePosToRelativePos(existingItem.Position, existingItem.Sz.Width, existingItem.Sz.Height, "top_left");
+                            int verticalDistance = Math.Abs(NewLocation.Y - existingItem_TopLeft.Y);
+
+                            int horizontalDistance = Math.Abs(NewLocation.X - (existingItem_TopLeft.X + existingItem.Sz.Width * existingItem.Length + Border));
+                            if (horizontalDistance < HorizontalThreshold && verticalDistance < VerticalThreshold)
+                            {
+                                return existingItem_TopLeft.X + existingItem.Sz.Width * existingItem.Length + 2 * Border;
+                            }
+
+                            horizontalDistance = Math.Abs(NewLocation.X + ItemCheck.Length * ItemCheck.Sz.Width + 2 * Border - existingItem_TopLeft.X);
+                            if (horizontalDistance < HorizontalThreshold && verticalDistance < VerticalThreshold)
+                            {
+                                return existingItem_TopLeft.X - (ItemCheck.Sz.Width * ItemCheck.Length + 2 * Border);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return 0;
+        }
+
+        void MouseDrag()
+        {
+            if (!IsDragging || CurrentDragPanel == null)
+                return;
+
+            Item? It = CurrentDragPanel.Tag as Item;
+            Point ScreenPoint;
+
+            if (FlagMoveItemAsSoonAsItIsCreated)
+            {
+                if (It.AnchorPoint == "center")
+                    ScreenPoint = new Point(Cursor.Position.X - It.Sz.Width / 2, Cursor.Position.Y - It.Sz.Height / 2);
+                else if (It.AnchorPoint == "middle_bottom")
+                    ScreenPoint = new Point(Cursor.Position.X - It.Sz.Width / 2, Cursor.Position.Y - It.Sz.Height);
+                else
+                    ScreenPoint = Cursor.Position;
+            }
+            else ScreenPoint = Cursor.Position;
+
+            Point NewLocation = PanelMapTool.PointToClient(ScreenPoint); // Convert to coordinates relative to PanelMapTool
+            int Type = It.Type;
+
+            NewLocation.Offset(-DragOffset.X, -DragOffset.Y);
+            /*NewLocation.Y = Math.Max(0, NewLocation.Y);
+            NewLocation.Y = Math.Min(PanelMapTool.ClientSize.Height - CurrentDragPanel.Height, NewLocation.Y);*/
+
+            if (!IsF1KeyPress)
+            {
+                bool Check = false;
+                int[] ListMarioAndMonsterType = { 9, 10, 15, 17, 22, 23, 24, 26, 28, 29, 30, 31 };
+
+                foreach (int i in ListMarioAndMonsterType)
+                {
+                    if (Type == i) Check = true;
+                }
+
+                int DeltaPosY = 30;
+                if (Check)
+                {
+                    int Y = FindWallOrGroundLocationClosestPlayerOrMonster(It, NewLocation);
+                    if (Y != 0) NewLocation.Y = Y;
+                }
+                else
+                {
+                    switch (Type)
+                    {
+                        case 35:
+                            {
+                                if (NewLocation.Y < Tier1PosYGround_TopLeft + DeltaPosY && NewLocation.Y > Tier1PosYGround_TopLeft - DeltaPosY)
+                                    NewLocation.Y = Tier1PosYGround_TopLeft;
+                                break;
+                            }
+                        case 18:
+                        case 20:
+                            {
+                                if (NewLocation.Y < Tier2PosYGround_TopLeft + DeltaPosY && NewLocation.Y > Tier2PosYGround_TopLeft - DeltaPosY)
+                                    NewLocation.Y = Tier2PosYGround_TopLeft;
+                                break;
+                            }
+                        case 36:
+                            {
+                                if (NewLocation.Y < Tier3PosYGround_TopLeft + DeltaPosY && NewLocation.Y > Tier3PosYGround_TopLeft - DeltaPosY)
+                                    NewLocation.Y = Tier3PosYGround_TopLeft;
+                                break;
+                            }
+                        case 21:
+                            {
+                                if (NewLocation.Y < Tier4PosYGround_TopLeft + DeltaPosY && NewLocation.Y > Tier4PosYGround_TopLeft - DeltaPosY)
+                                    NewLocation.Y = Tier4PosYGround_TopLeft;
+                                break;
+                            }
+                        case 37:
+                            {
+                                if (NewLocation.Y < Tier5PosYGround_TopLeft + DeltaPosY && NewLocation.Y > Tier5PosYGround_TopLeft - DeltaPosY)
+                                    NewLocation.Y = Tier5PosYGround_TopLeft;
+                                break;
+                            }
+                        case 38:
+                            {
+                                if (NewLocation.Y < Tier6PosYGround_TopLeft + DeltaPosY && NewLocation.Y > Tier6PosYGround_TopLeft - DeltaPosY)
+                                    NewLocation.Y = Tier6PosYGround_TopLeft;
+                                break;
+                            }
+                        case 33:
+                            {
+                                if (NewLocation.Y < Tier2PosYWater_TopLeft + DeltaPosY && NewLocation.Y > Tier2PosYWater_TopLeft - DeltaPosY)
+                                    NewLocation.Y = Tier2PosYWater_TopLeft;
+                                break;
+                            }
+                        case 34:
+                            {
+                                if (NewLocation.Y < Tier1PosYWater_TopLeft + DeltaPosY && NewLocation.Y > Tier1PosYWater_TopLeft - DeltaPosY)
+                                    NewLocation.Y = Tier1PosYWater_TopLeft;
+                                break;
+                            }
+                    }
+
+                    int X = FindWaterOrGroundLocationClosestGroundOrWater(It, NewLocation);
+                    if (X != 0) NewLocation.X = X;
+                }
+
+            }
+
+            if (Type == 4 || Type == 5 || Type == 6 || Type == 7)
+                NewLocation = new Point(((-PanelMapTool.AutoScrollPosition.X + NewLocation.X) / 45) * 45 + PanelMapTool.AutoScrollPosition.X, (NewLocation.Y / 45) * 45);
+            else if (Type == 11)
+                NewLocation = new Point((-PanelMapTool.AutoScrollPosition.X + NewLocation.X / 45) * 45 + PanelMapTool.AutoScrollPosition.X + 17, (NewLocation.Y / 45) * 45 + 12);
+
+            CurrentDragPanel.Location = NewLocation;
+            It.Position = ConvertRelativePosToAbsolutePos(NewLocation, It.Sz.Width, It.Sz.Height, It.AnchorPoint);
+
+            DisplayItemInformation();
+            UpdateFormTitle(0);
+
+            if (FlagMoveItemAsSoonAsItIsCreated) DragOffset = Point.Empty; // Reset DragOffset
+        }
+
+        void MouseUpp()
+        {
+            IsDragging = false;
+            CurrentDragPanel = null;
+            PanelMapTool.Invalidate();
+        }
+
         void Item_MouseDown(object? sender, MouseEventArgs e)
         {
             Control? control = sender as Control;
             CurrentDragPanel = control as Panel ?? control.Parent as Panel;
-            EditItemFlag = false;
 
-            if (CurrentDragPanel == null) return;
+            if (CurrentDragPanel == null)
+                return;
+
+            MoveItemUsingKeysFlag = true;
 
             if (e.Button == MouseButtons.Left)
             {
@@ -784,62 +897,279 @@ namespace LevelDesignTool
 
         void Item_MouseMove(object? sender, MouseEventArgs e)
         {
-            if (!IsDragging || CurrentDragPanel == null)
-                return;
-
-            Point ScreenPoint = Cursor.Position;
-            Point NewLocation = Map_Tool.PointToClient(ScreenPoint); // Convert to coordinates relative to Map_Tool
-            Item? It = ActivateItemPanel.Tag as Item;
-            int Type = It.Type;
-
-            NewLocation.Offset(-DragOffset.X, -DragOffset.Y);
-            //NewLocation.Y = Math.Max(0, NewLocation.Y);
-            //NewLocation.Y = Math.Min(Map_Tool.ClientSize.Height - CurrentDragPanel.Height, NewLocation.Y);
-
-            if (!IsF1KeyPress)
-            {
-                // Set min/max posY for ground
-                int DeltaPosY = 30;
-                if (Type == 18 || Type == 21)
-                {
-                    if (NewLocation.Y < MaxPosYGround_TopLeft + DeltaPosY && NewLocation.Y > MaxPosYGround_TopLeft - DeltaPosY)
-                        NewLocation.Y = MaxPosYGround_TopLeft;
-                    else if (NewLocation.Y < MinPosYGround_TopLeft + DeltaPosY && NewLocation.Y > MinPosYGround_TopLeft - DeltaPosY)
-                        NewLocation.Y = MinPosYGround_TopLeft;
-                }
-                // Set max posY for water
-                else if (Type == 33)
-                {
-                    if (NewLocation.Y < MaxPosYWater_TopLeft + DeltaPosY && NewLocation.Y > MaxPosYWater_TopLeft - DeltaPosY)
-                        NewLocation.Y = MaxPosYWater_TopLeft;
-                }
-            }
-
-            if (Type == 4 || Type == 5 || Type == 6 || Type == 7)
-                NewLocation = new Point((NewLocation.X / 45) * 45, (NewLocation.Y / 45) * 45);
-
-            CurrentDragPanel.Location = NewLocation;
-            It.Position = ConvertRelativePosToAbsolutePos(NewLocation, It.Sz.Width, It.Sz.Height, It.AnchorPoint);
-
-            DisplayItemInformation();
-            UpdateFormTitle(0);
+            MouseDrag();
         }
 
         void Item_MouseUp(object? sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
-                IsDragging = false;
-                CurrentDragPanel = null;
-                Map_Tool.Invalidate(); // Redraw the Map_Tool
+                MouseUpp();
                 DisplayItemInformation();
             }
         }
         #endregion
 
-        #region Align the position of the bricks
+        #region Handles events from the keyboard
+        void MainForm_KeyDown(object? sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.F1:
+                    {
+                        IsF1KeyPress = true;
+                        break;
+                    }
+                case Keys.F2:
+                    {
+                        TextboxItemContent.Focus();
+                        break;
+                    }
+                case Keys.F3:
+                    {
+                        ApplyChange();
+                        break;
+                    }
+                case Keys.F9:
+                    {
+                        LoadFile();
+                        break;
+                    }
+                case Keys.F10:
+                    {
+                        SaveFile();
+                        break;
+                    }
 
+                case Keys.Delete:
+                    {
+                        DeleteItem();
+                        break;
+                    }
+                case Keys.Q:
+                    {
+                        SelectedItemType = OlderSelectedItemType;
 
+                        if (SelectedPictureBox != null)
+                            DrawBorderForItemType(SelectedPictureBox, "green");
+                        break;
+                    }
+                case Keys.W:
+                    {
+                        if (MoveItemUsingKeysFlag)
+                            MoveItemUseArrowKeys(1);
+                        break;
+                    }
+                case Keys.A:
+                    {
+                        if (MoveItemUsingKeysFlag)
+                            MoveItemUseArrowKeys(2);
+                        break;
+                    }
+                case Keys.S:
+                    {
+                        if (MoveItemUsingKeysFlag)
+                            MoveItemUseArrowKeys(3);
+                        break;
+                    }
+                case Keys.D:
+                    {
+                        if (MoveItemUsingKeysFlag)
+                            MoveItemUseArrowKeys(4);
+                        break;
+                    }
+                case Keys.NumPad0:
+                    {
+                        PanelMapTool.AutoScrollPosition = new Point(0, 0);
+                        HorizontalScrollPosition = 0;
+
+                        break;
+                    }
+                case Keys.NumPad1:
+                    {
+                        PanelMapTool.AutoScrollPosition = new Point(2025, 0);
+                        HorizontalScrollPosition = 2025;
+
+                        break;
+                    }
+                case Keys.NumPad2:
+                    {
+                        PanelMapTool.AutoScrollPosition = new Point(4050, 0);
+                        HorizontalScrollPosition = 4050;
+
+                        break;
+                    }
+                case Keys.NumPad3:
+                    {
+                        PanelMapTool.AutoScrollPosition = new Point(6075, 0);
+                        HorizontalScrollPosition = 6075;
+
+                        break;
+                    }
+                case Keys.NumPad4:
+                    {
+                        PanelMapTool.AutoScrollPosition = new Point(8100, 0);
+                        HorizontalScrollPosition = 8100;
+
+                        break;
+                    }
+                case Keys.NumPad5:
+                    {
+                        PanelMapTool.AutoScrollPosition = new Point(10125, 0);
+                        HorizontalScrollPosition = 10125;
+
+                        break;
+                    }
+                case Keys.NumPad6:
+                    {
+                        PanelMapTool.AutoScrollPosition = new Point(12150, 0);
+                        HorizontalScrollPosition = 12150;
+
+                        break;
+                    }
+                case Keys.NumPad7:
+                    {
+                        PanelMapTool.AutoScrollPosition = new Point(14175, 0);
+                        HorizontalScrollPosition = 14175;
+
+                        break;
+                    }
+                case Keys.NumPad8:
+                    {
+                        PanelMapTool.AutoScrollPosition = new Point(16200, 0);
+                        HorizontalScrollPosition = 16200;
+
+                        break;
+                    }
+                case Keys.NumPad9:
+                    {
+                        PanelMapTool.AutoScrollPosition = new Point(18225, 0);
+                        HorizontalScrollPosition = 18225;
+
+                        break;
+                    }
+            }
+        }
+
+        void MainForm_KeyUp(object? sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.F1:
+                    {
+                        IsF1KeyPress = false;
+                        break;
+                    }
+            }
+        }
+        #endregion
+
+        #region Use arrow keys to move items
+        void MoveItemUseArrowKeys(int Flag)
+        {
+            if (ActivateItemPanel != null)
+            {
+                Point RelativePos = ActivateItemPanel.Location; // Origin is top left
+                Point AbsolutePos = (ActivateItemPanel.Tag as Item).Position; // Origin is bottom left
+
+                switch (Flag)
+                {
+                    case 1: // up
+                        {
+                            RelativePos = new Point(RelativePos.X, RelativePos.Y - 1);
+                            AbsolutePos = new Point(AbsolutePos.X, AbsolutePos.Y + 1);
+                            break;
+                        }
+                    case 2: // left
+                        {
+                            RelativePos = new Point(RelativePos.X - 1, RelativePos.Y);
+                            AbsolutePos = new Point(AbsolutePos.X - 1, AbsolutePos.Y);
+                            break;
+                        }
+                    case 3: // down
+                        {
+                            RelativePos = new Point(RelativePos.X, RelativePos.Y + 1);
+                            AbsolutePos = new Point(AbsolutePos.X, AbsolutePos.Y - 1);
+                            break;
+                        }
+                    case 4: // right
+                        {
+                            RelativePos = new Point(RelativePos.X + 1, RelativePos.Y);
+                            AbsolutePos = new Point(AbsolutePos.X + 1, AbsolutePos.Y);
+                            break;
+                        }
+                }
+
+                ActivateItemPanel.Location = RelativePos;
+                (ActivateItemPanel.Tag as Item).Position = AbsolutePos;
+                DisplayItemInformation();
+            }
+        }
+        #endregion
+
+        #region Displays file name in title
+        void Form_Load(object? sender, EventArgs e)
+        {
+            UpdateFormTitle();
+        }
+
+        void UpdateFormTitle(int check = 1)
+        {
+            string FilePath = FileOpen;
+            string[] Values = FilePath.Split('\\');
+
+            if (check != 1)
+            {
+                this.Text = $"* {Values[Values.Length - 1]}";
+                return;
+            }
+            this.Text = $"{Values[Values.Length - 1]}";
+        }
+        #endregion
+
+        #region Display item in TextboxItemContent
+        void DisplayItemInformation()
+        {
+            StringBuilder DisplayText = new StringBuilder();
+            Item? ActivateItem = ActivateItemPanel.Tag as Item;
+
+            if (ActivateItem != null)
+            {
+                int Type = ActivateItem.Type;
+
+                if (Type >= 1 && Type <= 38)
+                    DisplayText.AppendLine(GetNameFromType(Type));
+
+                if (ActivateItem.AdditionalProperties != "")
+                    DisplayText.AppendLine(ActivateItem.AdditionalProperties);
+
+                DisplayText.AppendLine($"position {ActivateItem.Position.X} {ActivateItem.Position.Y}");
+
+                if (Type == 18 || Type == 19 || Type == 33 || Type == 35 || Type == 36 || Type == 37 || Type == 38 || Type == 8 || Type == 21)
+                    DisplayText.AppendLine("width " + ActivateItem.Sz.Width * ActivateItem.Length);
+
+                if (ActivateItem.ItemAttached != "")
+                    DisplayText.AppendLine(ActivateItem.ItemAttached);
+
+                if (ActivateItem.OtherNotes != "")
+                {
+                    string[] Lines = ActivateItem.OtherNotes.Split(" - ");
+                    foreach (string Line in Lines)
+                    {
+                        DisplayText.AppendLine(Line);
+                    }
+                }
+            }
+
+            TextboxItemContent.Text = DisplayText.ToString();
+            PanelMapTool.Focus();
+        }
+
+        void TextboxItemContent_MouseClick(object? sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+                MoveItemUsingKeysFlag = false;
+        }
         #endregion
 
         #region Functions convert type -> name & name -> type
@@ -857,7 +1187,7 @@ namespace LevelDesignTool
                 case 5:
                 case 6:
                 case 7:
-                    return "[item_brick]";
+                    return "[item_wall]";
                 case 8:
                     return "[item_bridge]";
                 case 9:
@@ -879,16 +1209,17 @@ namespace LevelDesignTool
                 case 17:
                     return "[item_frog]";
                 case 18:
-                    return "[item_ground]";
+                case 35:
+                case 36:
+                case 37:
+                case 38:
                 case 19:
-                    return "[item_ground]";
                 case 20:
-                    return "[item_ground]";
                 case 21:
                     return "[item_ground]";
                 case 22:
                 case 23:
-                    return "[item_mario]";
+                    return "[item_player]";
                 case 24:
                     return "[item_mushroom]";
                 case 25:
@@ -907,6 +1238,7 @@ namespace LevelDesignTool
                 case 32:
                     return "[item_vial]";
                 case 33:
+                case 34:
                     return "[item_water]";
                 default:
                     return "";
@@ -923,7 +1255,7 @@ namespace LevelDesignTool
                     return 2;
                 case "item_bomb":
                     return 3;
-                case "item_brick":
+                case "item_wall":
                     {
                         switch (AddProp)
                         {
@@ -961,17 +1293,27 @@ namespace LevelDesignTool
                     {
                         switch (AddProp)
                         {
-                            case "":
-                                return 18;
+                            case "low mound":
+                                return 35;
+                            case "high mound tier 3":
+                                return 36;
+                            case "high mound tier 5":
+                                return 37;
+                            case "high mound tier 6":
+                                return 38;
                             case "island":
                                 return 19;
                             case "islet":
                                 return 20;
-                            default:
+                            case "high mound":
                                 return 21;
+                            case "":
+                                return 18;
+                            default:
+                                return 0;
                         }
                     }
-                case "item_mario":
+                case "item_player":
                     {
                         if (AddProp == "")
                             return 22;
@@ -1000,7 +1342,12 @@ namespace LevelDesignTool
                 case "item_vial":
                     return 32;
                 case "item_water":
-                    return 33;
+                    {
+                        if (AddProp == "")
+                            return 33;
+                        else
+                            return 34;
+                    }
                 default:
                     return 0;
             }
@@ -1008,17 +1355,16 @@ namespace LevelDesignTool
         #endregion
 
         #region Button Save
-        void ButtonExport_Click(object? sender, EventArgs e)
+        void ButtonSave_Click(object? sender, EventArgs e)
         {
             SaveFile();
-            UpdateFormTitle();
         }
 
         void SaveFile()
         {
             List<Panel> ItemPanels = new List<Panel>();
 
-            foreach (Control control in Map_Tool.Controls)
+            foreach (Control control in PanelMapTool.Controls)
             {
                 if (control is Panel Pn && Pn.Tag is Item)
                     ItemPanels.Add(Pn);
@@ -1039,7 +1385,7 @@ namespace LevelDesignTool
                     int Type = It.Type;
                     Point Pos = ConvertRelativePosToAbsolutePos(Pn.Location, It.Sz.Width, It.Sz.Height, It.AnchorPoint);
 
-                    if (Type >= 1 && Type <= 33)
+                    if (Type >= 1 && Type <= 38)
                     {
                         ExportData.AppendLine(GetNameFromType(Type));
 
@@ -1048,7 +1394,7 @@ namespace LevelDesignTool
 
                         ExportData.AppendLine($"position {Pos.X} {Pos.Y}");
 
-                        if (Type == 18 || Type == 33 || Type == 8 || Type == 21)
+                        if (Type == 18 || Type == 19 || Type == 33 || Type == 35 || Type == 36 || Type == 37 || Type == 38 || Type == 8 || Type == 21)
                         {
                             int Width = It.Sz.Width * It.Length;
                             ExportData.AppendLine($"width {Width}");
@@ -1056,6 +1402,9 @@ namespace LevelDesignTool
 
                         if (It.ItemAttached != "")
                             ExportData.AppendLine(It.ItemAttached);
+
+                        if (It.OtherNotes != "")
+                            ExportData.AppendLine(It.OtherNotes);
                     }
                 }
                 else
@@ -1069,6 +1418,7 @@ namespace LevelDesignTool
             try
             {
                 File.WriteAllText(ExportFilePath, ExportData.ToString());
+                UpdateFormTitle();
             }
             catch (Exception ex)
             {
@@ -1078,15 +1428,20 @@ namespace LevelDesignTool
         #endregion
 
         #region Button Apply
-        void Save_Item_Click(object? sender, EventArgs e)
+        void ButtonApply_Click(object? sender, EventArgs e)
         {
-            string[] Lines = Item_Content.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            ApplyChange();
+        }
+
+        void ApplyChange()
+        {
+            string[] Lines = TextboxItemContent.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
             Item? It = ActivateItemPanel.Tag as Item;
 
             if (It != null)
             {
                 ActivateItemPanel.Controls.Clear();
-                ExtractItemInformation(Lines); //ItemInformation.Add((CurrentName, CurrentPosition, CurrentWidth, CurrentItemAttached, CurrentAddProp));
+                ExtractItemInformation(Lines); //ItemInformation.Add((CurrentName, CurrentPosition, CurrentWidth, CurrentItemAttached, CurrentAddProp, CurrentOtherNotes));
 
                 Point Position = ConvertPositionToPoint(ItemInformation[0].Item2);
 
@@ -1108,8 +1463,13 @@ namespace LevelDesignTool
                     OffsetX += It.Sz.Width;
                 }
 
+                string AddProp = ItemInformation[0].Item5;
+                string OtherNotes = ItemInformation[0].Item6;
+
                 It.Length = Length;
                 It.Position = Position;
+                It.OtherNotes = OtherNotes;
+                It.AdditionalProperties = AddProp;
                 It.ItemAttached = ItemAttached;
 
                 ActivateItemPanel.Width = It.Sz.Width * Length + Border * 2;
@@ -1117,24 +1477,31 @@ namespace LevelDesignTool
                 ActivateItemPanel.Refresh();
             }
         }
+
         #endregion
 
         #region Button Delete
-        void Delete_Item_Click(object? sender, EventArgs e)
+        void ButtonDelete_Click(object? sender, EventArgs e)
         {
             DeleteItem();
         }
 
         void DeleteItem()
         {
-            Map_Tool.Controls.Remove(ActivateItemPanel);
-            Map_Tool.Refresh();
-            Item_Content.Clear();
+            PanelMapTool.Controls.Remove(ActivateItemPanel);
+            PanelMapTool.Refresh();
+            TextboxItemContent.Clear();
+            PanelMapTool.Focus();
         }
         #endregion
 
         #region Button Load
         void ButtonLoad_Click(object? sender, EventArgs e)
+        {
+            LoadFile();
+        }
+
+        void LoadFile()
         {
             OpenFileDialog FileDialog = new OpenFileDialog();
             string FolderPath = "";
@@ -1154,37 +1521,16 @@ namespace LevelDesignTool
                 FileOpen = SelectedFilePath;
 
                 ItemInformation.Clear();
-                Map_Tool.Controls.Clear();
-                Map_Tool.Refresh();
-                Map_Tool.AutoScrollPosition = new Point(0, 0);
+                PanelMapTool.Controls.Clear();
+                PanelMapTool.Refresh();
+                HorizontalScrollPosition = 0;
+                PanelMapTool.AutoScrollPosition = new Point(0, 0);
+
                 UpdateFormTitle();
                 ReadItemsFile(1);
                 DisplayItems();
             }
         }
         #endregion
-
-        #region Do not use - But deleting will cause program errors
-        void Item_Content_TextChanged(object? sender, EventArgs e)
-        {
-
-        }
-
-        void Item_List_View_Paint(object? sender, PaintEventArgs e)
-        {
-
-        }
-
-        void Map_Tool_Paint(object? sender, PaintEventArgs e)
-        {
-
-        }
-        #endregion
-
-        private void EditItem_Click(object sender, EventArgs e)
-        {
-            Item_Content.Enabled = true;
-            EditItemFlag = true;
-        }
     }
 }
