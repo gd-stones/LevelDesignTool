@@ -68,9 +68,9 @@ anchor_point: center
 {
 type: 9
 path: item\carnivorous_flower.png
-size: 70, 105
+size: 70, 102
 length: 1
-anchor_point: center
+anchor_point: middle_bottom
 }
 
 {
@@ -78,7 +78,7 @@ type: 10
 path: item\castle.png
 size: 400, 430
 length: 1
-anchor_point: center
+anchor_point: middle_bottom
 }
 
 {
@@ -116,9 +116,9 @@ anchor_point: center
 {
 type: 15
 path: item\flag.png
-size: 85, 605
+size: 85, 505
 length: 1
-anchor_point: center
+anchor_point: middle_bottom
 }
 
 {
@@ -134,15 +134,60 @@ type: 17
 path: item\frog.png
 size: 68, 68
 length: 1
-anchor_point: center
+anchor_point: middle_bottom
+}
+
+{
+type: 35
+path: item\ground_1.png
+size: 277, 90
+length: 1
+anchor_point: top_left
+additional_properties: low mound
 }
 
 {
 type: 18
-path: item\ground.png
+path: item\ground_2.png
 size: 277, 180
 length: 1
 anchor_point: top_left
+}
+
+{
+type: 36
+path: item\ground_3.png
+size: 93, 270
+length: 1
+anchor_point: top_left
+additional_properties: high mound tier 3
+}
+
+{
+type: 21
+path: item\ground_4.png
+size: 93, 362
+length: 1
+anchor_point: top_left
+additional_properties: high mound
+}
+
+{
+type: 37
+path: item\ground_5.png
+size: 93, 452
+length: 1
+anchor_point: top_left
+additional_properties: high mound tier 5
+}
+
+{
+type: 38
+path: item\ground_6.png
+size: 93, 543
+length: 1
+anchor_point: top_left
+additional_properties: high mound tier 6
 }
 
 {
@@ -164,20 +209,11 @@ additional_properties: islet
 }
 
 {
-type: 21
-path: item\islet_tall.png
-size: 93, 362
-length: 1
-anchor_point: top_left
-additional_properties: high mound
-}
-
-{
 type: 22
 path: item\mario.png
 size: 75, 85
 length: 1
-anchor_point: center
+anchor_point: middle_bottom
 }
 
 {
@@ -185,7 +221,7 @@ type: 23
 path: item\mario_big.png
 size: 100, 135
 length: 1
-anchor_point: center
+anchor_point: middle_bottom
 additional_properties: big
 }
 
@@ -194,7 +230,7 @@ type: 24
 path: item\mushroom.png
 size: 75, 70
 length: 1
-anchor_point: center
+anchor_point: middle_bottom
 }
 
 {
@@ -210,7 +246,7 @@ type: 26
 path: item\root.png
 size: 150, 160
 length: 1
-anchor_point: center
+anchor_point: middle_bottom
 }
 
 {
@@ -226,7 +262,7 @@ type: 28
 path: item\snail.png
 size: 115, 80
 length: 1
-anchor_point: center
+anchor_point: middle_bottom
 }
 
 {
@@ -234,7 +270,7 @@ type: 29
 path: item\snail_shell.png
 size: 70, 65
 length: 1
-anchor_point: center
+anchor_point: middle_bottom
 additional_properties: shell
 }
 
@@ -243,7 +279,7 @@ type: 30
 path: item\spike.png
 size: 80, 70
 length: 1
-anchor_point: center
+anchor_point: middle_bottom
 }
 
 {
@@ -251,7 +287,7 @@ type: 31
 path: item\spring.png
 size: 80, 75
 length: 1
-anchor_point: center
+anchor_point: middle_bottom
 }
 
 {
@@ -268,4 +304,13 @@ path: item\water.png
 size: 294, 115
 length: 1
 anchor_point: top_left
+}
+
+{
+type: 34
+path: item\water_low.png
+size: 294, 64
+length: 1
+anchor_point: top_left
+additional_properties: low
 }

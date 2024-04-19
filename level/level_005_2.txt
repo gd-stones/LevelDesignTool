@@ -1,0 +1,1584 @@
+[item_wall]
+unbreakable
+position 42 943
+[item_wall]
+unbreakable
+position 312 943
+[item_wall]
+unbreakable
+position 402 943
+[item_wall]
+unbreakable
+position 492 943
+[item_wall]
+unbreakable
+position 582 943
+[item_wall]
+unbreakable
+position 672 943
+[item_wall]
+unbreakable
+position 762 943
+[item_wall]
+unbreakable
+position 852 943
+[item_wall]
+unbreakable
+position 942 943
+[item_wall]
+unbreakable
+position 1032 943
+[item_wall]
+unbreakable
+position 1122 943
+[item_wall]
+unbreakable
+position 1212 943
+[item_wall]
+unbreakable
+position 1302 943
+[item_wall]
+unbreakable
+position 1392 943
+[item_wall]
+unbreakable
+position 1662 943
+[item_wall]
+unbreakable
+position 1752 943
+[item_wall]
+unbreakable
+position 2022 943
+[item_wall]
+unbreakable
+position 2112 943
+[item_wall]
+unbreakable
+position 2382 943
+[item_wall]
+unbreakable
+position 2472 943
+[item_wall]
+unbreakable
+position 2742 943
+[item_wall]
+unbreakable
+position 2832 943
+[item_wall]
+unbreakable
+position 2922 943
+[item_wall]
+unbreakable
+position 3012 943
+[item_wall]
+unbreakable
+position 3102 943
+[item_wall]
+unbreakable
+position 3192 943
+[item_wall]
+unbreakable
+position 3282 943
+[item_wall]
+unbreakable
+position 3372 943
+[item_wall]
+unbreakable
+position 3462 943
+[item_wall]
+unbreakable
+position 3552 943
+[item_wall]
+unbreakable
+position 3642 943
+[item_wall]
+unbreakable
+position 3732 943
+[item_wall]
+unbreakable
+position 3822 943
+[item_wall]
+unbreakable
+position 3912 943
+[item_wall]
+unbreakable
+position 4002 943
+[item_wall]
+unbreakable
+position 4092 943
+[item_wall]
+unbreakable
+position 4182 943
+[item_wall]
+unbreakable
+position 4272 943
+[item_wall]
+unbreakable
+position 4362 943
+[item_wall]
+unbreakable
+position 4452 943
+[item_wall]
+unbreakable
+position 4542 943
+[item_wall]
+unbreakable
+position 4632 943
+[item_wall]
+unbreakable
+position 4722 943
+[item_wall]
+unbreakable
+position 4812 943
+[item_wall]
+unbreakable
+position 4902 943
+[item_wall]
+unbreakable
+position 5352 943
+[item_wall]
+unbreakable
+position 5442 943
+[item_wall]
+unbreakable
+position 5532 943
+[item_wall]
+unbreakable
+position 5622 943
+[item_wall]
+unbreakable
+position 5712 943
+[item_wall]
+unbreakable
+position 5982 943
+[item_wall]
+unbreakable
+position 6072 943
+[item_wall]
+unbreakable
+position 6162 943
+[item_wall]
+unbreakable
+position 6387 943
+[item_wall]
+unbreakable
+position 6477 943
+[item_wall]
+unbreakable
+position 6567 943
+[item_wall]
+unbreakable
+position 6657 943
+[item_wall]
+unbreakable
+position 6747 943
+[item_wall]
+unbreakable
+position 6837 943
+[item_wall]
+unbreakable
+position 7107 943
+[item_wall]
+unbreakable
+position 7197 943
+[item_wall]
+unbreakable
+position 7287 943
+[item_wall]
+unbreakable
+position 7377 943
+[item_wall]
+unbreakable
+position 7467 943
+[item_wall]
+unbreakable
+position 7557 943
+[item_wall]
+unbreakable
+position 7647 943
+[item_wall]
+unbreakable
+position 7737 943
+[item_wall]
+unbreakable
+position 7827 943
+[item_wall]
+unbreakable
+position 7917 943
+[item_wall]
+unbreakable
+position 8007 943
+[item_wall]
+unbreakable
+position 8097 943
+[item_wall]
+unbreakable
+position 8187 943
+[item_wall]
+unbreakable
+position 8277 943
+[item_wall]
+unbreakable
+position 8367 943
+[item_wall]
+unbreakable
+position 8457 943
+[item_wall]
+unbreakable
+position 8547 943
+[item_wall]
+unbreakable
+position 8637 943
+[item_wall]
+unbreakable
+position 8727 943
+[item_wall]
+unbreakable
+position 8817 943
+[item_wall]
+unbreakable
+position 8907 943
+[item_wall]
+unbreakable
+position 8997 943
+[item_wall]
+unbreakable
+position 9087 943
+[item_wall]
+unbreakable
+position 9177 943
+[item_wall]
+unbreakable
+position 9267 943
+[item_wall]
+unbreakable
+position 9357 943
+[item_wall]
+unbreakable
+position 9447 943
+[item_wall]
+unbreakable
+position 9537 943
+[item_wall]
+unbreakable
+position 9627 943
+[item_wall]
+unbreakable
+position 9717 943
+[item_wall]
+unbreakable
+position 9807 943
+[item_wall]
+unbreakable
+position 9897 943
+[item_wall]
+unbreakable
+position 9987 943
+[item_wall]
+unbreakable
+position 10077 943
+[item_wall]
+unbreakable
+position 10167 943
+[item_wall]
+unbreakable
+position 10257 943
+[item_wall]
+unbreakable
+position 10347 943
+[item_wall]
+unbreakable
+position 10437 943
+[item_wall]
+unbreakable
+position 10527 943
+[item_wall]
+unbreakable
+position 10617 943
+[item_wall]
+unbreakable
+position 10707 943
+[item_wall]
+unbreakable
+position 10797 943
+[item_wall]
+unbreakable
+position 10887 943
+[item_wall]
+unbreakable
+position 10977 943
+[item_wall]
+unbreakable
+position 11067 943
+[item_wall]
+unbreakable
+position 11157 943
+[item_wall]
+unbreakable
+position 11247 943
+[item_wall]
+unbreakable
+position 11337 943
+[item_wall]
+unbreakable
+position 11427 943
+[item_wall]
+unbreakable
+position 11517 943
+[item_wall]
+unbreakable
+position 42 853
+[item_wall]
+unbreakable
+position 2742 853
+[item_wall]
+unbreakable
+position 2832 853
+[item_wall]
+unbreakable
+position 2922 853
+[item_wall]
+unbreakable
+position 3012 853
+[item_wall]
+unbreakable
+position 3102 853
+[item_wall]
+unbreakable
+position 3192 853
+[item_wall]
+unbreakable
+position 3282 853
+[item_wall]
+unbreakable
+position 3372 853
+[item_wall]
+unbreakable
+position 3462 853
+[item_wall]
+unbreakable
+position 3552 853
+[item_wall]
+unbreakable
+position 3642 853
+[item_wall]
+unbreakable
+position 3732 853
+[item_wall]
+unbreakable
+position 3822 853
+[item_wall]
+unbreakable
+position 3912 853
+[item_wall]
+unbreakable
+position 4002 853
+[item_wall]
+unbreakable
+position 4092 853
+[item_wall]
+unbreakable
+position 4182 853
+[item_wall]
+unbreakable
+position 4272 853
+[item_wall]
+unbreakable
+position 4362 853
+[item_wall]
+unbreakable
+position 4452 853
+[item_wall]
+unbreakable
+position 4542 853
+[item_wall]
+unbreakable
+position 4632 853
+[item_wall]
+unbreakable
+position 4722 853
+[item_wall]
+unbreakable
+position 4812 853
+[item_wall]
+unbreakable
+position 4902 853
+[item_wall]
+unbreakable
+position 5352 853
+[item_wall]
+unbreakable
+position 5442 853
+[item_wall]
+unbreakable
+position 5532 853
+[item_wall]
+unbreakable
+position 5622 853
+[item_wall]
+unbreakable
+position 5712 853
+[item_wall]
+unbreakable
+position 6387 853
+[item_wall]
+unbreakable
+position 6477 853
+[item_wall]
+unbreakable
+position 6567 853
+[item_wall]
+unbreakable
+position 6657 853
+[item_wall]
+unbreakable
+position 6747 853
+[item_wall]
+unbreakable
+position 6837 853
+[item_wall]
+unbreakable
+position 11337 853
+[item_wall]
+unbreakable
+position 11427 808
+[item_wall]
+unbreakable
+position 42 763
+[item_wall]
+unbreakable
+position 2742 763
+[item_wall]
+unbreakable
+position 2832 763
+[item_wall]
+unbreakable
+position 2922 763
+[item_wall]
+unbreakable
+position 3012 763
+[item_wall]
+unbreakable
+position 3102 763
+[item_wall]
+unbreakable
+position 3192 763
+[item_wall]
+unbreakable
+position 3282 763
+[item_wall]
+unbreakable
+position 3372 763
+[item_wall]
+unbreakable
+position 3462 763
+[item_wall]
+unbreakable
+position 3552 763
+[item_wall]
+unbreakable
+position 3642 763
+[item_wall]
+unbreakable
+position 3732 763
+[item_wall]
+unbreakable
+position 3822 763
+[item_wall]
+unbreakable
+position 3912 763
+[item_wall]
+unbreakable
+position 4002 763
+[item_wall]
+unbreakable
+position 4092 763
+[item_wall]
+unbreakable
+position 4182 763
+[item_wall]
+unbreakable
+position 4272 763
+[item_wall]
+unbreakable
+position 4362 763
+[item_wall]
+unbreakable
+position 4452 763
+[item_wall]
+unbreakable
+position 4542 763
+[item_wall]
+unbreakable
+position 4632 763
+[item_wall]
+unbreakable
+position 4722 763
+[item_wall]
+unbreakable
+position 4812 763
+[item_wall]
+unbreakable
+position 4902 763
+[item_wall]
+unbreakable
+position 5442 763
+[item_wall]
+unbreakable
+position 5532 763
+[item_wall]
+unbreakable
+position 5622 763
+[item_wall]
+unbreakable
+position 6387 763
+[item_wall]
+unbreakable
+position 6477 763
+[item_wall]
+unbreakable
+position 6567 763
+[item_wall]
+unbreakable
+position 6657 763
+[item_wall]
+unbreakable
+position 6747 763
+[item_wall]
+unbreakable
+position 6837 763
+[item_coin]
+position 10616 775
+[item_coin]
+position 10348 774
+[item_coin]
+position 10437 774
+[item_coin]
+position 10525 774
+[item_wall]
+unbreakable
+position 42 673
+[item_wall]
+unbreakable
+position 762 673
+[item_wall]
+unbreakable
+position 852 673
+[item_wall]
+unbreakable
+position 942 673
+coin
+[item_wall]
+unbreakable
+position 2742 673
+[item_wall]
+unbreakable
+position 2832 673
+[item_wall]
+unbreakable
+position 2922 673
+[item_wall]
+unbreakable
+position 3012 673
+[item_wall]
+unbreakable
+position 3102 673
+[item_wall]
+unbreakable
+position 3192 673
+[item_wall]
+unbreakable
+position 3282 673
+[item_wall]
+unbreakable
+position 3372 673
+[item_wall]
+unbreakable
+position 3462 673
+[item_wall]
+unbreakable
+position 3552 673
+[item_wall]
+unbreakable
+position 3642 673
+[item_wall]
+unbreakable
+position 3732 673
+[item_wall]
+unbreakable
+position 3822 673
+[item_wall]
+unbreakable
+position 3912 673
+[item_wall]
+unbreakable
+position 4002 673
+[item_wall]
+unbreakable
+position 4092 673
+[item_wall]
+unbreakable
+position 4182 673
+[item_wall]
+unbreakable
+position 4272 673
+[item_wall]
+unbreakable
+position 4362 673
+[item_wall]
+unbreakable
+position 4452 673
+[item_wall]
+unbreakable
+position 4542 673
+[item_wall]
+unbreakable
+position 4632 673
+[item_wall]
+unbreakable
+position 4722 673
+[item_wall]
+unbreakable
+position 4812 673
+[item_wall]
+unbreakable
+position 4902 673
+[item_wall]
+unbreakable
+position 5532 673
+[item_wall]
+unbreakable
+position 6387 673
+[item_wall]
+unbreakable
+position 6477 673
+[item_wall]
+unbreakable
+position 6567 673
+[item_wall]
+unbreakable
+position 6657 673
+[item_wall]
+unbreakable
+position 6747 673
+[item_wall]
+unbreakable
+position 6837 673
+[item_coin]
+position 10348 661
+[item_coin]
+position 10527 661
+[item_coin]
+position 10436 660
+[item_coin]
+position 10616 660
+[item_wall]
+unbreakable
+position 7242 628
+[item_wall]
+unbreakable
+position 7422 628
+[item_wall]
+unbreakable
+position 7602 628
+[item_wall]
+unbreakable
+position 7782 628
+[item_wall]
+unbreakable
+position 9987 628
+[item_wall]
+unbreakable
+position 10077 628
+[item_wall]
+unbreakable
+position 42 583
+[item_wall]
+unbreakable
+position 2742 583
+[item_wall]
+unbreakable
+position 2832 583
+[item_wall]
+unbreakable
+position 2922 583
+[item_wall]
+unbreakable
+position 3012 583
+[item_wall]
+unbreakable
+position 3102 583
+[item_wall]
+unbreakable
+position 3192 583
+[item_wall]
+unbreakable
+position 3282 583
+[item_wall]
+unbreakable
+position 3372 583
+[item_wall]
+unbreakable
+position 3462 583
+[item_wall]
+unbreakable
+position 3552 583
+[item_wall]
+unbreakable
+position 3642 583
+[item_wall]
+unbreakable
+position 3732 583
+[item_wall]
+unbreakable
+position 3822 583
+[item_wall]
+unbreakable
+position 3912 583
+[item_wall]
+unbreakable
+position 4002 583
+[item_wall]
+unbreakable
+position 4092 583
+[item_wall]
+unbreakable
+position 4182 583
+[item_wall]
+unbreakable
+position 4272 583
+[item_wall]
+unbreakable
+position 4362 583
+[item_wall]
+unbreakable
+position 4452 583
+[item_wall]
+unbreakable
+position 4542 583
+[item_wall]
+unbreakable
+position 4632 583
+[item_wall]
+unbreakable
+position 7152 538
+[item_wall]
+unbreakable
+position 7332 538
+[item_wall]
+unbreakable
+position 7512 538
+[item_wall]
+unbreakable
+position 7692 538
+[item_wall]
+unbreakable
+position 7872 538
+[item_wall]
+unbreakable
+position 10077 538
+[item_wall]
+unbreakable
+position 10167 538
+[item_mushroom]
+position 10544 495
+[item_coin]
+position 6074 525
+[item_coin]
+position 6164 525
+[item_coin]
+position 5984 524
+[item_wall]
+unbreakable
+position 42 493
+[item_wall]
+unbreakable
+position 2742 493
+[item_wall]
+unbreakable
+position 2832 493
+[item_wall]
+unbreakable
+position 2922 493
+[item_wall]
+unbreakable
+position 3012 493
+[item_wall]
+unbreakable
+position 3102 493
+[item_wall]
+unbreakable
+position 3192 493
+[item_wall]
+unbreakable
+position 3282 493
+[item_wall]
+unbreakable
+position 3372 493
+[item_wall]
+unbreakable
+position 3462 493
+[item_wall]
+unbreakable
+position 3552 493
+[item_wall]
+unbreakable
+position 3642 493
+[item_wall]
+unbreakable
+position 3732 493
+[item_wall]
+unbreakable
+position 3822 493
+[item_wall]
+unbreakable
+position 3912 493
+[item_wall]
+unbreakable
+position 4002 493
+[item_wall]
+unbreakable
+position 4092 493
+[item_wall]
+unbreakable
+position 4182 493
+[item_wall]
+unbreakable
+position 4272 493
+[item_wall]
+unbreakable
+position 4362 493
+[item_wall]
+unbreakable
+position 4452 493
+[item_wall]
+unbreakable
+position 4542 493
+[item_wall]
+gold
+position 8277 448
+[item_wall]
+gold
+position 8547 448
+[item_wall]
+unbreakable
+position 10167 448
+[item_wall]
+unbreakable
+position 10257 448
+[item_wall]
+unbreakable
+position 10347 448
+[item_wall]
+unbreakable
+position 10437 448
+[item_wall]
+unbreakable
+position 10527 448
+[item_wall]
+unbreakable
+position 10617 448
+[item_wall]
+unbreakable
+position 10707 448
+[item_wall]
+unbreakable
+position 10797 448
+[item_coin]
+position 7287 436
+[item_coin]
+position 7376 436
+[item_coin]
+position 7466 436
+[item_coin]
+position 7555 436
+[item_coin]
+position 7736 436
+[item_coin]
+position 7199 435
+[item_coin]
+position 7647 435
+[item_coin]
+position 7822 435
+[item_wall]
+unbreakable
+position 42 403
+[item_mushroom]
+position 6529 360
+[item_wall]
+unbreakable
+position 582 358
+[item_wall]
+gold
+position 672 358
+[item_wall]
+unbreakable
+position 762 358
+[item_wall]
+gold
+position 852 358
+[item_wall]
+unbreakable
+position 942 358
+[item_wall]
+gold
+position 1032 358
+[item_wall]
+unbreakable
+position 1122 358
+[item_wall]
+unbreakable
+position 2067 358
+[item_coin]
+position 2472 346
+[item_coin]
+position 2384 345
+[item_wall]
+unbreakable
+position 42 313
+[item_wall]
+unbreakable
+position 4722 313
+[item_wall]
+unbreakable
+position 4812 313
+[item_wall]
+unbreakable
+position 4902 313
+[item_wall]
+unbreakable
+position 5352 313
+[item_wall]
+unbreakable
+position 5442 313
+[item_wall]
+unbreakable
+position 5532 313
+[item_wall]
+unbreakable
+position 5622 313
+[item_wall]
+unbreakable
+position 5712 313
+[item_wall]
+unbreakable
+position 6387 313
+[item_wall]
+unbreakable
+position 6477 313
+[item_wall]
+unbreakable
+position 6567 313
+[item_wall]
+unbreakable
+position 6657 313
+[item_wall]
+unbreakable
+position 6747 313
+[item_wall]
+unbreakable
+position 6837 313
+[item_wall]
+unbreakable
+position 8907 313
+[item_wall]
+unbreakable
+position 8997 313
+[item_wall]
+unbreakable
+position 9087 313
+[item_wall]
+unbreakable
+position 9177 313
+[item_flat]
+position 5128 342
+[item_flat]
+position 6053 297
+[item_wall]
+unbreakable
+position 42 223
+[item_wall]
+unbreakable
+position 4722 223
+[item_wall]
+unbreakable
+position 4812 223
+[item_wall]
+unbreakable
+position 4902 223
+[item_wall]
+unbreakable
+position 5352 223
+[item_wall]
+unbreakable
+position 5442 223
+[item_wall]
+unbreakable
+position 5532 223
+[item_wall]
+unbreakable
+position 5622 223
+[item_wall]
+unbreakable
+position 5712 223
+[item_wall]
+unbreakable
+position 6387 223
+[item_wall]
+unbreakable
+position 6477 223
+[item_wall]
+unbreakable
+position 6567 223
+[item_wall]
+unbreakable
+position 6657 223
+[item_wall]
+unbreakable
+position 6747 223
+[item_wall]
+unbreakable
+position 6837 223
+[item_wall]
+unbreakable
+position 8727 223
+[item_wall]
+unbreakable
+position 8817 223
+[item_wall]
+unbreakable
+position 8907 223
+[item_wall]
+unbreakable
+position 8997 223
+[item_wall]
+unbreakable
+position 9087 223
+[item_wall]
+unbreakable
+position 9177 223
+[item_wall]
+unbreakable
+position 11337 223
+[item_wall]
+unbreakable
+position 11427 223
+[item_wall]
+unbreakable
+position 11517 223
+[item_wall]
+unbreakable
+position 11607 223
+[item_wall]
+unbreakable
+position 11697 223
+[item_wall]
+unbreakable
+position 11967 223
+[item_wall]
+unbreakable
+position 12057 223
+[item_snail]
+position 9707 181
+[item_mushroom]
+position 7516 181
+[item_mushroom]
+position 7874 181
+[item_mushroom]
+position 8314 181
+[item_mushroom]
+position 7153 180
+[item_wall]
+unbreakable
+position 42 133
+[item_wall]
+unbreakable
+position 4722 133
+[item_wall]
+unbreakable
+position 4812 133
+[item_wall]
+unbreakable
+position 4902 133
+[item_wall]
+unbreakable
+position 5352 133
+[item_wall]
+unbreakable
+position 5442 133
+[item_wall]
+unbreakable
+position 5532 133
+[item_wall]
+unbreakable
+position 5622 133
+[item_wall]
+unbreakable
+position 5712 133
+[item_wall]
+unbreakable
+position 6387 133
+[item_wall]
+unbreakable
+position 6477 133
+[item_wall]
+unbreakable
+position 6567 133
+[item_wall]
+unbreakable
+position 6657 133
+[item_wall]
+unbreakable
+position 6747 133
+[item_wall]
+unbreakable
+position 6837 133
+[item_wall]
+unbreakable
+position 7107 133
+[item_wall]
+unbreakable
+position 7197 133
+[item_wall]
+unbreakable
+position 7467 133
+[item_wall]
+unbreakable
+position 7557 133
+[item_wall]
+unbreakable
+position 7827 133
+[item_wall]
+unbreakable
+position 7917 133
+[item_wall]
+unbreakable
+position 8187 133
+[item_wall]
+unbreakable
+position 8277 133
+[item_wall]
+unbreakable
+position 8367 133
+[item_wall]
+unbreakable
+position 8457 133
+[item_wall]
+unbreakable
+position 8547 133
+[item_wall]
+unbreakable
+position 8637 133
+[item_wall]
+unbreakable
+position 8727 133
+[item_wall]
+unbreakable
+position 8817 133
+[item_wall]
+unbreakable
+position 8907 133
+[item_wall]
+unbreakable
+position 8997 133
+[item_wall]
+unbreakable
+position 9087 133
+[item_wall]
+unbreakable
+position 9177 133
+[item_wall]
+unbreakable
+position 9627 133
+[item_wall]
+unbreakable
+position 9717 133
+[item_wall]
+unbreakable
+position 9807 133
+[item_wall]
+unbreakable
+position 9897 133
+[item_wall]
+unbreakable
+position 9987 133
+[item_wall]
+unbreakable
+position 10077 133
+[item_wall]
+unbreakable
+position 10167 133
+[item_wall]
+unbreakable
+position 10257 133
+[item_wall]
+unbreakable
+position 10347 133
+[item_wall]
+unbreakable
+position 10437 133
+[item_wall]
+unbreakable
+position 10527 133
+[item_wall]
+unbreakable
+position 10617 133
+[item_wall]
+unbreakable
+position 10707 133
+[item_wall]
+unbreakable
+position 10797 133
+[item_wall]
+unbreakable
+position 10887 133
+[item_wall]
+unbreakable
+position 10977 133
+[item_wall]
+unbreakable
+position 11067 133
+[item_wall]
+unbreakable
+position 11157 133
+[item_wall]
+unbreakable
+position 11247 133
+[item_wall]
+unbreakable
+position 11337 133
+[item_wall]
+unbreakable
+position 11427 133
+[item_wall]
+unbreakable
+position 11517 133
+[item_wall]
+unbreakable
+position 11607 133
+[item_wall]
+unbreakable
+position 11697 133
+[item_wall]
+unbreakable
+position 11967 133
+[item_wall]
+unbreakable
+position 12057 133
+[item_mario]
+position 182 88
+[item_snail]
+position 2852 91
+[item_mushroom]
+position 3189 90
+[item_mushroom]
+position 3010 89
+[item_wall]
+unbreakable
+position 42 43
+[item_wall]
+unbreakable
+position 132 43
+[item_wall]
+unbreakable
+position 222 43
+[item_wall]
+unbreakable
+position 312 43
+[item_wall]
+unbreakable
+position 402 43
+[item_wall]
+unbreakable
+position 492 43
+[item_wall]
+unbreakable
+position 582 43
+[item_wall]
+unbreakable
+position 672 43
+[item_wall]
+unbreakable
+position 762 43
+[item_wall]
+unbreakable
+position 852 43
+[item_wall]
+unbreakable
+position 942 43
+[item_wall]
+unbreakable
+position 1032 43
+[item_wall]
+unbreakable
+position 1122 43
+[item_wall]
+unbreakable
+position 1212 43
+[item_wall]
+unbreakable
+position 1302 43
+[item_wall]
+unbreakable
+position 1392 43
+[item_wall]
+unbreakable
+position 1662 43
+[item_wall]
+unbreakable
+position 1752 43
+[item_wall]
+unbreakable
+position 2022 43
+[item_wall]
+unbreakable
+position 2112 43
+[item_wall]
+unbreakable
+position 2382 43
+[item_wall]
+unbreakable
+position 2472 43
+[item_wall]
+unbreakable
+position 2742 43
+[item_wall]
+unbreakable
+position 2832 43
+[item_wall]
+unbreakable
+position 2922 43
+[item_wall]
+unbreakable
+position 3012 43
+[item_wall]
+unbreakable
+position 3102 43
+[item_wall]
+unbreakable
+position 3192 43
+[item_wall]
+unbreakable
+position 3282 43
+[item_wall]
+unbreakable
+position 3372 43
+[item_wall]
+unbreakable
+position 3462 43
+[item_wall]
+unbreakable
+position 3552 43
+[item_wall]
+unbreakable
+position 3642 43
+[item_wall]
+unbreakable
+position 3732 43
+[item_wall]
+unbreakable
+position 3822 43
+[item_wall]
+unbreakable
+position 3912 43
+[item_wall]
+unbreakable
+position 4002 43
+[item_wall]
+unbreakable
+position 4092 43
+[item_wall]
+unbreakable
+position 4182 43
+[item_wall]
+unbreakable
+position 4272 43
+[item_wall]
+unbreakable
+position 4362 43
+[item_wall]
+unbreakable
+position 4452 43
+[item_wall]
+unbreakable
+position 4542 43
+[item_wall]
+unbreakable
+position 4632 43
+[item_wall]
+unbreakable
+position 4722 43
+[item_wall]
+unbreakable
+position 4812 43
+[item_wall]
+unbreakable
+position 4902 43
+[item_wall]
+unbreakable
+position 5352 43
+[item_wall]
+unbreakable
+position 5442 43
+[item_wall]
+unbreakable
+position 5532 43
+[item_wall]
+unbreakable
+position 5622 43
+[item_wall]
+unbreakable
+position 5712 43
+[item_wall]
+unbreakable
+position 6387 43
+[item_wall]
+unbreakable
+position 6477 43
+[item_wall]
+unbreakable
+position 6567 43
+[item_wall]
+unbreakable
+position 6657 43
+[item_wall]
+unbreakable
+position 6747 43
+[item_wall]
+unbreakable
+position 6837 43
+[item_wall]
+unbreakable
+position 7107 43
+[item_wall]
+unbreakable
+position 7197 43
+[item_wall]
+unbreakable
+position 7467 43
+[item_wall]
+unbreakable
+position 7557 43
+[item_wall]
+unbreakable
+position 7827 43
+[item_wall]
+unbreakable
+position 7917 43
+[item_wall]
+unbreakable
+position 8187 43
+[item_wall]
+unbreakable
+position 8277 43
+[item_wall]
+unbreakable
+position 8367 43
+[item_wall]
+unbreakable
+position 8457 43
+[item_wall]
+unbreakable
+position 8547 43
+[item_wall]
+unbreakable
+position 8637 43
+[item_wall]
+unbreakable
+position 8727 43
+[item_wall]
+unbreakable
+position 8817 43
+[item_wall]
+unbreakable
+position 8907 43
+[item_wall]
+unbreakable
+position 8997 43
+[item_wall]
+unbreakable
+position 9087 43
+[item_wall]
+unbreakable
+position 9177 43
+[item_wall]
+unbreakable
+position 9627 43
+[item_wall]
+unbreakable
+position 9717 43
+[item_wall]
+unbreakable
+position 9807 43
+[item_wall]
+unbreakable
+position 9897 43
+[item_wall]
+unbreakable
+position 9987 43
+[item_wall]
+unbreakable
+position 10077 43
+[item_wall]
+unbreakable
+position 10167 43
+[item_wall]
+unbreakable
+position 10257 43
+[item_wall]
+unbreakable
+position 10347 43
+[item_wall]
+unbreakable
+position 10437 43
+[item_wall]
+unbreakable
+position 10527 43
+[item_wall]
+unbreakable
+position 10617 43
+[item_wall]
+unbreakable
+position 10707 43
+[item_wall]
+unbreakable
+position 10797 43
+[item_wall]
+unbreakable
+position 10887 43
+[item_wall]
+unbreakable
+position 10977 43
+[item_wall]
+unbreakable
+position 11067 43
+[item_wall]
+unbreakable
+position 11157 43
+[item_wall]
+unbreakable
+position 11247 43
+[item_wall]
+unbreakable
+position 11337 43
+[item_wall]
+unbreakable
+position 11427 43
+[item_wall]
+unbreakable
+position 11517 43
+[item_wall]
+unbreakable
+position 11607 43
+[item_wall]
+unbreakable
+position 11697 43
+[item_wall]
+unbreakable
+position 11877 43
+[item_wall]
+unbreakable
+position 11967 43
+[item_wall]
+unbreakable
+position 12057 43

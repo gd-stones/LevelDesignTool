@@ -1,0 +1,13 @@
+[item_mario]
+position 1031 351
+[item_root]
+position 1030 186
+[item_ground]
+position 888 180
+width 277
+[item_water]
+position 1 115
+width 882
+[item_water]
+position 1169 115
+width 882

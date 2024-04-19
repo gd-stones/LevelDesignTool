@@ -1,33 +1,330 @@
+[item_wall]
+gold
+position 222 808
+vial
 [item_coin]
-position 418 629
+position 4004 751
 [item_coin]
-position 580 629
+position 4182 751
 [item_coin]
-position 668 629
+position 4274 751
 [item_coin]
-position 752 629
+position 4365 751
 [item_coin]
-position 934 629
+position 6840 751
 [item_coin]
-position 498 628
+position 6929 751
 [item_coin]
-position 840 628
+position 7019 751
 [item_coin]
-position 417 521
+position 4093 750
+[item_wall]
+wood
+position 17727 673
+[item_wall]
+wood
+position 17817 673
+[item_flag]
+position 18463 186
+[item_wall]
+wood
+position 17637 583
+[item_wall]
+wood
+position 17727 583
+[item_wall]
+wood
+position 17817 583
+[item_castle]
+position 19063 186
+[item_mushroom]
+position 4270 541
+[item_wall]
+position 42 493
+[item_wall]
+gold
+position 132 493
+[item_wall]
+position 222 493
+[item_wall]
+gold
+position 312 493
+[item_wall]
+position 402 493
+[item_wall]
+position 3912 493
+[item_wall]
+gold
+position 4002 493
+[item_wall]
+position 4092 493
+[item_wall]
+gold
+position 4182 493
+[item_wall]
+position 4272 493
+[item_wall]
+gold
+position 4362 493
+[item_wall]
+position 4452 493
+[item_wall]
+position 6837 493
+[item_wall]
+position 6927 493
+[item_wall]
+position 7017 493
+[item_wall]
+position 8187 493
+[item_wall]
+position 8277 493
+[item_wall]
+position 8367 493
+[item_wall]
+position 8457 493
+shield
+[item_wall]
+wood
+position 14937 493
+[item_wall]
+wood
+position 15027 493
+[item_wall]
+wood
+position 15432 493
+[item_wall]
+wood
+position 15522 493
+[item_wall]
+position 16197 493
+[item_wall]
+position 16287 493
+[item_wall]
+position 16377 493
+[item_wall]
+position 16467 493
+[item_wall]
+gold
+position 16557 493
+[item_wall]
+wood
+position 17547 493
+[item_wall]
+wood
+position 17637 493
+[item_wall]
+wood
+position 17727 493
+[item_wall]
+wood
+position 17817 493
 [item_coin]
-position 753 521
+position 13273 481
 [item_coin]
-position 497 520
+position 13365 481
 [item_coin]
-position 579 520
+position 13006 480
 [item_coin]
-position 668 520
+position 13094 480
 [item_coin]
-position 841 520
+position 13185 480
 [item_coin]
-position 933 520
-[item_brick]
-unbreakable
-position 1115 450
+position 9264 436
+[item_coin]
+position 9447 436
+[item_coin]
+position 9357 435
+[item_coin]
+position 9539 434
+[item_wall]
+wood
+position 14847 403
+[item_wall]
+wood
+position 14937 403
+[item_wall]
+wood
+position 15027 403
+[item_wall]
+wood
+position 15432 403
+[item_wall]
+wood
+position 15522 403
+[item_wall]
+wood
+position 15612 403
+[item_wall]
+wood
+position 17457 403
+[item_wall]
+wood
+position 17547 403
+[item_wall]
+wood
+position 17637 403
+[item_wall]
+wood
+position 17727 403
+[item_wall]
+wood
+position 17817 403
+[item_wall]
+wood
+position 14757 313
+[item_wall]
+wood
+position 14847 313
+[item_wall]
+wood
+position 14937 313
+[item_wall]
+wood
+position 15027 313
+[item_wall]
+wood
+position 15432 313
+[item_wall]
+wood
+position 15522 313
+[item_wall]
+wood
+position 15612 313
+[item_wall]
+wood
+position 15702 313
+[item_wall]
+wood
+position 17367 313
+[item_wall]
+wood
+position 17457 313
+[item_wall]
+wood
+position 17547 313
+[item_wall]
+wood
+position 17637 313
+[item_wall]
+wood
+position 17727 313
+[item_wall]
+wood
+position 17817 313
 [item_root]
-position 1369 166
+position 3526 186
+[item_root]
+position 5056 186
+[item_root]
+position 7772 186
+[item_root]
+position 11686 186
+[item_mario]
+position 521 186
+[item_snail]
+position 8045 186
+[item_snail]
+position 13180 186
+[item_wall]
+wood
+position 14667 223
+[item_wall]
+wood
+position 14757 223
+[item_wall]
+wood
+position 14847 223
+[item_wall]
+wood
+position 14937 223
+[item_wall]
+wood
+position 15027 223
+[item_wall]
+wood
+position 15432 223
+[item_wall]
+wood
+position 15522 223
+[item_wall]
+wood
+position 15612 223
+[item_wall]
+wood
+position 15702 223
+[item_wall]
+wood
+position 15792 223
+[item_wall]
+wood
+position 17277 223
+[item_wall]
+wood
+position 17367 223
+[item_wall]
+wood
+position 17457 223
+[item_wall]
+wood
+position 17547 223
+[item_wall]
+wood
+position 17637 223
+[item_wall]
+wood
+position 17727 223
+[item_wall]
+wood
+position 17817 223
+[item_mushroom]
+position 3965 186
+[item_mushroom]
+position 8986 186
+[item_mushroom]
+position 11971 186
+[item_mushroom]
+position 13992 186
+[item_mushroom]
+position 16399 186
+[item_ground]
+position 0 180
+width 3047
+[item_ground]
+position 3353 180
+width 1939
+[item_ground]
+position 6661 180
+width 3047
+[item_ground]
+position 10011 180
+width 277
+[item_ground]
+position 10592 180
+width 277
+[item_ground]
+position 11176 180
+width 1385
+[item_ground]
+position 12864 180
+width 2216
+[item_ground]
+position 15384 180
+width 3878
+[item_water]
+position 3053 115
+width 294
+[item_water]
+position 9712 115
+width 294
+[item_water]
+position 10293 115
+width 294
+[item_water]
+position 10875 115
+width 294
+[item_water]
+position 12565 115
+width 294
+[item_water]
+position 15086 115
+width 294

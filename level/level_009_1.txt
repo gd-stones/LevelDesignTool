@@ -1,0 +1,3 @@
+[item_wall]
+unbreakable
+position 717 673
