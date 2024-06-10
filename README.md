@@ -1,5 +1,4 @@
-Use window form to create a tool to help design levels for platform games. The output is a file in .txt format, this file is used as input for 2d games using cocos-2dx engine.
-
+Create an intuitive and powerful level design tool using Windows Forms, tailored specifically for platform games. With this tool, you can effortlessly design intricate levels and seamlessly export your creations to a .txt file format. These files serve as the perfect input for 2D games built with the Cocos-2dX engine, ensuring a smooth and efficient workflow from design to implementation. Elevate your game development process with this indispensable tool, designed to bring your creative visions to life.
 ### How to use the tool:
 ![](https://github.com/gd-stones/LevelDesignTool/blob/master/Screenshots/1.png)
 Select the "Open" button [1] to open the file
