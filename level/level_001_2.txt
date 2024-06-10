@@ -1,171 +1,131 @@
-[item_wall]
-unbreakable
+[map]
+skin 1
+
+[wall]
 position 42 943
-[item_wall]
-unbreakable
+[wall]
 position 1572 943
-[item_wall]
-unbreakable
+[wall]
 position 42 853
-[item_wall]
-unbreakable
+[wall]
 position 1572 853
-[item_wall]
-unbreakable
+[wall]
 position 42 763
-[item_wall]
-unbreakable
+[wall]
 position 1572 763
-[item_coin]
-position 854 706
-[item_coin]
-position 405 705
-[item_coin]
-position 494 705
-[item_coin]
-position 585 705
-[item_coin]
-position 673 705
-[item_coin]
-position 764 705
-[item_coin]
-position 944 705
-[item_wall]
-unbreakable
+[coin]
+position 492 718
+[coin]
+position 582 718
+[coin]
+position 672 718
+[coin]
+position 762 718
+[coin]
+position 852 718
+[coin]
+position 942 718
+[coin]
+position 1032 718
+[wall]
 position 42 673
-[item_wall]
-unbreakable
+[wall]
 position 1572 673
-[item_coin]
-position 405 616
-[item_coin]
-position 583 616
-[item_coin]
-position 766 616
-[item_coin]
-position 944 616
-[item_coin]
-position 494 615
-[item_coin]
-position 673 615
-[item_coin]
-position 854 615
-[item_wall]
-unbreakable
+[coin]
+position 492 628
+[coin]
+position 582 628
+[coin]
+position 672 628
+[coin]
+position 762 628
+[coin]
+position 852 628
+[coin]
+position 942 628
+[coin]
+position 1032 628
+[wall]
 position 42 583
-[item_wall]
-unbreakable
+[wall]
 position 1572 583
-[item_wall]
-unbreakable
+[wall]
 position 42 493
-[item_wall]
-unbreakable
+[wall]
 position 1572 493
-[item_wall]
-unbreakable
+[wall]
 position 42 403
-[item_wall]
-unbreakable
-position 312 403
-[item_wall]
-unbreakable
+[wall]
 position 402 403
-[item_wall]
-unbreakable
+[wall]
 position 492 403
-[item_wall]
-unbreakable
+[wall]
 position 582 403
-[item_wall]
-unbreakable
+[wall]
 position 672 403
-[item_wall]
-unbreakable
+[wall]
 position 762 403
-[item_wall]
-unbreakable
+[wall]
 position 852 403
-[item_wall]
-unbreakable
+[wall]
 position 942 403
-[item_wall]
-unbreakable
+[wall]
 position 1032 403
-[item_wall]
-unbreakable
+[wall]
+position 1122 403
+[wall]
 position 1572 403
-[item_wall]
-unbreakable
+[wall]
 position 42 313
-[item_wall]
-unbreakable
+[wall]
 position 1572 313
-[item_wall]
-unbreakable
+[wall]
 position 42 223
-[item_wall]
-unbreakable
+[wall]
 position 1572 223
-[item_root]
-position 1399 91
-[item_wall]
-unbreakable
+[root]
+position 181 91
+id 1 - destination 1 1 - 
+[root]
+position 1430 91
+id 2 - destination 1 2 - 
+[wall]
 position 42 133
-[item_wall]
-unbreakable
+[wall]
 position 1572 133
-[item_wall]
-unbreakable
+[wall]
 position 42 43
-[item_wall]
-unbreakable
+[wall]
 position 132 43
-[item_wall]
-unbreakable
+[wall]
 position 222 43
-[item_wall]
-unbreakable
+[wall]
 position 312 43
-[item_wall]
-unbreakable
+[wall]
 position 402 43
-[item_wall]
-unbreakable
+[wall]
 position 492 43
-[item_wall]
-unbreakable
+[wall]
 position 582 43
-[item_wall]
-unbreakable
+[wall]
 position 672 43
-[item_wall]
-unbreakable
+[wall]
 position 762 43
-[item_wall]
-unbreakable
+[wall]
 position 852 43
-[item_wall]
-unbreakable
+[wall]
 position 942 43
-[item_wall]
-unbreakable
+[wall]
 position 1032 43
-[item_wall]
-unbreakable
+[wall]
 position 1122 43
-[item_wall]
-unbreakable
+[wall]
 position 1212 43
-[item_wall]
-unbreakable
+[wall]
 position 1302 43
-[item_wall]
-unbreakable
+[wall]
 position 1392 43
-[item_wall]
-unbreakable
+[wall]
 position 1482 43
-[item_wall]
-unbreakable
+[wall]
 position 1572 43

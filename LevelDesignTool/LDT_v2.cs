@@ -1,8 +1,12 @@
 ﻿using System.Numerics;
+using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using System.Timers;
 using System.Windows.Forms;
+using static System.Windows.Forms.AxHost;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 
@@ -10,11 +14,12 @@ namespace LevelDesignTool
 {
     public partial class LDT_v2 : Form
     {
+        int SwitchModeCommittingAndEditing = 2; // 2 = Editing && 1 = Committing; Can only be set to 1 or 2
+
         const int GridSize = 45;
         const int MapToolWidth = 31500;
         const int MapToolHeight = 990;
 
-        int SwitchModeCommittingAndEditing = 2; // 2 = Editing && 1 = Committing; Can only be set to 1 or 2
         List<Item> OriginalItems = new List<Item>();
         List<(string, string, string, string, string, string)> ItemInformation = new List<(string, string, string, string, string, string)>();
         Panel? ActivateItemPanel = null;
@@ -52,6 +57,12 @@ namespace LevelDesignTool
         int Border = 3;
         int AdjHeight = 985; // MapToolHeight - 2 * Border + 1
 
+        bool FlagMoveItemAsSoonAsItIsCreated = false;
+        int HorizontalScrollPosition = 0;
+        string OptionalData = "[map]\nskin 1\n";
+
+        System.Windows.Forms.Timer timer;
+
 #pragma warning disable CS8618
         public LDT_v2()
 #pragma warning restore CS8618
@@ -66,6 +77,8 @@ namespace LevelDesignTool
             InitializePanelMapTool();
             ReadItemsFile();
             DisplayItems();
+
+
 
             TextboxItemContent.MouseClick += TextboxItemContent_MouseClick;
         }
@@ -119,9 +132,9 @@ namespace LevelDesignTool
             string FilePath = "";
 
             if (SwitchModeCommittingAndEditing == 2)
-                FilePath = Path.Combine(ProjectDirectory, "item\\items.txt");
+                FilePath = Path.Combine(ProjectDirectory, "item\\item.txt");
             else if (SwitchModeCommittingAndEditing == 1)
-                FilePath = Path.Combine(ProjectDirectory, "Map Editor\\item\\items.txt");
+                FilePath = Path.Combine(ProjectDirectory, "Map Editor\\item\\item.txt");
 
             string[] Lines = File.ReadAllLines(FilePath);
             int Type = 0;
@@ -279,9 +292,14 @@ namespace LevelDesignTool
             Pen p1 = new Pen(Color.Brown);
             Pen p2 = new Pen(Color.LightSkyBlue);
 
+            g.DrawLine(p1, 0, Tier1PosYGround_TopLeft, MapToolWidth, Tier1PosYGround_TopLeft);
             g.DrawLine(p1, 0, Tier2PosYGround_TopLeft, MapToolWidth, Tier2PosYGround_TopLeft);
+            g.DrawLine(p1, 0, Tier3PosYGround_TopLeft, MapToolWidth, Tier3PosYGround_TopLeft);
             g.DrawLine(p1, 0, Tier4PosYGround_TopLeft, MapToolWidth, Tier4PosYGround_TopLeft);
+            g.DrawLine(p1, 0, Tier5PosYGround_TopLeft, MapToolWidth, Tier5PosYGround_TopLeft);
+            g.DrawLine(p1, 0, Tier6PosYGround_TopLeft, MapToolWidth, Tier6PosYGround_TopLeft);
 
+            g.DrawLine(p2, 0, Tier1PosYWater_TopLeft, MapToolWidth, Tier1PosYWater_TopLeft);
             g.DrawLine(p2, 0, Tier2PosYWater_TopLeft, MapToolWidth, Tier2PosYWater_TopLeft);
 
             p1.Dispose();
@@ -308,7 +326,6 @@ namespace LevelDesignTool
             p.Dispose();
         }
 
-        int HorizontalScrollPosition = 0;
         void PanelMapTool_MouseWheel(object? sender, MouseEventArgs e)
         {
             int ScrollDirection = e.Delta > 0 ? -1 : 1;
@@ -329,6 +346,20 @@ namespace LevelDesignTool
         #endregion
 
         #region Display items in PanelMapTool
+        bool CheckAddProp(string Line)
+        {
+            string[] AddProp = { "wood", /*"gold",*/ "unbreakable", "island", "islet", "shell", "rotate", "red",
+                "gray", "rock", "golem", "king_kong", "ice_monster", "island_rock", "islet_rock", "maybug",
+                "monkey", "long", "rock", "scorpion", "spider"};
+
+            foreach (string l in AddProp)
+            {
+                if (Line == l) return true;
+            }
+
+            return false;
+        }
+
         void ExtractItemInformation(string[] Lines)
         {
             ItemInformation.Clear();
@@ -360,8 +391,7 @@ namespace LevelDesignTool
                     CurrentWidth = line.Replace("width ", "");
                 else if (line.StartsWith("bomb") || line.StartsWith("coin") || line.StartsWith("diamond") || line.StartsWith("vial") || line.StartsWith("shield"))
                     CurrentItemAttached = line;
-                else if (line.StartsWith("wood") || line.StartsWith("gold") || line.StartsWith("unbreakable") || line.StartsWith("island") || line.StartsWith("islet")
-                    || line.StartsWith("high") || line.StartsWith("low") || line.StartsWith("big") || line.StartsWith("shell"))
+                else if (line.StartsWith("gold") || CheckAddProp(line))
                     CurrentAddProp = line;
                 else if (line != "" && line != "/n")
                     CurrentOtherNotes = CurrentOtherNotes + line + " - ";
@@ -376,9 +406,9 @@ namespace LevelDesignTool
             if (Flag == 0)
             {
                 if (SwitchModeCommittingAndEditing == 2)
-                    FileOpen = Path.Combine(ProjectDirectory, "level\\level_009_1.txt");
+                    FileOpen = Path.Combine(ProjectDirectory, "level\\level_001_1.txt");
                 else if (SwitchModeCommittingAndEditing == 1)
-                    FileOpen = Path.Combine(ProjectDirectory, "Map Editor\\level\\level_009_1.txt");
+                    FileOpen = Path.Combine(ProjectDirectory, "Map Editor\\level\\level_001_1.txt");
             }
 
             string[] Lines = File.ReadAllLines(FileOpen);
@@ -402,14 +432,11 @@ namespace LevelDesignTool
                     Item NewItem = new Item(OriginalItem.Img, OriginalItem.Sz, OriginalItem.Type,
                         Width > 0 ? Width / OriginalItem.Sz.Width : OriginalItem.Length, OriginalItem.AnchorPoint);
 
-                    if (AddProp != "")
-                        NewItem.AdditionalProperties = AddProp;
+                    if (AddProp != "") NewItem.AdditionalProperties = AddProp;
 
-                    if (Attached != "")
-                        NewItem.ItemAttached = Attached;
+                    if (Attached != "") NewItem.ItemAttached = Attached;
 
-                    if (OtherNotes != "")
-                        NewItem.OtherNotes = OtherNotes;
+                    if (OtherNotes != "") NewItem.OtherNotes = OtherNotes;
 
                     CreateItemAtLocation(NewItem, Position, 0);
                 }
@@ -431,10 +458,8 @@ namespace LevelDesignTool
 
         int GetWidthFromName(string Width)
         {
-            if (Width == "")
-                return 0;
-            else
-                return int.Parse(Width);
+            if (Width == "") return 0;
+            else return int.Parse(Width);
         }
         #endregion
 
@@ -446,6 +471,8 @@ namespace LevelDesignTool
 
             if (AnchorPoint == "top_left")
                 AbsoluteLocation = new Point(RelativePos.X + ScrollPosition.X, AdjHeight - (RelativePos.Y + ScrollPosition.Y));
+            else if (AnchorPoint == "top_center")
+                AbsoluteLocation = new Point(RelativePos.X + ScrollPosition.X + SzWidth / 2, AdjHeight - (RelativePos.Y + ScrollPosition.Y));
             else if (AnchorPoint == "middle_bottom")
                 AbsoluteLocation = new Point(RelativePos.X + ScrollPosition.X + SzWidth / 2, AdjHeight - (RelativePos.Y + ScrollPosition.Y + SzHeight));
             else
@@ -461,6 +488,8 @@ namespace LevelDesignTool
 
             if (AnchorPoint == "top_left")
                 RelativeLocation = new Point(AbsolutePos.X - ScrollPosition.X, AdjHeight - (AbsolutePos.Y - ScrollPosition.Y));
+            else if (AnchorPoint == "top_center")
+                RelativeLocation = new Point(AbsolutePos.X - ScrollPosition.X - SzWidth / 2, AdjHeight - (AbsolutePos.Y - ScrollPosition.Y));
             else if (AnchorPoint == "middle_bottom")
                 RelativeLocation = new Point(AbsolutePos.X - ScrollPosition.X - SzWidth / 2, AdjHeight - (AbsolutePos.Y - ScrollPosition.Y + SzHeight));
             else
@@ -468,8 +497,6 @@ namespace LevelDesignTool
 
             return RelativeLocation;
         }
-
-        bool FlagMoveItemAsSoonAsItIsCreated = false;
 
         void PanelMapTool_MouseDown(object? sender, MouseEventArgs e)
         {
@@ -488,6 +515,8 @@ namespace LevelDesignTool
 
                     if (It.AnchorPoint == "center")
                         CreateItemAtLocation(NewItem, new Point(e.Location.X - It.Sz.Width / 2, e.Location.Y - It.Sz.Height / 2));
+                    else if (It.AnchorPoint == "top_center")
+                        CreateItemAtLocation(NewItem, new Point(e.Location.X - It.Sz.Width / 2, e.Location.Y));
                     else if (It.AnchorPoint == "middle_bottom")
                         CreateItemAtLocation(NewItem, new Point(e.Location.X - It.Sz.Width / 2, e.Location.Y - It.Sz.Height));
                     else
@@ -504,12 +533,13 @@ namespace LevelDesignTool
                 TextboxItemContent.Clear();
                 PanelMapTool.Focus();
                 SetActiveItemPanel(null);
+            }
 
-                foreach (Control control in PanelMapTool.Controls)
-                {
-                    if (control is Panel Pn)
-                        Pn.Invalidate();
-                }
+            if (timer != null)
+            {
+                timer.Stop();
+                timer.Dispose();
+                timer = null;
             }
         }
 
@@ -544,34 +574,36 @@ namespace LevelDesignTool
         {
             PictureBox? Pb = null;
 
+            if (Attached.StartsWith("coin")) Attached = "coin";
+
             if (Attached != "")
             {
                 int AttType = 0;
                 switch (Attached)
                 {
                     case "bomb":
-                        AttType = 3;
+                        AttType = 21;
                         break;
                     case "coin":
-                        AttType = 11;
+                        AttType = 22;
                         break;
                     case "diamond":
-                        AttType = 13;
-                        break;
-                    case "vial":
-                        AttType = 32;
+                        AttType = 23;
                         break;
                     case "shield":
-                        AttType = 27;
+                        AttType = 24;
+                        break;
+                    case "vial":
+                        AttType = 25;
                         break;
                     default:
                         AttType = 0;
                         break;
                 }
+
                 Item? ItemAtt = OriginalItems.FirstOrDefault(i => i.Type == AttType);
 
-                if (ItemAtt != null)
-                    Pb = CreatePictureBoxItem(ItemAtt, Border);
+                if (ItemAtt != null) Pb = CreatePictureBoxItem(ItemAtt, Border);
             }
 
 #pragma warning disable CS8603
@@ -588,10 +620,10 @@ namespace LevelDesignTool
             }
             else
             {
-                if (NewItem.Type == 4 || NewItem.Type == 5 || NewItem.Type == 6 || NewItem.Type == 7)
+                if (NewItem.Type == 11 || NewItem.Type == 12 || NewItem.Type == 13 || NewItem.Type == 14)
                     Pos = new Point(((-PanelMapTool.AutoScrollPosition.X + Pos.X) / 45) * 45 + PanelMapTool.AutoScrollPosition.X, (Pos.Y / 45) * 45);
-                else if (NewItem.Type == 11)
-                    Pos = new Point((-PanelMapTool.AutoScrollPosition.X + Pos.X / 45) * 45 + PanelMapTool.AutoScrollPosition.X + 17, (Pos.Y / 45) * 45 + 12);
+                else if (NewItem.Type == 22)
+                    Pos = new Point(((-PanelMapTool.AutoScrollPosition.X + Pos.X) / 45) * 45 + PanelMapTool.AutoScrollPosition.X + 17, (Pos.Y / 45) * 45 + 12);
 
                 NewItem.Position = ConvertRelativePosToAbsolutePos(Pos, NewItem.Sz.Width, NewItem.Sz.Height, NewItem.AnchorPoint);
             }
@@ -603,8 +635,9 @@ namespace LevelDesignTool
                 Tag = NewItem  // Store the item as a Tag in the Panel
             };
 
-            if (NewItem.ItemAttached != "")
-                ItemPanel.Controls.Add(CreateItemAttached(NewItem.ItemAttached));
+            if (NewItem.ItemAttached != "") ItemPanel.Controls.Add(CreateItemAttached(NewItem.ItemAttached));
+
+            if (NewItem.Type == 34 && NewItem.OtherNotes != "") ItemPanel.Controls.Add(AssignAddressToRoot(NewItem.OtherNotes));
 
             SetActiveItemPanel(ItemPanel);
             ItemPanel.Paint += (sender, e) =>
@@ -627,6 +660,7 @@ namespace LevelDesignTool
             }
 
             PanelMapTool.Controls.Add(ItemPanel);
+            ItemPanel.BringToFront();
             DisplayItemInformation();
 
             if (FlagMoveItemAsSoonAsItIsCreated)
@@ -639,13 +673,12 @@ namespace LevelDesignTool
         void SetActiveItemPanel(Panel? Pn)
         {
             ActivateItemPanel = Pn;
-            if (Pn != null)
-                Pn.Invalidate();
+            if (Pn != null) Pn.Invalidate();
 
             foreach (Control control in PanelMapTool.Controls)
             {
                 if (control is Panel OtherPanel && OtherPanel != Pn)
-                    OtherPanel.Invalidate(); // Redraw the inactive panels
+                    OtherPanel.Invalidate();
             }
         }
         #endregion
@@ -653,47 +686,44 @@ namespace LevelDesignTool
         #region Movement item in PanelMapTool
         int FindWallOrGroundLocationClosestPlayerOrMonster(Item ItemCheck, Point NewLocation)
         {
-            int[] ListGroundType = { 35, 18, 36, 21, 37, 38, 19, 20 };
-            int[] ListBrickType = { 4, 5, 6, 7 };
+            int[] ListGroundType = { 1, 2, 3, 4, 31 };
+            int[] ListBrickType = { 11, 12, 13, 14 };
             int VerticalThreshold = 20;
-            int HorizontalThresholdWall = 20;
+            int HorizontalThresholdWall = 50;
+            NewLocation.Y += (ItemCheck.Sz.Height + 2 * Border);
 
             foreach (Control control in PanelMapTool.Controls)
             {
-                if (control is Panel && control.Tag is Item existingItem)
+                if (control is Panel && control.Tag is Item ExistingItem)
                 {
-                    if (existingItem == ItemCheck)
-                        continue;
+                    if (ExistingItem == ItemCheck) continue;
 
                     foreach (int t in ListBrickType)
                     {
-                        if (existingItem.Type == t)
+                        if (ExistingItem.Type == t)
                         {
-                            Point existingItem_TopLeft = ConvertAbsolutePosToRelativePos(existingItem.Position, existingItem.Sz.Width, existingItem.Sz.Height);
-                            int verticalDistance = Math.Abs(NewLocation.Y - (existingItem_TopLeft.Y - existingItem.Sz.Height / 2));
-                            int horizontalDistance = Math.Abs(NewLocation.X - existingItem_TopLeft.X);
+                            Point ExistingItem_TopLeft = ConvertAbsolutePosToRelativePos(ExistingItem.Position, ExistingItem.Sz.Width, ExistingItem.Sz.Height);
+                            int VerticalDistance = Math.Abs(NewLocation.Y - ExistingItem_TopLeft.Y);
+                            int HorizontalDistance = Math.Abs(NewLocation.X - ExistingItem_TopLeft.X);
 
-                            if (verticalDistance < VerticalThreshold && horizontalDistance < HorizontalThresholdWall)
-                            {
-                                return existingItem_TopLeft.Y - ItemCheck.Sz.Height - 2 * Border;
-                            }
+                            if (VerticalDistance < VerticalThreshold && HorizontalDistance < HorizontalThresholdWall)
+                                return ExistingItem_TopLeft.Y - ItemCheck.Sz.Height - 2 * Border;
                         }
                     }
 
                     foreach (int t in ListGroundType)
                     {
-                        if (existingItem.Type == t)
+                        if (ExistingItem.Type == t)
                         {
-                            Point existingItem_TopLeft = ConvertAbsolutePosToRelativePos(existingItem.Position, existingItem.Sz.Width, existingItem.Sz.Height, "top_left");
-                            int verticalDistance = Math.Abs(NewLocation.Y - (existingItem_TopLeft.Y - existingItem.Sz.Height / 2));
+                            Point ExistingItem_TopLeft = ConvertAbsolutePosToRelativePos(ExistingItem.Position, ExistingItem.Sz.Width, ExistingItem.Sz.Height, ExistingItem.AnchorPoint);
+                            int VerticalDistance = Math.Abs(NewLocation.Y - ExistingItem_TopLeft.Y);
                             bool Check = false;
-                            if (NewLocation.X > existingItem_TopLeft.X && NewLocation.X < existingItem_TopLeft.X + existingItem.Sz.Width * existingItem.Length)
+
+                            if ((NewLocation.X + ItemCheck.Sz.Width) > ExistingItem_TopLeft.X && NewLocation.X < ExistingItem_TopLeft.X + ExistingItem.Sz.Width * ExistingItem.Length)
                                 Check = true;
 
-                            if (verticalDistance < VerticalThreshold && Check)
-                            {
-                                return existingItem_TopLeft.Y - ItemCheck.Sz.Height - 2 * Border;
-                            }
+                            if (VerticalDistance < VerticalThreshold && Check)
+                                return ExistingItem_TopLeft.Y - ItemCheck.Sz.Height - 2 * Border;
                         }
                     }
                 }
@@ -704,34 +734,34 @@ namespace LevelDesignTool
 
         int FindWaterOrGroundLocationClosestGroundOrWater(Item ItemCheck, Point NewLocation)
         {
-            int[] ListGroundAndWaterType = { 35, 18, 36, 21, 37, 38, 19, 20, 33, 34 };
+            int[] ListGroundAndWaterType = { 1, 2 };
             int HorizontalThreshold = 30;
-            int VerticalThreshold = 20;
+            int VerticalThreshold = 500;
 
             foreach (Control control in PanelMapTool.Controls)
             {
-                if (control is Panel && control.Tag is Item existingItem)
+                if (control is Panel && control.Tag is Item ExistingItem)
                 {
-                    if (existingItem == ItemCheck)
+                    if (ExistingItem == ItemCheck)
                         continue;
 
                     foreach (int t in ListGroundAndWaterType)
                     {
-                        if (existingItem.Type == t)
+                        if (ExistingItem.Type == t)
                         {
-                            Point existingItem_TopLeft = ConvertAbsolutePosToRelativePos(existingItem.Position, existingItem.Sz.Width, existingItem.Sz.Height, "top_left");
-                            int verticalDistance = Math.Abs(NewLocation.Y - existingItem_TopLeft.Y);
+                            Point ExistingItem_TopLeft = ConvertAbsolutePosToRelativePos(ExistingItem.Position, ExistingItem.Sz.Width, ExistingItem.Sz.Height, "top_left");
+                            int VerticalDistance = Math.Abs(NewLocation.Y - ExistingItem_TopLeft.Y);
+                            int HorizontalDistance = Math.Abs(NewLocation.X - (ExistingItem_TopLeft.X + ExistingItem.Sz.Width * ExistingItem.Length + Border));
 
-                            int horizontalDistance = Math.Abs(NewLocation.X - (existingItem_TopLeft.X + existingItem.Sz.Width * existingItem.Length + Border));
-                            if (horizontalDistance < HorizontalThreshold && verticalDistance < VerticalThreshold)
+                            if (HorizontalDistance < HorizontalThreshold && VerticalDistance < VerticalThreshold)
                             {
-                                return existingItem_TopLeft.X + existingItem.Sz.Width * existingItem.Length + 2 * Border;
+                                return ExistingItem_TopLeft.X + ExistingItem.Sz.Width * ExistingItem.Length + 2 * Border;
                             }
 
-                            horizontalDistance = Math.Abs(NewLocation.X + ItemCheck.Length * ItemCheck.Sz.Width + 2 * Border - existingItem_TopLeft.X);
-                            if (horizontalDistance < HorizontalThreshold && verticalDistance < VerticalThreshold)
+                            HorizontalDistance = Math.Abs(NewLocation.X + ItemCheck.Length * ItemCheck.Sz.Width + 2 * Border - ExistingItem_TopLeft.X);
+                            if (HorizontalDistance < HorizontalThreshold && VerticalDistance < VerticalThreshold)
                             {
-                                return existingItem_TopLeft.X - (ItemCheck.Sz.Width * ItemCheck.Length + 2 * Border);
+                                return ExistingItem_TopLeft.X - (ItemCheck.Sz.Width * ItemCheck.Length + 2 * Border);
                             }
                         }
                     }
@@ -743,8 +773,7 @@ namespace LevelDesignTool
 
         void MouseDrag()
         {
-            if (!IsDragging || CurrentDragPanel == null)
-                return;
+            if (!IsDragging || CurrentDragPanel == null) return;
 
             Item? It = CurrentDragPanel.Tag as Item;
             Point ScreenPoint;
@@ -753,6 +782,8 @@ namespace LevelDesignTool
             {
                 if (It.AnchorPoint == "center")
                     ScreenPoint = new Point(Cursor.Position.X - It.Sz.Width / 2, Cursor.Position.Y - It.Sz.Height / 2);
+                else if (It.AnchorPoint == "top_center")
+                    ScreenPoint = new Point(Cursor.Position.X - It.Sz.Width / 2, Cursor.Position.Y);
                 else if (It.AnchorPoint == "middle_bottom")
                     ScreenPoint = new Point(Cursor.Position.X - It.Sz.Width / 2, Cursor.Position.Y - It.Sz.Height);
                 else
@@ -769,93 +800,70 @@ namespace LevelDesignTool
 
             if (!IsF1KeyPress)
             {
-                bool Check = false;
-                int[] ListMarioAndMonsterType = { 9, 10, 15, 17, 22, 23, 24, 26, 28, 29, 30, 31 };
+                bool Check1 = false;
+                int[] ListAnchorPointEqualMiddleBottom = { 100, 32, 33, 34, 35, 41, 44, 46, 48, 61, 63, 64, 71, 72, 82 };
 
-                foreach (int i in ListMarioAndMonsterType)
+                foreach (int i in ListAnchorPointEqualMiddleBottom)
                 {
-                    if (Type == i) Check = true;
+                    if (Type == i)
+                    {
+                        Check1 = true;
+                        break;
+                    }
                 }
 
                 int DeltaPosY = 30;
-                if (Check)
+                if (Check1)
                 {
                     int Y = FindWallOrGroundLocationClosestPlayerOrMonster(It, NewLocation);
                     if (Y != 0) NewLocation.Y = Y;
                 }
-                else
+                else if (Type == 1)
                 {
-                    switch (Type)
-                    {
-                        case 35:
-                            {
-                                if (NewLocation.Y < Tier1PosYGround_TopLeft + DeltaPosY && NewLocation.Y > Tier1PosYGround_TopLeft - DeltaPosY)
-                                    NewLocation.Y = Tier1PosYGround_TopLeft;
-                                break;
-                            }
-                        case 18:
-                        case 20:
-                            {
-                                if (NewLocation.Y < Tier2PosYGround_TopLeft + DeltaPosY && NewLocation.Y > Tier2PosYGround_TopLeft - DeltaPosY)
-                                    NewLocation.Y = Tier2PosYGround_TopLeft;
-                                break;
-                            }
-                        case 36:
-                            {
-                                if (NewLocation.Y < Tier3PosYGround_TopLeft + DeltaPosY && NewLocation.Y > Tier3PosYGround_TopLeft - DeltaPosY)
-                                    NewLocation.Y = Tier3PosYGround_TopLeft;
-                                break;
-                            }
-                        case 21:
-                            {
-                                if (NewLocation.Y < Tier4PosYGround_TopLeft + DeltaPosY && NewLocation.Y > Tier4PosYGround_TopLeft - DeltaPosY)
-                                    NewLocation.Y = Tier4PosYGround_TopLeft;
-                                break;
-                            }
-                        case 37:
-                            {
-                                if (NewLocation.Y < Tier5PosYGround_TopLeft + DeltaPosY && NewLocation.Y > Tier5PosYGround_TopLeft - DeltaPosY)
-                                    NewLocation.Y = Tier5PosYGround_TopLeft;
-                                break;
-                            }
-                        case 38:
-                            {
-                                if (NewLocation.Y < Tier6PosYGround_TopLeft + DeltaPosY && NewLocation.Y > Tier6PosYGround_TopLeft - DeltaPosY)
-                                    NewLocation.Y = Tier6PosYGround_TopLeft;
-                                break;
-                            }
-                        case 33:
-                            {
-                                if (NewLocation.Y < Tier2PosYWater_TopLeft + DeltaPosY && NewLocation.Y > Tier2PosYWater_TopLeft - DeltaPosY)
-                                    NewLocation.Y = Tier2PosYWater_TopLeft;
-                                break;
-                            }
-                        case 34:
-                            {
-                                if (NewLocation.Y < Tier1PosYWater_TopLeft + DeltaPosY && NewLocation.Y > Tier1PosYWater_TopLeft - DeltaPosY)
-                                    NewLocation.Y = Tier1PosYWater_TopLeft;
-                                break;
-                            }
-                    }
+                    if (NewLocation.Y < Tier1PosYGround_TopLeft + DeltaPosY && NewLocation.Y > Tier1PosYGround_TopLeft - DeltaPosY)
+                        NewLocation.Y = Tier1PosYGround_TopLeft;
+
+                    if (NewLocation.Y < Tier2PosYGround_TopLeft + DeltaPosY && NewLocation.Y > Tier2PosYGround_TopLeft - DeltaPosY)
+                        NewLocation.Y = Tier2PosYGround_TopLeft;
+
+                    if (NewLocation.Y < Tier3PosYGround_TopLeft + DeltaPosY && NewLocation.Y > Tier3PosYGround_TopLeft - DeltaPosY)
+                        NewLocation.Y = Tier3PosYGround_TopLeft;
+
+                    if (NewLocation.Y < Tier4PosYGround_TopLeft + DeltaPosY && NewLocation.Y > Tier4PosYGround_TopLeft - DeltaPosY)
+                        NewLocation.Y = Tier4PosYGround_TopLeft;
+
+                    if (NewLocation.Y < Tier5PosYGround_TopLeft + DeltaPosY && NewLocation.Y > Tier5PosYGround_TopLeft - DeltaPosY)
+                        NewLocation.Y = Tier5PosYGround_TopLeft;
+
+                    if (NewLocation.Y < Tier6PosYGround_TopLeft + DeltaPosY && NewLocation.Y > Tier6PosYGround_TopLeft - DeltaPosY)
+                        NewLocation.Y = Tier6PosYGround_TopLeft;
 
                     int X = FindWaterOrGroundLocationClosestGroundOrWater(It, NewLocation);
                     if (X != 0) NewLocation.X = X;
                 }
+                else if (Type == 2)
+                {
+                    if (NewLocation.Y < Tier1PosYWater_TopLeft + DeltaPosY && NewLocation.Y > Tier1PosYWater_TopLeft - DeltaPosY)
+                        NewLocation.Y = Tier1PosYWater_TopLeft;
 
+                    if (NewLocation.Y < Tier2PosYWater_TopLeft + DeltaPosY && NewLocation.Y > Tier2PosYWater_TopLeft - DeltaPosY)
+                        NewLocation.Y = Tier2PosYWater_TopLeft;
+
+                    int X = FindWaterOrGroundLocationClosestGroundOrWater(It, NewLocation);
+                    if (X != 0) NewLocation.X = X;
+                }
             }
 
-            if (Type == 4 || Type == 5 || Type == 6 || Type == 7)
+            if (Type == 11 || Type == 12 || Type == 13 || Type == 14)
                 NewLocation = new Point(((-PanelMapTool.AutoScrollPosition.X + NewLocation.X) / 45) * 45 + PanelMapTool.AutoScrollPosition.X, (NewLocation.Y / 45) * 45);
-            else if (Type == 11)
-                NewLocation = new Point((-PanelMapTool.AutoScrollPosition.X + NewLocation.X / 45) * 45 + PanelMapTool.AutoScrollPosition.X + 17, (NewLocation.Y / 45) * 45 + 12);
+            else if (Type == 22)
+                NewLocation = new Point(((-PanelMapTool.AutoScrollPosition.X + NewLocation.X) / 45) * 45 + PanelMapTool.AutoScrollPosition.X + 17, (NewLocation.Y / 45) * 45 + 12);
 
             CurrentDragPanel.Location = NewLocation;
             It.Position = ConvertRelativePosToAbsolutePos(NewLocation, It.Sz.Width, It.Sz.Height, It.AnchorPoint);
 
             DisplayItemInformation();
             UpdateFormTitle(0);
-
-            if (FlagMoveItemAsSoonAsItIsCreated) DragOffset = Point.Empty; // Reset DragOffset
         }
 
         void MouseUpp()
@@ -863,6 +871,7 @@ namespace LevelDesignTool
             IsDragging = false;
             CurrentDragPanel = null;
             PanelMapTool.Invalidate();
+            DragOffset = Point.Empty;
         }
 
         void Item_MouseDown(object? sender, MouseEventArgs e)
@@ -870,10 +879,15 @@ namespace LevelDesignTool
             Control? control = sender as Control;
             CurrentDragPanel = control as Panel ?? control.Parent as Panel;
 
-            if (CurrentDragPanel == null)
-                return;
+            if (CurrentDragPanel == null) return;
 
             MoveItemUsingKeysFlag = true;
+            if (timer != null)
+            {
+                timer.Stop();
+                timer.Dispose();
+                timer = null;
+            }
 
             if (e.Button == MouseButtons.Left)
             {
@@ -978,77 +992,87 @@ namespace LevelDesignTool
                             MoveItemUseArrowKeys(4);
                         break;
                     }
+                case Keys.C:
+                    {
+                        if (MoveItemUsingKeysFlag)
+                        {
+                            WriteWayPoint("C");
+                        }
+                        break;
+                    }
+                case Keys.V:
+                    {
+                        if (MoveItemUsingKeysFlag)
+                        {
+                            WriteWayPoint("V");
+                        }
+                        break;
+                    }
                 case Keys.NumPad0:
                     {
                         PanelMapTool.AutoScrollPosition = new Point(0, 0);
                         HorizontalScrollPosition = 0;
-
                         break;
                     }
                 case Keys.NumPad1:
                     {
                         PanelMapTool.AutoScrollPosition = new Point(2025, 0);
                         HorizontalScrollPosition = 2025;
-
                         break;
                     }
                 case Keys.NumPad2:
                     {
                         PanelMapTool.AutoScrollPosition = new Point(4050, 0);
                         HorizontalScrollPosition = 4050;
-
                         break;
                     }
                 case Keys.NumPad3:
                     {
                         PanelMapTool.AutoScrollPosition = new Point(6075, 0);
                         HorizontalScrollPosition = 6075;
-
                         break;
                     }
                 case Keys.NumPad4:
                     {
                         PanelMapTool.AutoScrollPosition = new Point(8100, 0);
                         HorizontalScrollPosition = 8100;
-
                         break;
                     }
                 case Keys.NumPad5:
                     {
                         PanelMapTool.AutoScrollPosition = new Point(10125, 0);
                         HorizontalScrollPosition = 10125;
-
                         break;
                     }
                 case Keys.NumPad6:
                     {
                         PanelMapTool.AutoScrollPosition = new Point(12150, 0);
                         HorizontalScrollPosition = 12150;
-
                         break;
                     }
                 case Keys.NumPad7:
                     {
                         PanelMapTool.AutoScrollPosition = new Point(14175, 0);
                         HorizontalScrollPosition = 14175;
-
                         break;
                     }
                 case Keys.NumPad8:
                     {
                         PanelMapTool.AutoScrollPosition = new Point(16200, 0);
                         HorizontalScrollPosition = 16200;
-
                         break;
                     }
                 case Keys.NumPad9:
                     {
                         PanelMapTool.AutoScrollPosition = new Point(18225, 0);
                         HorizontalScrollPosition = 18225;
-
                         break;
                     }
             }
+
+            if (e.Control && e.KeyCode == Keys.S) SaveFile();
+
+            if (e.Control && e.KeyCode == Keys.O) LoadFile();
         }
 
         void MainForm_KeyUp(object? sender, KeyEventArgs e)
@@ -1064,7 +1088,7 @@ namespace LevelDesignTool
         }
         #endregion
 
-        #region Use arrow keys to move items
+        #region Use WASD keys to move items
         void MoveItemUseArrowKeys(int Flag)
         {
             if (ActivateItemPanel != null)
@@ -1103,6 +1127,7 @@ namespace LevelDesignTool
                 ActivateItemPanel.Location = RelativePos;
                 (ActivateItemPanel.Tag as Item).Position = AbsolutePos;
                 DisplayItemInformation();
+                UpdateFormTitle(0);
             }
         }
         #endregion
@@ -1120,10 +1145,10 @@ namespace LevelDesignTool
 
             if (check != 1)
             {
-                this.Text = $"* {Values[Values.Length - 1]}";
+                Text = $"* {Values[Values.Length - 1]}";
                 return;
             }
-            this.Text = $"{Values[Values.Length - 1]}";
+            Text = $"{Values[Values.Length - 1]}";
         }
         #endregion
 
@@ -1137,15 +1162,14 @@ namespace LevelDesignTool
             {
                 int Type = ActivateItem.Type;
 
-                if (Type >= 1 && Type <= 38)
-                    DisplayText.AppendLine(GetNameFromType(Type));
+                DisplayText.AppendLine(GetNameFromType(Type));
 
                 if (ActivateItem.AdditionalProperties != "")
                     DisplayText.AppendLine(ActivateItem.AdditionalProperties);
 
                 DisplayText.AppendLine($"position {ActivateItem.Position.X} {ActivateItem.Position.Y}");
 
-                if (Type == 18 || Type == 19 || Type == 33 || Type == 35 || Type == 36 || Type == 37 || Type == 38 || Type == 8 || Type == 21)
+                if (DisplaysItemWidthProperty(Type))
                     DisplayText.AppendLine("width " + ActivateItem.Sz.Width * ActivateItem.Length);
 
                 if (ActivateItem.ItemAttached != "")
@@ -1169,6 +1193,14 @@ namespace LevelDesignTool
         {
             if (e.Button == MouseButtons.Left)
                 MoveItemUsingKeysFlag = false;
+
+            if (timer == null)
+            {
+                timer = new System.Windows.Forms.Timer();
+                timer.Interval = 1000;
+                timer.Tick += new EventHandler(ButtonApply_Click);
+            }
+            timer.Start();
         }
         #endregion
 
@@ -1177,69 +1209,95 @@ namespace LevelDesignTool
         {
             switch (Type)
             {
+                case 100:
+                    return "[player]";
+
                 case 1:
-                    return "[item_bee]";
-                case 2:
-                    return "[item_bird]";
                 case 3:
-                    return "[item_bomb]";
                 case 4:
-                case 5:
-                case 6:
-                case 7:
-                    return "[item_wall]";
-                case 8:
-                    return "[item_bridge]";
-                case 9:
-                    return "[item_carnivorous_flower]";
-                case 10:
-                    return "[item_castle]";
+                    return "[ground]";
+                case 2:
+                    return "[water]";
+
                 case 11:
-                    return "[item_coin]";
                 case 12:
-                    return "[item_crab]";
                 case 13:
-                    return "[item_diamond]";
                 case 14:
-                    return "[item_fish]";
-                case 15:
-                    return "[item_flag]";
-                case 16:
-                    return "[item_flat]";
-                case 17:
-                    return "[item_frog]";
-                case 18:
-                case 35:
-                case 36:
-                case 37:
-                case 38:
-                case 19:
-                case 20:
+                    return "[wall]";
+
                 case 21:
-                    return "[item_ground]";
+                    return "[bomb]";
                 case 22:
+                    return "[coin]";
                 case 23:
-                    return "[item_player]";
+                    return "[diamond]";
                 case 24:
-                    return "[item_mushroom]";
+                    return "[shield]";
                 case 25:
-                    return "[item_octopus]";
-                case 26:
-                    return "[item_root]";
-                case 27:
-                    return "[item_shield]";
-                case 28:
-                case 29:
-                    return "[item_snail]";
-                case 30:
-                    return "[item_spike]";
+                    return "[vial]";
+
                 case 31:
-                    return "[item_spring]";
+                    return "[bridge]";
                 case 32:
-                    return "[item_vial]";
+                    return "[castle]";
                 case 33:
+                    return "[flag]";
                 case 34:
-                    return "[item_water]";
+                    return "[root]";
+                case 35:
+                    return "[seaweed]";
+                case 41:
+                    return "[mushroom]";
+                case 42:
+                    return "[bee]";
+                case 43:
+                    return "[bird]";
+                case 44:
+                    return "[crab]";
+                case 45:
+                    return "[fish]";
+                case 46:
+                    return "[frog]";
+                case 47:
+                    return "[octopus]";
+                case 48:
+                    return "[snail]";
+                case 49:
+                    return "[spider]";
+                case 50:
+                    return "[ghost]";
+                case 51:
+                    return "[snakehead]";
+
+                case 61:
+                    return "[carnivorous_flower]";
+                case 62:
+                    return "[wood]";
+                case 63:
+                    return "[spike]";
+                case 64:
+                    return "[spring]";
+                case 65:
+                    return "[meteorite]";
+                case 66:
+                    return "[balloon]";
+                case 67:
+                    return "[spin]";
+                case 68:
+                    return "[mine]";
+                case 69:
+                    return "[nail_stick]";
+                case 70:
+                    return "[saw]";
+                case 71:
+                    return "[statue]";
+                case 72:
+                    return "[gun]";
+
+                case 81:
+                case 82:
+                    return "[boss]";
+
                 default:
                     return "";
             }
@@ -1249,105 +1307,120 @@ namespace LevelDesignTool
         {
             switch (Name)
             {
-                case "item_bee":
-                    return 1;
-                case "item_bird":
+                case "player":
+                    return 100;
+
+                case "ground":
+                    {
+                        switch (AddProp)
+                        {
+                            case "island":
+                                return 3;
+                            case "islet":
+                                return 4;
+                            default:
+                                return 1;
+                        }
+                    }
+                case "water":
                     return 2;
-                case "item_bomb":
-                    return 3;
-                case "item_wall":
+
+                case "wall":
                     {
                         switch (AddProp)
                         {
                             case "wood":
-                                return 4;
+                                return 11;
                             case "gold":
-                                return 5;
+                                return 12;
                             case "unbreakable":
-                                return 6;
+                                return 13;
                             default:
-                                return 7;
+                                return 14;
                         }
                     }
-                case "item_bridge":
-                    return 8;
-                case "item_carnivorous_flower":
-                    return 9;
-                case "item_castle":
-                    return 10;
-                case "item_coin":
-                    return 11;
-                case "item_crab":
-                    return 12;
-                case "item_diamond":
-                    return 13;
-                case "item_fish":
-                    return 14;
-                case "item_flag":
-                    return 15;
-                case "item_flat":
-                    return 16;
-                case "item_frog":
-                    return 17;
-                case "item_ground":
+
+                case "bomb":
+                    return 21;
+                case "coin":
+                    return 22;
+                case "diamond":
+                    return 23;
+                case "shield":
+                    return 24;
+                case "vial":
+                    return 25;
+
+                case "bridge":
+                    return 31;
+                case "castle":
+                    return 32;
+                case "flag":
+                    return 33;
+                case "root":
+                    return 34;
+                case "seaweed":
+                    return 35;
+
+                case "mushroom":
+                    return 41;
+                case "bee":
+                    return 42;
+                case "bird":
+                    return 43;
+                case "crab":
+                    return 44;
+                case "fish":
+                    return 45;
+                case "frog":
+                    return 46;
+                case "octopus":
+                    return 47;
+                case "snail":
+                    return 48;
+                case "spider":
+                    return 49;
+                case "ghost":
+                    return 50;
+                case "snakehead":
+                    return 51;
+
+                case "carnivorous_flower":
+                    return 61;
+                case "wood":
+                    return 62;
+                case "spike":
+                    return 63;
+                case "spring":
+                    return 64;
+                case "meteorite":
+                    return 65;
+                case "balloon":
+                    return 66;
+                case "spin":
+                    return 67;
+                case "mine":
+                    return 68;
+                case "nail_stick":
+                    return 69;
+                case "saw":
+                    return 70;
+                case "statue":
+                    return 71;
+                case "gun":
+                    return 72;
+
+                case "boss":
                     {
                         switch (AddProp)
                         {
-                            case "low mound":
-                                return 35;
-                            case "high mound tier 3":
-                                return 36;
-                            case "high mound tier 5":
-                                return 37;
-                            case "high mound tier 6":
-                                return 38;
-                            case "island":
-                                return 19;
-                            case "islet":
-                                return 20;
-                            case "high mound":
-                                return 21;
-                            case "":
-                                return 18;
+                            case "maybug":
+                                return 81;
                             default:
-                                return 0;
+                                return 82;
                         }
                     }
-                case "item_player":
-                    {
-                        if (AddProp == "")
-                            return 22;
-                        else
-                            return 23;
-                    }
-                case "item_mushroom":
-                    return 24;
-                case "item_octopus":
-                    return 25;
-                case "item_root":
-                    return 26;
-                case "item_shield":
-                    return 27;
-                case "item_snail":
-                    {
-                        if (AddProp == "")
-                            return 28;
-                        else
-                            return 29;
-                    }
-                case "item_spike":
-                    return 30;
-                case "item_spring":
-                    return 31;
-                case "item_vial":
-                    return 32;
-                case "item_water":
-                    {
-                        if (AddProp == "")
-                            return 33;
-                        else
-                            return 34;
-                    }
+
                 default:
                     return 0;
             }
@@ -1358,6 +1431,16 @@ namespace LevelDesignTool
         void ButtonSave_Click(object? sender, EventArgs e)
         {
             SaveFile();
+        }
+
+        bool DisplaysItemWidthProperty(int Type)
+        {
+            int[] ItemsWantToDisplayWidth = { 1, 2, 3, 31 };
+
+            foreach (int i in ItemsWantToDisplayWidth)
+                if (i == Type) return true;
+
+            return false;
         }
 
         void SaveFile()
@@ -1377,6 +1460,7 @@ namespace LevelDesignTool
             });
 
             StringBuilder ExportData = new StringBuilder();
+            ExportData.AppendLine(OptionalData);
 
             foreach (Panel Pn in ItemPanels)
             {
@@ -1385,27 +1469,24 @@ namespace LevelDesignTool
                     int Type = It.Type;
                     Point Pos = ConvertRelativePosToAbsolutePos(Pn.Location, It.Sz.Width, It.Sz.Height, It.AnchorPoint);
 
-                    if (Type >= 1 && Type <= 38)
+                    ExportData.AppendLine(GetNameFromType(Type));
+
+                    if (It.AdditionalProperties != "")
+                        ExportData.AppendLine(It.AdditionalProperties);
+
+                    ExportData.AppendLine($"position {Pos.X} {Pos.Y}");
+
+                    if (DisplaysItemWidthProperty(Type))
                     {
-                        ExportData.AppendLine(GetNameFromType(Type));
-
-                        if (It.AdditionalProperties != "")
-                            ExportData.AppendLine(It.AdditionalProperties);
-
-                        ExportData.AppendLine($"position {Pos.X} {Pos.Y}");
-
-                        if (Type == 18 || Type == 19 || Type == 33 || Type == 35 || Type == 36 || Type == 37 || Type == 38 || Type == 8 || Type == 21)
-                        {
-                            int Width = It.Sz.Width * It.Length;
-                            ExportData.AppendLine($"width {Width}");
-                        }
-
-                        if (It.ItemAttached != "")
-                            ExportData.AppendLine(It.ItemAttached);
-
-                        if (It.OtherNotes != "")
-                            ExportData.AppendLine(It.OtherNotes);
+                        int Width = It.Sz.Width * It.Length;
+                        ExportData.AppendLine($"width {Width}");
                     }
+
+                    if (It.ItemAttached != "")
+                        ExportData.AppendLine(It.ItemAttached);
+
+                    if (It.OtherNotes != "")
+                        ExportData.AppendLine(It.OtherNotes);
                 }
                 else
                 {
@@ -1433,6 +1514,74 @@ namespace LevelDesignTool
             ApplyChange();
         }
 
+        void WriteWayPoint(string Key)
+        {
+            string[] Lines = TextboxItemContent.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            Item? It = ActivateItemPanel.Tag as Item;
+
+            if (It != null)
+            {
+                string[] ListOfItemsThatCanHaveWayPointAdded = { "bee", "bird", "crab", "fish", "frog", "ghost", "mushroom", "octopus", 
+                    "snail", "snakehead", "spider", "maybug", "monkey", "balloon", "flat", "meteorite", "wood", "saw" };
+                bool C = false;
+                ExtractItemInformation(Lines); //ItemInformation.Add((CurrentName, CurrentPosition, CurrentWidth, CurrentItemAttached, CurrentAddProp, CurrentOtherNotes));
+
+                foreach (string Key_ in ListOfItemsThatCanHaveWayPointAdded)
+                {
+                    if (Key_ == ItemInformation[0].Item1)
+                    {
+                        C = true;
+                        break;
+                    }
+                }
+
+                if (!C)
+                {
+                    return;
+                }
+
+                Point Position = ConvertPositionToPoint(ItemInformation[0].Item2);
+                string CurrentOtherNotes = ItemInformation[0].Item6;
+                string[] S = CurrentOtherNotes.Split(" ");
+
+                if (S.Length == 1)
+                {
+                    CurrentOtherNotes = $"way_point {Position.X} {Position.Y}";
+                }
+                else if (S.Length == 3 && Key == "C")
+                {
+                    CurrentOtherNotes = $"way_point {Position.X} {Position.Y}";
+                }
+                else if (S.Length == 3 && Key == "V")
+                {
+                    CurrentOtherNotes = CurrentOtherNotes + $" {Position.X} {Position.Y}";
+                }
+                else if ((S.Length == 5 || S.Length == 7) && Key == "C")
+                {
+                    CurrentOtherNotes = $"way_point {Position.X} {Position.Y} {S[3]} {S[4]}";
+                }
+                else if ((S.Length == 5 || S.Length == 7) && Key == "V")
+                {
+                    CurrentOtherNotes = $"way_point {S[1]} {S[2]} {Position.X} {Position.Y}";
+                }
+
+                StringBuilder DisplayText = new StringBuilder();
+                DisplayText.AppendLine($"[{ItemInformation[0].Item1}]");
+                DisplayText.AppendLine($"position {Position.X} {Position.Y}");
+                if (ItemInformation[0].Item3 != "")
+                    DisplayText.AppendLine(ItemInformation[0].Item3);
+                if (ItemInformation[0].Item4 != "")
+                    DisplayText.AppendLine(ItemInformation[0].Item4);
+                if (ItemInformation[0].Item5 != "")
+                    DisplayText.AppendLine(ItemInformation[0].Item5);
+                DisplayText.AppendLine(CurrentOtherNotes);
+
+                TextboxItemContent.Text = DisplayText.ToString();
+                PanelMapTool.Focus();
+                ApplyChange();
+            }
+        }
+
         void ApplyChange()
         {
             string[] Lines = TextboxItemContent.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
@@ -1444,16 +1593,18 @@ namespace LevelDesignTool
                 ExtractItemInformation(Lines); //ItemInformation.Add((CurrentName, CurrentPosition, CurrentWidth, CurrentItemAttached, CurrentAddProp, CurrentOtherNotes));
 
                 Point Position = ConvertPositionToPoint(ItemInformation[0].Item2);
-
                 string CurrentWidth = ItemInformation[0].Item3;
                 int.TryParse(CurrentWidth.Trim(), out int Width);
                 int Length = (int)Math.Round((float)Width / It.Sz.Width);
-                if (Length < 1)
-                    Length = 1;
+
+                if (Length < 1) Length = 1;
 
                 string ItemAttached = ItemInformation[0].Item4;
-                if (ItemAttached != "")
-                    ActivateItemPanel.Controls.Add(CreateItemAttached(ItemAttached));
+                if (ItemAttached != "") ActivateItemPanel.Controls.Add(CreateItemAttached(ItemAttached));
+
+                string OtherNotes = ItemInformation[0].Item6;
+                if (OtherNotes != "" && It.Type == 34) // Assign an address to the root of the tree
+                    ActivateItemPanel.Controls.Add(AssignAddressToRoot(OtherNotes));
 
                 int OffsetX = Border;
                 for (int i = 0; i < Length; i++)
@@ -1464,7 +1615,6 @@ namespace LevelDesignTool
                 }
 
                 string AddProp = ItemInformation[0].Item5;
-                string OtherNotes = ItemInformation[0].Item6;
 
                 It.Length = Length;
                 It.Position = Position;
@@ -1478,6 +1628,21 @@ namespace LevelDesignTool
             }
         }
 
+        Label AssignAddressToRoot(string Address)
+        {
+            string[] splitStrings = Address.Split(new string[] { " - " }, StringSplitOptions.None);
+            while (splitStrings.Length > 0 && splitStrings[splitStrings.Length - 1] == "")
+            {
+                Array.Resize(ref splitStrings, splitStrings.Length - 1);
+            }
+
+            Label label = new Label();
+            label.Text = string.Join(Environment.NewLine, splitStrings);
+            label.AutoSize = true;
+            label.Location = new Point(10, 10);
+
+            return label;
+        }
         #endregion
 
         #region Button Delete
@@ -1506,10 +1671,8 @@ namespace LevelDesignTool
             OpenFileDialog FileDialog = new OpenFileDialog();
             string FolderPath = "";
 
-            if (SwitchModeCommittingAndEditing == 2)
-                FolderPath = Path.Combine(ProjectDirectory, "level\\");
-            else if (SwitchModeCommittingAndEditing == 1)
-                FolderPath = Path.Combine(ProjectDirectory, "Map Editor\\level\\");
+            if (SwitchModeCommittingAndEditing == 2) FolderPath = Path.Combine(ProjectDirectory, "level\\");
+            else if (SwitchModeCommittingAndEditing == 1) FolderPath = Path.Combine(ProjectDirectory, "Map Editor\\level\\");
 
             FileDialog.InitialDirectory = $"{FolderPath}";
             FileDialog.CheckFileExists = false;

@@ -1,13 +1,112 @@
-[item_mario]
-position 1031 351
-[item_root]
-position 1030 186
-[item_ground]
-position 888 180
-width 277
-[item_water]
-position 1 115
-width 882
-[item_water]
-position 1169 115
-width 882
+[map]
+skin 1
+
+[wall]
+wood
+position 4632 673
+[wall]
+wood
+position 4722 673
+[flag]
+position 5233 186
+[wall]
+position 1302 583
+coin
+[wall]
+wood
+position 4542 583
+[wall]
+wood
+position 4632 583
+[wall]
+wood
+position 4722 583
+[castle]
+position 5776 186
+[wall]
+wood
+position 4452 493
+[wall]
+wood
+position 4542 493
+[wall]
+wood
+position 4632 493
+[wall]
+wood
+position 4722 493
+[wall]
+wood
+position 4362 403
+[wall]
+wood
+position 4452 403
+[wall]
+wood
+position 4542 403
+[wall]
+wood
+position 4632 403
+[wall]
+wood
+position 4722 403
+[player]
+position 1242 316
+[wall]
+wood
+position 4272 313
+[wall]
+wood
+position 4362 313
+[wall]
+wood
+position 4452 313
+[wall]
+wood
+position 4542 313
+[wall]
+wood
+position 4632 313
+[wall]
+wood
+position 4722 313
+[root]
+position 887 186
+id 1 - destination 1 1 -  - 
+[root]
+position 3822 186
+id 2 - destination 1 2 -  - 
+[ground]
+island
+position 1281 310
+width 245
+[wall]
+wood
+position 4182 223
+[wall]
+wood
+position 4272 223
+[wall]
+wood
+position 4362 223
+[wall]
+wood
+position 4452 223
+[wall]
+wood
+position 4542 223
+[wall]
+wood
+position 4632 223
+[wall]
+wood
+position 4722 223
+[ground]
+position 799 180
+width 174
+[ground]
+position 3328 180
+width 2784
+[water]
+position 0 64
+width 22620

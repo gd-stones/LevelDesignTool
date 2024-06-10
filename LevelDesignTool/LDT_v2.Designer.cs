@@ -53,17 +53,17 @@
             PanelItemListView.AllowDrop = true;
             PanelItemListView.AutoScroll = true;
             PanelItemListView.BorderStyle = BorderStyle.FixedSingle;
-            PanelItemListView.Location = new Point(1452, 54);
+            PanelItemListView.Location = new Point(1452, 51);
             PanelItemListView.Name = "PanelItemListView";
-            PanelItemListView.Size = new Size(440, 600);
+            PanelItemListView.Size = new Size(440, 668);
             PanelItemListView.TabIndex = 1;
             // 
             // TextboxItemContent
             // 
-            TextboxItemContent.Location = new Point(1452, 666);
+            TextboxItemContent.Location = new Point(1452, 734);
             TextboxItemContent.Multiline = true;
             TextboxItemContent.Name = "TextboxItemContent";
-            TextboxItemContent.Size = new Size(440, 255);
+            TextboxItemContent.Size = new Size(440, 185);
             TextboxItemContent.TabIndex = 3;
             // 
             // ButtonApply

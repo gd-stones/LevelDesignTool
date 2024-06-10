@@ -1,456 +1,472 @@
-[item_wall]
-position 5982 943
-[item_wall]
-position 6882 943
-[item_wall]
-position 5982 853
-[item_coin]
-position 6568 865
-[item_coin]
-position 6719 865
-[item_wall]
-position 6882 853
-[item_coin]
-position 6146 864
-[item_coin]
-position 6289 864
-[item_coin]
-position 6432 864
-[item_wall]
+[map]
+skin 1
+
+[wall]
+position 6027 943
+[wall]
+position 6972 943
+[wall]
+position 6027 853
+[wall]
+position 6972 853
+[coin]
+position 6252 853
+[coin]
+position 6387 853
+[coin]
+position 6522 853
+[coin]
+position 6657 853
+[coin]
+position 6792 853
+[wall]
 position 13137 808
-[item_wall]
+[wall]
 position 13857 808
-[item_coin]
-position 13995 820
-[item_coin]
-position 13001 819
-[item_wall]
-position 5982 763
-[item_wall]
-position 6882 763
-[item_coin]
-position 4180 751
-[item_coin]
-position 4362 751
-[item_coin]
-position 4540 751
-[item_coin]
-position 4453 750
-[item_coin]
-position 4270 749
-[item_coin]
-position 6145 731
-[item_wall]
-gold
-position 1797 718
-[item_wall]
-gold
-position 2247 718
-[item_wall]
-gold
-position 2697 718
-[item_coin]
-position 6433 730
-[item_coin]
-position 6569 730
-[item_wall]
+[coin]
+position 13002 808
+[coin]
+position 13992 808
+[wall]
+position 6027 763
+[wall]
+position 6972 763
+[coin]
+position 4182 763
+[coin]
+position 4272 763
+[coin]
+position 4362 763
+[coin]
+position 4452 763
+[coin]
+position 4542 763
+[wall]
 position 15792 718
-[item_wall]
+[wall]
 position 16242 718
-[item_coin]
-position 6291 729
-[item_coin]
-position 6719 729
-[item_mushroom]
-position 16059 675
-[item_wall]
-position 5982 673
-[item_wall]
-position 6882 673
-[item_wall]
+[coin]
+position 6252 718
+[coin]
+position 6387 718
+[coin]
+position 6522 718
+[coin]
+position 6657 718
+[coin]
+position 6792 718
+[coin]
+position 17997 718
+[coin]
+position 18087 718
+[coin]
+position 18177 718
+[coin]
+position 18267 718
+[coin]
+position 18357 718
+[coin]
+position 18447 718
+[coin]
+position 18537 718
+[mushroom]
+position 16053 676
+way_point 15884 676 16154 676 -  - 
+[wall]
+gold
+position 1797 673
+[wall]
+gold
+position 2247 673
+[wall]
+gold
+position 2697 673
+[wall]
+position 6027 673
+[wall]
+position 6972 673
+[wall]
 wood
 position 21597 673
-[item_wall]
+[wall]
 wood
 position 21687 673
-[item_coin]
-position 13003 684
-[item_coin]
-position 13993 684
-[item_flag]
-position 22265 186
-[item_wall]
+[coin]
+position 13002 673
+[coin]
+position 13992 673
+[flag]
+position 22219 186
+[wall]
 position 13317 628
-[item_wall]
+[wall]
 position 13677 628
-[item_wall]
+[wall]
 position 15792 628
-[item_wall]
+[wall]
 position 15882 628
-[item_wall]
+[wall]
 position 15972 628
-[item_wall]
+[wall]
 position 16062 628
-[item_wall]
+[wall]
 position 16152 628
-[item_wall]
+[wall]
 position 16242 628
-[item_wall]
+[wall]
 gold
 position 20202 628
-[item_wall]
+[wall]
 gold
 position 20292 628
-[item_wall]
+[wall]
 gold
 position 20382 628
-[item_wall]
+[wall]
 gold
 position 20472 628
-[item_wall]
-position 5982 583
-[item_wall]
-position 6072 583
-[item_wall]
-position 6162 583
-[item_wall]
-position 6252 583
-[item_wall]
-position 6612 583
-[item_wall]
+[wall]
+position 6027 583
+[wall]
+position 6117 583
+[wall]
+position 6207 583
+[wall]
+position 6297 583
+[wall]
 position 6702 583
-[item_wall]
+[wall]
 position 6792 583
-[item_wall]
+[wall]
 position 6882 583
-[item_wall]
+[wall]
+position 6972 583
+[wall]
 position 17907 583
-[item_wall]
+[wall]
 position 17997 583
-[item_wall]
+[wall]
 position 18087 583
-[item_wall]
+[wall]
 position 18177 583
-[item_wall]
+[wall]
 position 18267 583
-[item_wall]
+[wall]
 position 18357 583
-[item_wall]
+[wall]
 position 18447 583
-[item_wall]
+[wall]
 position 18537 583
-[item_wall]
+[wall]
 position 18627 583
-[item_wall]
+[wall]
 wood
 position 21507 583
-[item_wall]
+[wall]
 wood
 position 21597 583
-[item_wall]
+[wall]
 wood
 position 21687 583
-[item_castle]
-position 22788 186
-[item_coin]
-position 13002 549
-[item_coin]
-position 13994 549
-[item_coin]
-position 1286 526
-[item_coin]
-position 1385 526
-[item_coin]
-position 1478 525
-[item_wall]
-position 672 493
-[item_wall]
+[castle]
+position 22688 186
+[coin]
+position 13002 538
+[coin]
+position 13992 538
+[wall]
 position 4182 493
-[item_wall]
+[wall]
 position 4272 493
-[item_wall]
+[wall]
 position 4362 493
-[item_wall]
+[wall]
 position 4452 493
-[item_wall]
+[wall]
 position 4542 493
-[item_wall]
-position 9267 493
-[item_wall]
-position 9357 493
-[item_wall]
-position 9447 493
-[item_wall]
-position 9537 493
-[item_wall]
-position 9627 493
-[item_wall]
+[wall]
 wood
 position 21417 493
-[item_wall]
+[wall]
 wood
 position 21507 493
-[item_wall]
+[wall]
 wood
 position 21597 493
-[item_wall]
+[wall]
 wood
 position 21687 493
-[item_root]
-position 15466 368
-[item_wall]
+[root]
+position 15519 368
+[coin]
+position 1302 493
+[coin]
+position 1392 493
+[coin]
+position 1482 493
+[wall]
+gold
+position 582 448
+[wall]
+position 672 448
+vial
+[wall]
+position 9267 448
+[wall]
+position 9357 448
+[wall]
+position 9447 448
+[wall]
+position 9537 448
+[wall]
+position 9627 448
+coin
+[wall]
 position 13497 448
-[item_coin]
-position 11779 436
-[item_coin]
-position 18133 436
-[item_coin]
-position 18313 436
-[item_coin]
-position 11500 435
-[item_coin]
-position 11594 435
-[item_coin]
-position 11684 435
-[item_coin]
-position 11881 435
-[item_coin]
-position 18222 435
-[item_coin]
-position 18404 435
-[item_coin]
-position 18495 435
-[item_coin]
-position 18045 434
-[item_snail]
-position 15795 368
-[item_wall]
+[snail]
+position 15845 368
+way_point 15671 368 16466 368 -  - 
+[wall]
 wood
 position 21327 403
-[item_wall]
+[wall]
 wood
 position 21417 403
-[item_wall]
+[wall]
 wood
 position 21507 403
-[item_wall]
+[wall]
 wood
 position 21597 403
-[item_wall]
+[wall]
 wood
 position 21687 403
-[item_mushroom]
-position 16316 368
-[item_ground]
+[mushroom]
+position 16321 368
+way_point 15671 368 16466 368 -  - 
+[coin]
+position 11517 403
+[coin]
+position 11607 403
+[coin]
+position 11697 403
+[coin]
+position 11787 403
+[coin]
+position 11877 403
+[coin]
+position 17907 403
+[coin]
+position 17997 403
+[coin]
+position 18087 403
+[coin]
+position 18177 403
+[coin]
+position 18267 403
+[coin]
+position 18357 403
+[ground]
 island
-position 2128 432
-[item_ground]
+position 2192 431
+width 245
+[ground]
 island
-position 2576 431
-[item_ground]
+position 1742 430
+width 245
+[ground]
 island
-position 1678 430
-[item_mushroom]
-position 14462 317
-[item_mushroom]
-position 14920 316
-[item_ground]
-high mound
-position 15285 362
-width 1488
-[item_bridge]
-position 16823 327
-width 600
-[item_ground]
-high mound
-position 17371 362
-width 186
-[item_wall]
+position 2644 430
+width 245
+[mushroom]
+position 14887 317
+way_point 14700 317 14880 317 -  - 
+[ground]
+position 15326 362
+width 1218
+[bridge]
+position 16548 362
+width 700
+[ground]
+position 17254 362
+width 174
+[wall]
 wood
 position 21237 313
-[item_wall]
+[wall]
 wood
 position 21327 313
-[item_wall]
+[wall]
 wood
 position 21417 313
-[item_wall]
+[wall]
 wood
 position 21507 313
-[item_wall]
+[wall]
 wood
 position 21597 313
-[item_wall]
+[wall]
 wood
 position 21687 313
-[item_root]
-position 3765 186
-[item_root]
-position 6436 186
-[item_root]
-position 10506 186
-[item_ground]
+[root]
+position 3871 186
+[root]
+position 6452 186
+id 1 - destination 1 1 -  - 
+[root]
+position 10639 186
+id 2 - destination 1 2 -  - 
+[mushroom]
+position 14327 270
+way_point 14167 270 14327 270 - 
+[ground]
 island
-position 3016 311
-[item_ground]
-island
-position 14334 311
-[item_ground]
+position 3114 311
+width 245
+[ground]
 island
 position 14809 311
-[item_ground]
+width 245
+[ground]
 island
-position 1260 310
-[item_wall]
+position 1310 308
+width 245
+[player]
+position 141 185
+[wall]
 wood
 position 21147 223
-[item_wall]
+[wall]
 wood
 position 21237 223
-[item_wall]
+[wall]
 wood
 position 21327 223
-[item_wall]
+[wall]
 wood
 position 21417 223
-[item_wall]
+[wall]
 wood
 position 21507 223
-[item_wall]
+[wall]
 wood
 position 21597 223
-[item_wall]
+[wall]
 wood
 position 21687 223
-[item_spring]
-position 20334 186
-[item_mushroom]
-position 19743 186
-[item_frog]
-position 10040 186
-[item_bridge]
-position 9821 146
-width 600
-[item_ground]
+[ground]
 island
-position 12871 181
-[item_ground]
+position 14251 264
+width 245
+[spring]
+position 17745 186
+[spring]
+position 20322 186
+[mushroom]
+position 19735 186
+way_point 19676 186 20206 186 -  - 
+[frog]
+position 10471 185
+way_point 9670 186 10471 185 - 
+[ground]
 islet
-position 18883 181
-[item_ground]
+position 6769 242
+[ground]
+islet
+position 7461 233
+[ground]
+islet
+position 5668 220
+[ground]
+islet
+position 19116 220
+[ground]
+islet
+position 5915 219
+[ground]
+island
+position 13331 219
+width 245
+[ground]
+islet
+position 19402 197
+[ground]
+island
+position 12876 185
+width 245
+[ground]
 position 0 180
-width 1108
-[item_ground]
-position 3469 180
-width 1939
-[item_ground]
+width 1044
+[ground]
+position 3444 180
+width 1740
+[ground]
 islet
-position 5916 180
-[item_ground]
-position 6301 180
-width 277
-[item_ground]
+position 5405 180
+[ground]
+position 6360 180
+width 174
+[ground]
 islet
-position 6891 180
-[item_ground]
-islet
-position 7077 180
-[item_ground]
-islet
-position 7267 180
-[item_ground]
-position 7471 180
-width 277
-[item_ground]
+position 7245 180
+[ground]
+position 7692 180
+width 174
+[ground]
 position 9218 180
-width 554
-[item_ground]
-position 10370 180
-width 277
-[item_ground]
-position 11246 180
-width 1385
-[item_ground]
-position 17861 180
-width 277
-[item_bridge]
-position 18190 145
-width 300
-[item_ground]
-position 18444 180
-width 277
-[item_ground]
-islet
-position 19371 180
-[item_ground]
-position 19613 180
-width 277
-[item_bridge]
-position 19941 145
-width 300
-[item_ground]
-position 20193 180
-width 277
-[item_ground]
-position 20774 180
-width 2216
-[item_ground]
-islet
-position 5525 179
-[item_ground]
-islet
-position 5720 179
-[item_ground]
-islet
-position 6102 179
-[item_ground]
-islet
-position 6702 179
-[item_bridge]
-position 10698 144
+width 522
+[ground]
+position 10550 180
+width 174
+[ground]
+position 11334 180
+width 1218
+[ground]
+island
+position 13788 180
+width 245
+[ground]
+position 17620 180
+width 174
+[bridge]
+position 17799 180
 width 600
-[item_ground]
-island
-position 13365 179
-[item_ground]
-island
-position 13861 179
-[item_ground]
+[ground]
+position 18405 180
+width 174
+[ground]
+position 19634 180
+width 174
+[ground]
+position 20219 180
+width 174
+[ground]
+position 20704 180
+width 2262
+[ground]
 islet
-position 19126 179
-[item_bridge]
-position 20522 144
+position 7015 179
+[bridge]
+position 9744 179
+width 800
+[bridge]
+position 10730 179
+width 600
+[bridge]
+position 19814 179
+width 400
+[bridge]
+position 20398 179
 width 300
-[item_water]
-position 1112 115
-width 2352
-[item_water]
-position 5413 115
-width 882
-[item_water]
-position 6582 115
-width 882
-[item_water]
-position 9777 115
-width 588
-[item_water]
-position 10652 115
-width 588
-[item_water]
-position 12635 115
-width 2646
-[item_water]
-position 16776 115
-width 588
-[item_water]
-position 17562 115
-width 294
-[item_water]
-position 18725 115
-width 882
-[item_water]
-position 19894 115
-width 294
-[item_water]
-position 20476 115
-width 294
+[ground]
+islet
+position 6151 178
+[ground]
+islet
+position 18822 175
+[water]
+position 1050 64
+width 22272
+[water]
+position 9752 64
+width 696

@@ -1,0 +1,365 @@
+{
+type: 100
+path: item\mario.png
+size: 75, 85
+length: 1
+anchor_point: middle_bottom
+}
+
+===================================================/* 1 -> 10: ground */===================================================
+{
+type: 1
+path: item\g_ground.png
+size: 174, 90
+length: 1
+anchor_point: top_left
+}
+
+{
+type: 2
+path: item\g_water.png
+size: 174, 64
+length: 1
+anchor_point: top_left
+}
+
+{
+type: 3
+path: item\g_island.png
+size: 245, 70
+length: 1
+anchor_point: top_center
+additional_properties: island
+}
+
+{
+type: 4
+path: item\g_islet.png
+size: 84, 60
+length: 1
+anchor_point: top_center
+additional_properties: islet
+}
+
+===================================================/* 11 -> 20: wall */===================================================
+{
+type: 11
+path: item\w_box.png
+size: 84, 84
+length: 1
+anchor_point: center
+additional_properties: wood
+}
+
+{
+type: 12
+path: item\w_brick_gold.png
+size: 84, 84
+length: 1
+anchor_point: center
+additional_properties: gold
+}
+
+{
+type: 13
+path: item\w_brick_turquoise.png
+size: 84, 84
+length: 1
+anchor_point: center
+additional_properties: unbreakable
+}
+
+{
+type: 14
+path: item\w_brick.png
+size: 84, 84
+length: 1
+anchor_point: center
+}
+
+===================================================/* 21 -> 30: power up */===================================================
+{
+type: 21
+path: item\p_bomb.png
+size: 30, 30
+length: 1
+anchor_point: center
+}
+
+{
+type: 22
+path: item\p_coin.png
+size: 50, 60
+length: 1
+anchor_point: center
+}
+
+{
+type: 23
+path: item\p_diamond.png
+size: 55, 45
+length: 1
+anchor_point: center
+}
+
+{
+type: 24
+path: item\p_shield.png
+size: 60, 55
+length: 1
+anchor_point: center
+}
+
+{
+type: 25
+path: item\p_vial.png
+size: 60, 70
+length: 1
+anchor_point: center
+}
+
+===================================================/* 31 -> 40: normal */===================================================
+{
+type: 31
+path: item\n_bridge.png
+size: 100, 70
+length: 1
+anchor_point: top_left
+}
+
+{
+type: 32
+path: item\n_castle.png
+size: 400, 430
+length: 1
+anchor_point: middle_bottom
+}
+
+{
+type: 33
+path: item\n_flag.png
+size: 85, 505
+length: 1
+anchor_point: middle_bottom
+}
+
+{
+type: 34
+path: item\n_root.png
+size: 150, 160
+length: 1
+anchor_point: middle_bottom
+}
+
+{
+type: 35
+path: item\n_seaweed.png
+size: 177, 154
+length: 1
+anchor_point: middle_bottom
+}
+
+===================================================/* 41 -> 60: animal */===================================================
+{
+type: 41
+path: item\a_mushroom.png
+size: 75, 70
+length: 1
+anchor_point: middle_bottom
+}
+
+{
+type: 42
+path: item\a_bee.png
+size: 75, 105
+length: 1
+anchor_point: center
+}
+
+{
+type: 43
+path: item\a_bird.png
+size: 150, 80
+length: 1
+anchor_point: center
+}
+
+{
+type: 44
+path: item\a_crab.png
+size: 100, 80
+length: 1
+anchor_point: middle_bottom
+}
+
+{
+type: 45
+path: item\a_fish.png
+size: 115, 55
+length: 1
+anchor_point: center
+}
+
+{
+type: 46
+path: item\a_frog.png
+size: 68, 68
+length: 1
+anchor_point: middle_bottom
+}
+
+{
+type: 47
+path: item\a_octopus.png
+size: 105, 65
+length: 1
+anchor_point: center
+}
+
+{
+type: 48
+path: item\a_snail.png
+size: 115, 80
+length: 1
+anchor_point: middle_bottom
+}
+
+{
+type: 49
+path: item\a_spider.png
+size: 121, 96
+length: 1
+anchor_point: center
+}
+
+{
+type: 50
+path: item\a_ghost.png
+size: 112, 121
+length: 1
+anchor_point: center
+}
+
+{
+type: 51
+path: item\a_snakehead.png
+size: 114, 95
+length: 1
+anchor_point: center
+}
+
+===================================================/* 61 -> 80: trap */===================================================
+{
+type: 61
+path: item\t_carnivorous_flower.png
+size: 70, 102
+length: 1
+anchor_point: middle_bottom
+}
+
+{
+type: 62
+path: item\t_flat.png
+size: 190, 25
+length: 1
+anchor_point: center
+}
+
+{
+type: 63
+path: item\t_spike.png
+size: 80, 70
+length: 1
+anchor_point: middle_bottom
+}
+
+{
+type: 64
+path: item\t_spring.png
+size: 80, 75
+length: 1
+anchor_point: middle_bottom
+}
+
+{
+type: 65
+path: item\t_meteorite.png
+size: 74, 64
+length: 1
+anchor_point: center
+}
+
+{
+type: 66
+path: item\t_balloon.png
+size: 85, 156
+length: 1
+anchor_point: center
+}
+
+{
+type: 67
+path: item\t_pinwheel_flat.png
+size: 484, 371
+length: 1
+anchor_point: center
+}
+
+{
+type: 68
+path: item\t_mine.png
+size: 93, 100
+length: 1
+anchor_point: center
+}
+
+{
+type: 69
+path: item\t_nail_stick.png
+size: 277, 34
+length: 1
+anchor_point: top_left
+}
+
+{
+type: 70                                                                                                                                                                                                                                                                                                                                                            
+path: item\t_saw_blade.png
+size: 271, 257
+length: 1
+anchor_point: center
+}
+
+{
+type: 71
+path: item\t_stone_statues.png
+size: 183, 179
+length: 1
+anchor_point: middle_bottom
+}
+
+{
+type: 72
+path: item\t_gun.png
+size: 103, 92
+length: 1
+anchor_point: middle_bottom
+}
+
+===================================================/* 81 -> 90: boss */===================================================
+{
+type: 81
+path: item\b_maybug.png
+size: 176, 254
+length: 1
+anchor_point: center
+additional_properties: maybug
+}
+
+{
+type: 82
+path: item\b_monkey.png
+size: 244, 298
+length: 1
+anchor_point: middle_bottom
+additional_properties: monkey
+}

@@ -31,7 +31,7 @@ namespace LevelDesignTool
             PictureBox Pb = new PictureBox();
             Pb.Image = Img;
             Pb.SizeMode = PictureBoxSizeMode.Zoom;
-            Pb.Size = new Size(74, 74);
+            Pb.Size = new Size(72, 72);
             Pb.Location = Pos;
             Pb.BackColor = Color.Black;
 
